@@ -746,7 +746,14 @@ pub fn annotation_list(app: &mut StudioApp, ui: &mut egui::Ui) {
     let mut delete = false;
     let menu_t = app.snap(app.play.time);
     let selected = app.selected;
-    let menu = |ui: &mut egui::Ui, add: &mut Option<Vec<(String, f32)>>, delete: &mut bool, popup: &mut Option<crate::timeline::Popup>| {
+    let mut edit: Option<usize> = None;
+    let menu = |ui: &mut egui::Ui, add: &mut Option<Vec<(String, f32)>>, delete: &mut bool, popup: &mut Option<crate::timeline::Popup>, edit: &mut Option<usize>| {
+        if let Some(i) = selected {
+            if ui.button(sds_i18n::t!("Изменить текст…", "Edit text…")).clicked() {
+                *edit = Some(i);
+                ui.close();
+            }
+        }
         if selected.is_some() {
             if ui.button(sds_i18n::t!("Удалить выбранную", "Delete selected")).clicked() {
                 *delete = true;
@@ -760,7 +767,7 @@ pub fn annotation_list(app: &mut StudioApp, ui: &mut egui::Ui) {
     };
     // RMB on empty space of the list.
     let bg = ui.interact(ui.available_rect_before_wrap(), ui.id().with("anno-list-bg"), egui::Sense::click());
-    bg.context_menu(|ui| menu(ui, &mut add, &mut delete, &mut popup));
+    bg.context_menu(|ui| menu(ui, &mut add, &mut delete, &mut popup, &mut edit));
     egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| {
         egui::Grid::new("anno-list").num_columns(3).striped(true).show(ui, |ui| {
             for (i, a) in doc.annos.iter().enumerate() {
@@ -775,11 +782,14 @@ pub fn annotation_list(app: &mut StudioApp, ui: &mut egui::Ui) {
                 ui.label(format!("{}", (a.time / ft).round()));
                 let sel = app.selected == Some(i);
                 let text = egui::RichText::new(&a.text).color(category_color(p.category));
-                let r = ui.selectable_label(sel, text);
+                let r = ui.selectable_label(sel, text).on_hover_text(sds_i18n::t!("Двойной клик — изменить текст", "Double-click — edit the text"));
                 if r.clicked() || r.secondary_clicked() {
                     pick = Some(i);
                 }
-                r.context_menu(|ui| menu(ui, &mut add, &mut delete, &mut popup));
+                if r.double_clicked() {
+                    edit = Some(i);
+                }
+                r.context_menu(|ui| menu(ui, &mut add, &mut delete, &mut popup, &mut edit));
                 ui.end_row();
             }
         });
@@ -790,6 +800,13 @@ pub fn annotation_list(app: &mut StudioApp, ui: &mut egui::Ui) {
         app.play.playing = false;
     }
     app.open_popup(popup);
+    if let Some(i) = edit {
+        let text = app.doc.as_ref().and_then(|d| d.annos.get(i)).map(|a| a.text.clone());
+        if let Some(text) = text {
+            app.selected = Some(i);
+            app.edit_anno = Some((i, text));
+        }
+    }
     if delete {
         app.delete_selected();
     }

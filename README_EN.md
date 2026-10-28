@@ -43,10 +43,11 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - «Add annotation» — templates by group (Precision, SDSCombat, MCO/BFCO, attack, SCAR, PIE). Compound templates add several annotations as one undo step:
       - `Collision_Add.Node(WEAPON)` / `Node(SHIELD)` + `Collision_Remove.Node(WEAPON/SHIELD)` 5 frames later;
       - `MCO_Windows` — `MCO_WinOpen` and `MCO_PowerWinOpen`, then `MCO_WinClose` and `MCO_PowerWinClose` 10 frames later;
-      - `PIE.@SGVI|MCO_next(power)attack|1` — `MCO_nextattack|1` and `MCO_nextpowerattack|1`;
+      - `PIE.@SGVI|MCO_next(power)attack|N…` — a centred window for the light and power attack numbers (checkboxes keep just one), places `MCO_nextattack|N` and `MCO_nextpowerattack|M`;
     - «Add custom annotation…» — a centred window with a text field; «Add» (or Enter) places it at the playhead, Esc cancels;
     - «Favorite annotations…» — a centred window with the favorites: click one to place it at the playhead, ✕ removes it, the field and «Add Favorite» add a new one to the list (not to the timeline). Favorites are kept in the settings;
-    - «Delete selected».
+    - «Edit text…» and «Delete selected».
+  - **Editing an annotation's text:** double-click a row in the «Annotations» tab (or RMB → «Edit text…») for a centred window; Enter applies (one undo step), Shift+Enter adds a line, Esc cancels.
   - Inspector: time in seconds and frames, text, parsed fields. `SCAR_ActionData` and `SDS_NPC_*` fields are edited as numbers.
   - Undo/redo, copy, and paste at the playhead.
 - **3D render window:**

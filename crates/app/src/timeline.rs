@@ -119,7 +119,7 @@ pub const TEMPLATES: &[(sds_i18n::Tr, &[Tpl])] = &[
         &[
             one("PIE.$Alias"),
             Tpl {
-                label: "PIE.@SGVI|MCO_next(power)attack|1",
+                label: NEXT_ATTACK,
                 annos: &[("PIE.@SGVI|MCO_nextattack|1", 0), ("PIE.@SGVI|MCO_nextpowerattack|1", 0)],
             },
             one("PIE.@SGVF|MCO_AttackSpeed|1.0"),
@@ -136,7 +136,12 @@ pub const TEMPLATES: &[(sds_i18n::Tr, &[Tpl])] = &[
 pub enum Popup {
     Custom,
     Favorites,
+    /// MCO_nextattack / MCO_nextpowerattack numbers.
+    NextAttack,
 }
+
+/// The template that asks for the next attack numbers instead of adding 1|1.
+pub const NEXT_ATTACK: &str = "PIE.@SGVI|MCO_next(power)attack|N…";
 
 pub fn add_menu(ui: &mut egui::Ui, t: f32, ft: f32, duration: f32, favs: &[String], popup: &mut Option<Popup>) -> Option<Vec<(String, f32)>> {
     let mut out = None;
@@ -151,7 +156,11 @@ pub fn add_menu(ui: &mut egui::Ui, t: f32, ft: f32, duration: f32, favs: &[Strin
                         r = r.on_hover_text(list.join("\n"));
                     }
                     if r.clicked() {
-                        out = Some(tpl.expand(t, ft, duration));
+                        if tpl.label == NEXT_ATTACK {
+                            *popup = Some(Popup::NextAttack);
+                        } else {
+                            out = Some(tpl.expand(t, ft, duration));
+                        }
                         ui.close();
                     }
                 }
@@ -863,5 +872,124 @@ pub fn favorites_window(app: &mut StudioApp, ctx: &egui::Context) {
     }
     if !open {
         app.favs_open = false;
+    }
+}
+
+/// Centred window: which light / power attack plays next
+/// (`PIE.@SGVI|MCO_nextattack|N` + `PIE.@SGVI|MCO_nextpowerattack|M`).
+pub fn next_attack_window(app: &mut StudioApp, ctx: &egui::Context) {
+    if !app.next_open {
+        return;
+    }
+    let mut open = true;
+    let mut add = false;
+    let t = app.snap(app.play.time);
+    let ft = app.doc.as_ref().map(|d| d.frame_time()).unwrap_or(1.0 / 30.0);
+    egui::Window::new(sds_i18n::t!("Следующая атака", "Next attack"))
+        .open(&mut open)
+        .collapsible(false)
+        .resizable(false)
+        .anchor(egui::Align2::CENTER_CENTER, egui::vec2(0.0, 0.0))
+        .show(ctx, |ui| {
+            ui.label(sds_i18n::tf!("На плейхед: {:.3} с (кадр {})", "At playhead: {:.3} s (frame {})", t, (t / ft).round()));
+            egui::Grid::new("next-attack").num_columns(3).show(ui, |ui| {
+                ui.checkbox(&mut app.next_use.0, sds_i18n::t!("лёгкая", "light"));
+                ui.add_enabled(app.next_use.0, egui::DragValue::new(&mut app.next_n.0).range(1..=99).speed(0.1));
+                ui.small(format!("PIE.@SGVI|MCO_nextattack|{}", app.next_n.0));
+                ui.end_row();
+                ui.checkbox(&mut app.next_use.1, sds_i18n::t!("силовая", "power"));
+                ui.add_enabled(app.next_use.1, egui::DragValue::new(&mut app.next_n.1).range(1..=99).speed(0.1));
+                ui.small(format!("PIE.@SGVI|MCO_nextpowerattack|{}", app.next_n.1));
+                ui.end_row();
+            });
+            ui.small(sds_i18n::t!(
+                "Номер клипа bfco_attackN / bfco_powerattackN, который сыграет следующая атака.",
+                "The bfco_attackN / bfco_powerattackN clip the next attack plays."
+            ));
+            ui.horizontal(|ui| {
+                if ui.add_enabled(app.next_use.0 || app.next_use.1, egui::Button::new(sds_i18n::t!("Добавить", "Add"))).clicked() || ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+                    add = app.next_use.0 || app.next_use.1;
+                }
+                if ui.button(sds_i18n::t!("Отмена", "Cancel")).clicked() {
+                    app.next_open = false;
+                }
+            });
+        });
+    if ctx.input(|i| i.key_pressed(egui::Key::Escape)) {
+        open = false;
+    }
+    if add {
+        let mut v = Vec::new();
+        if app.next_use.0 {
+            v.push((format!("PIE.@SGVI|MCO_nextattack|{}", app.next_n.0), t));
+        }
+        if app.next_use.1 {
+            v.push((format!("PIE.@SGVI|MCO_nextpowerattack|{}", app.next_n.1), t));
+        }
+        app.add_annotations(v);
+        open = false;
+    }
+    if !open {
+        app.next_open = false;
+    }
+}
+
+/// Centred window: the text of an existing annotation (double-click in the
+/// list, or «Edit text…» in its menu). One undo step.
+pub fn edit_window(app: &mut StudioApp, ctx: &egui::Context) {
+    let Some((index, _)) = &app.edit_anno else { return };
+    let index = *index;
+    let Some(doc) = &app.doc else {
+        app.edit_anno = None;
+        return;
+    };
+    let Some(a) = doc.annos.get(index) else {
+        app.edit_anno = None;
+        return;
+    };
+    let (time, ft) = (a.time, doc.frame_time());
+    let mut open = true;
+    let mut apply = false;
+    egui::Window::new(sds_i18n::t!("Изменить аннотацию", "Edit annotation"))
+        .open(&mut open)
+        .collapsible(false)
+        .resizable(true)
+        .default_width(520.0)
+        .anchor(egui::Align2::CENTER_CENTER, egui::vec2(0.0, 0.0))
+        .show(ctx, |ui| {
+            ui.label(sds_i18n::tf!("{:.3} с (кадр {})", "{:.3} s (frame {})", time, (time / ft).round()));
+            let buf = &mut app.edit_anno.as_mut().unwrap().1;
+            let r = ui.add(egui::TextEdit::multiline(buf).desired_rows(2).desired_width(f32::INFINITY).font(egui::TextStyle::Monospace));
+            if !r.has_focus() && !ui.ctx().memory(|m| m.focused().is_some()) {
+                r.request_focus();
+            }
+            let enter = r.has_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter) && !i.modifiers.shift);
+            ui.small(sds_i18n::t!("Enter — применить, Shift+Enter — новая строка, Esc — отмена", "Enter — apply, Shift+Enter — new line, Esc — cancel"));
+            ui.horizontal(|ui| {
+                if ui.button(sds_i18n::t!("Применить", "Apply")).clicked() || enter {
+                    apply = true;
+                }
+                if ui.button(sds_i18n::t!("Отмена", "Cancel")).clicked() {
+                    app.edit_anno = None;
+                }
+            });
+        });
+    if ctx.input(|i| i.key_pressed(egui::Key::Escape)) {
+        open = false;
+    }
+    if apply {
+        if let Some((i, text)) = app.edit_anno.take() {
+            let text = text.trim().to_string();
+            if let Some(doc) = &mut app.doc {
+                if !text.is_empty() && doc.annos.get(i).is_some_and(|a| a.text != text) {
+                    let at = doc.edit(Some(i), |a| a[i].text = text);
+                    app.selected = at;
+                }
+            }
+        }
+        open = false;
+    }
+    if !open {
+        app.edit_anno = None;
     }
 }

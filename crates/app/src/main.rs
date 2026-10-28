@@ -117,6 +117,9 @@ fn main() -> eframe::Result {
             if std::env::args().any(|a| a == "--favs-open") {
                 app.favs_open = true;
             }
+            if std::env::args().any(|a| a == "--next-open") {
+                app.next_open = true;
+            }
             if std::env::args().any(|a| a == "--combo-next") {
                 app.combo.only_next = true;
             }

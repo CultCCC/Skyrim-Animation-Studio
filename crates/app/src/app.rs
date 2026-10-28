@@ -147,6 +147,12 @@ pub struct StudioApp {
     /// The favorites window and its «Add Favorite» field.
     pub favs_open: bool,
     pub fav_new: String,
+    /// The next-attack window: (light, power) numbers and which to add.
+    pub next_open: bool,
+    pub next_n: (i32, i32),
+    pub next_use: (bool, bool),
+    /// The edit-text window: (annotation index, text being edited).
+    pub edit_anno: Option<(usize, String)>,
     pub profiles: Vec<String>,
     pub shot: Option<Shot>,
     pub camera: Camera,
@@ -284,6 +290,10 @@ impl StudioApp {
             custom_open: false,
             favs_open: false,
             fav_new: String::new(),
+            next_open: false,
+            next_n: (1, 1),
+            next_use: (true, true),
+            edit_anno: None,
             profiles: Vec::new(),
             shot: None,
             last_frame: None,
@@ -802,6 +812,7 @@ impl StudioApp {
         match p {
             Some(crate::timeline::Popup::Custom) => self.custom_open = true,
             Some(crate::timeline::Popup::Favorites) => self.favs_open = true,
+            Some(crate::timeline::Popup::NextAttack) => self.next_open = true,
             None => {}
         }
     }
@@ -1198,6 +1209,8 @@ impl eframe::App for StudioApp {
         self.dock = dock;
         crate::timeline::custom_window(self, &ctx);
         crate::timeline::favorites_window(self, &ctx);
+        crate::timeline::next_attack_window(self, &ctx);
+        crate::timeline::edit_window(self, &ctx);
     }
 
     fn on_exit(&mut self) {
