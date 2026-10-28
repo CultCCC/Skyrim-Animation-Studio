@@ -1,0 +1,8 @@
+[package]
+name = "aether-codecs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Std-only compression codecs shared by the BSA reader and the plugin core: DEFLATE/zlib inflate, LZ4"
+
+[dependencies]

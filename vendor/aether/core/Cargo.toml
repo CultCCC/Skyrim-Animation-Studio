@@ -1,0 +1,12 @@
+[package]
+name = "aether-core"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0"
+description = "Aether editor domain model: particle graph, commands, projects, templates"
+
+# Intentionally free of third-party deps (std only) — see crates/nif/Cargo.toml.
+# aether-nif is workspace-internal and itself std-only.
+[dependencies]
+aether-nif = { path = "../nif" }
+aether-codecs = { path = "../codecs" }

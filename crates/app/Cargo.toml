@@ -1,0 +1,31 @@
+[package]
+name = "sds-anim-studio"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "SDS Anim Studio — Skyrim SE animation/annotation studio in the spirit of DS Anim Studio"
+
+[[bin]]
+name = "sds-anim-studio"
+path = "src/main.rs"
+
+[dependencies]
+sds-i18n = { path = "../i18n" }
+sds-vfs = { path = "../vfs" }
+sds-hkx = { path = "../hkx" }
+sds-anno = { path = "../anno" }
+sds-records = { path = "../records" }
+# PNG encoder for the --screenshot harness.
+aether-core = { path = "../../vendor/aether/core" }
+aether-nif = { path = "../../vendor/aether/nif" }
+
+eframe = "0.34"
+egui = "0.34"
+egui_dock = { version = "0.19", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rfd = "0.15"
+
+# XAudio2 for the sound simulation (already in the lock through wgpu).
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62", features = ["Win32_Foundation", "Win32_Media_Audio", "Win32_Media_Audio_XAudio2", "Win32_System_Com", "Win32_System_LibraryLoader"] }

@@ -1,0 +1,18 @@
+[package]
+name = "sds-hkx"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Skyrim SE animation HKX: clip info, annotations"
+
+# Same serde-hkx checkout the Aether build copy uses.
+[dependencies]
+serde_hkx = { path = "../../vendor/serde-hkx/serde_hkx" }
+havok_types = { path = "../../vendor/serde-hkx/crates/havok_types" }
+havok_classes = { path = "../../vendor/serde-hkx/crates/havok_classes" }
+indexmap = "2"
+
+[dev-dependencies]
+# KF reader for checking the decoder against hkxcmd-exported keys.
+aether-nif = { path = "../../vendor/aether/nif" }
+aether-core = { path = "../../vendor/aether/core" }

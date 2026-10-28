@@ -1,0 +1,10 @@
+[package]
+name = "aether-nif"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0"
+description = "Pure-Rust NIF reader/writer for Skyrim SE/LE (20.2.0.7), lossless round-trip"
+
+# Intentionally dependency-free: this crate must stay buildable everywhere,
+# including sandboxed CI without a crates.io mirror.
+[dependencies]

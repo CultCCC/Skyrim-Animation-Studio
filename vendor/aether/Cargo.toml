@@ -1,0 +1,10 @@
+# The three Aether crates SDS Anim Studio uses (NIF reader, particle and
+# mesh core, codecs), vendored from the Aether VFX editor workspace.
+[workspace]
+resolver = "2"
+members = ["nif", "codecs", "core"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0"

@@ -1,0 +1,17 @@
+# Build output
+/target/
+
+# Local builds, studio settings, sessions and saved clips
+/dist/
+/Output/
+/Projects/
+*.sdsproj
+sds_anim_studio.json
+sds_anim_studio_layout.json
+*.zip
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

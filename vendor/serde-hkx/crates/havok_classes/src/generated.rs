@@ -1,0 +1,9912 @@
+/// Reduce the burden of individual imports by importing a set of types needed to create a havok class structure here.
+mod class_requires {
+    pub use havok_serde::{
+        ser::{Error as _, SerializeFlags, SerializeStruct, Serializer, TypeSize},
+        de::{self, Error as _, Deserializer},
+        HavokClass,
+    };
+    pub use havok_types::*;
+    #[cfg(feature = "json_schema")]
+    pub fn make_large_int_array_schema(
+        generator: &mut schemars::SchemaGenerator,
+    ) -> schemars::Schema {
+        let mut schema = <Vec<i32> as schemars::JsonSchema>::json_schema(generator);
+        let mut map = schema.ensure_object();
+        schema
+    }
+}
+pub mod BGSGamebryoSequenceGenerator_;
+pub use BGSGamebryoSequenceGenerator_::*;
+pub mod BSBoneSwitchGenerator_;
+pub use BSBoneSwitchGenerator_::*;
+pub mod BSBoneSwitchGeneratorBoneData_;
+pub use BSBoneSwitchGeneratorBoneData_::*;
+pub mod BSComputeAddBoneAnimModifier_;
+pub use BSComputeAddBoneAnimModifier_::*;
+pub mod BSCyclicBlendTransitionGenerator_;
+pub use BSCyclicBlendTransitionGenerator_::*;
+pub mod BSDecomposeVectorModifier_;
+pub use BSDecomposeVectorModifier_::*;
+pub mod BSDirectAtModifier_;
+pub use BSDirectAtModifier_::*;
+pub mod BSDistTriggerModifier_;
+pub use BSDistTriggerModifier_::*;
+pub mod BSEventEveryNEventsModifier_;
+pub use BSEventEveryNEventsModifier_::*;
+pub mod BSEventOnDeactivateModifier_;
+pub use BSEventOnDeactivateModifier_::*;
+pub mod BSEventOnFalseToTrueModifier_;
+pub use BSEventOnFalseToTrueModifier_::*;
+pub mod BSGetTimeStepModifier_;
+pub use BSGetTimeStepModifier_::*;
+pub mod BSInterpValueModifier_;
+pub use BSInterpValueModifier_::*;
+pub mod BSIsActiveModifier_;
+pub use BSIsActiveModifier_::*;
+pub mod BSIStateManagerModifier_;
+pub use BSIStateManagerModifier_::*;
+pub mod BSIStateManagerModifierBSiStateData_;
+pub use BSIStateManagerModifierBSiStateData_::*;
+pub mod BSIStateManagerModifierBSIStateManagerStateListener_;
+pub use BSIStateManagerModifierBSIStateManagerStateListener_::*;
+pub mod BSiStateTaggingGenerator_;
+pub use BSiStateTaggingGenerator_::*;
+pub mod BSLimbIKModifier_;
+pub use BSLimbIKModifier_::*;
+pub mod BSLookAtModifier_;
+pub use BSLookAtModifier_::*;
+pub mod BSLookAtModifierBoneData_;
+pub use BSLookAtModifierBoneData_::*;
+pub mod BSModifyOnceModifier_;
+pub use BSModifyOnceModifier_::*;
+pub mod BSOffsetAnimationGenerator_;
+pub use BSOffsetAnimationGenerator_::*;
+pub mod BSPassByTargetTriggerModifier_;
+pub use BSPassByTargetTriggerModifier_::*;
+pub mod BSRagdollContactListenerModifier_;
+pub use BSRagdollContactListenerModifier_::*;
+pub mod BSSpeedSamplerModifier_;
+pub use BSSpeedSamplerModifier_::*;
+pub mod BSSynchronizedClipGenerator_;
+pub use BSSynchronizedClipGenerator_::*;
+pub mod BSTimerModifier_;
+pub use BSTimerModifier_::*;
+pub mod BSTweenerModifier_;
+pub use BSTweenerModifier_::*;
+pub mod hkAabb_;
+pub use hkAabb_::*;
+pub mod hkAabbHalf_;
+pub use hkAabbHalf_::*;
+pub mod hkAabbUint32_;
+pub use hkAabbUint32_::*;
+pub mod hkaAnimatedReferenceFrame_;
+pub use hkaAnimatedReferenceFrame_::*;
+pub mod hkaAnimation_;
+pub use hkaAnimation_::*;
+pub mod hkaAnimationBinding_;
+pub use hkaAnimationBinding_::*;
+pub mod hkaAnimationContainer_;
+pub use hkaAnimationContainer_::*;
+pub mod hkaAnimationPreviewColorContainer_;
+pub use hkaAnimationPreviewColorContainer_::*;
+pub mod hkaAnnotationTrack_;
+pub use hkaAnnotationTrack_::*;
+pub mod hkaAnnotationTrackAnnotation_;
+pub use hkaAnnotationTrackAnnotation_::*;
+pub mod hkaBone_;
+pub use hkaBone_::*;
+pub mod hkaBoneAttachment_;
+pub use hkaBoneAttachment_::*;
+pub mod hkaDefaultAnimatedReferenceFrame_;
+pub use hkaDefaultAnimatedReferenceFrame_::*;
+pub mod hkaDeltaCompressedAnimation_;
+pub use hkaDeltaCompressedAnimation_::*;
+pub mod hkaDeltaCompressedAnimationQuantizationFormat_;
+pub use hkaDeltaCompressedAnimationQuantizationFormat_::*;
+pub mod hkaFootstepAnalysisInfo_;
+pub use hkaFootstepAnalysisInfo_::*;
+pub mod hkaFootstepAnalysisInfoContainer_;
+pub use hkaFootstepAnalysisInfoContainer_::*;
+pub mod hkaInterleavedUncompressedAnimation_;
+pub use hkaInterleavedUncompressedAnimation_::*;
+pub mod hkaKeyFrameHierarchyUtility_;
+pub use hkaKeyFrameHierarchyUtility_::*;
+pub mod hkaKeyFrameHierarchyUtilityControlData_;
+pub use hkaKeyFrameHierarchyUtilityControlData_::*;
+pub mod hkAlignSceneToNodeOptions_;
+pub use hkAlignSceneToNodeOptions_::*;
+pub mod hkaMeshBinding_;
+pub use hkaMeshBinding_::*;
+pub mod hkaMeshBindingMapping_;
+pub use hkaMeshBindingMapping_::*;
+pub mod hkaQuantizedAnimation_;
+pub use hkaQuantizedAnimation_::*;
+pub mod hkaQuantizedAnimationTrackCompressionParams_;
+pub use hkaQuantizedAnimationTrackCompressionParams_::*;
+pub mod hkaRagdollInstance_;
+pub use hkaRagdollInstance_::*;
+pub mod hkArrayTypeAttribute_;
+pub use hkArrayTypeAttribute_::*;
+pub mod hkaSkeleton_;
+pub use hkaSkeleton_::*;
+pub mod hkaSkeletonLocalFrameOnBone_;
+pub use hkaSkeletonLocalFrameOnBone_::*;
+pub mod hkaSkeletonMapper_;
+pub use hkaSkeletonMapper_::*;
+pub mod hkaSkeletonMapperData_;
+pub use hkaSkeletonMapperData_::*;
+pub mod hkaSkeletonMapperDataChainMapping_;
+pub use hkaSkeletonMapperDataChainMapping_::*;
+pub mod hkaSkeletonMapperDataSimpleMapping_;
+pub use hkaSkeletonMapperDataSimpleMapping_::*;
+pub mod hkaSplineCompressedAnimation_;
+pub use hkaSplineCompressedAnimation_::*;
+pub mod hkaSplineCompressedAnimationAnimationCompressionParams_;
+pub use hkaSplineCompressedAnimationAnimationCompressionParams_::*;
+pub mod hkaSplineCompressedAnimationTrackCompressionParams_;
+pub use hkaSplineCompressedAnimationTrackCompressionParams_::*;
+pub mod hkaWaveletCompressedAnimation_;
+pub use hkaWaveletCompressedAnimation_::*;
+pub mod hkaWaveletCompressedAnimationCompressionParams_;
+pub use hkaWaveletCompressedAnimationCompressionParams_::*;
+pub mod hkaWaveletCompressedAnimationQuantizationFormat_;
+pub use hkaWaveletCompressedAnimationQuantizationFormat_::*;
+pub mod hkBaseObject_;
+pub use hkBaseObject_::*;
+pub mod hkbAttachmentModifier_;
+pub use hkbAttachmentModifier_::*;
+pub mod hkbAttachmentSetup_;
+pub use hkbAttachmentSetup_::*;
+pub mod hkbAttributeModifier_;
+pub use hkbAttributeModifier_::*;
+pub mod hkbAttributeModifierAssignment_;
+pub use hkbAttributeModifierAssignment_::*;
+pub mod hkbAuxiliaryNodeInfo_;
+pub use hkbAuxiliaryNodeInfo_::*;
+pub mod hkbBehaviorEventsInfo_;
+pub use hkbBehaviorEventsInfo_::*;
+pub mod hkbBehaviorGraph_;
+pub use hkbBehaviorGraph_::*;
+pub mod hkbBehaviorGraphData_;
+pub use hkbBehaviorGraphData_::*;
+pub mod hkbBehaviorGraphInternalState_;
+pub use hkbBehaviorGraphInternalState_::*;
+pub mod hkbBehaviorGraphInternalStateInfo_;
+pub use hkbBehaviorGraphInternalStateInfo_::*;
+pub mod hkbBehaviorGraphStringData_;
+pub use hkbBehaviorGraphStringData_::*;
+pub mod hkbBehaviorInfo_;
+pub use hkbBehaviorInfo_::*;
+pub mod hkbBehaviorInfoIdToNamePair_;
+pub use hkbBehaviorInfoIdToNamePair_::*;
+pub mod hkbBehaviorReferenceGenerator_;
+pub use hkbBehaviorReferenceGenerator_::*;
+pub mod hkbBindable_;
+pub use hkbBindable_::*;
+pub mod hkbBlendCurveUtils_;
+pub use hkbBlendCurveUtils_::*;
+pub mod hkbBlenderGenerator_;
+pub use hkbBlenderGenerator_::*;
+pub mod hkbBlenderGeneratorChild_;
+pub use hkbBlenderGeneratorChild_::*;
+pub mod hkbBlenderGeneratorChildInternalState_;
+pub use hkbBlenderGeneratorChildInternalState_::*;
+pub mod hkbBlenderGeneratorInternalState_;
+pub use hkbBlenderGeneratorInternalState_::*;
+pub mod hkbBlendingTransitionEffect_;
+pub use hkbBlendingTransitionEffect_::*;
+pub mod hkbBlendingTransitionEffectInternalState_;
+pub use hkbBlendingTransitionEffectInternalState_::*;
+pub mod hkbBoneIndexArray_;
+pub use hkbBoneIndexArray_::*;
+pub mod hkbBoneWeightArray_;
+pub use hkbBoneWeightArray_::*;
+pub mod hkbBoolVariableSequencedData_;
+pub use hkbBoolVariableSequencedData_::*;
+pub mod hkbBoolVariableSequencedDataSample_;
+pub use hkbBoolVariableSequencedDataSample_::*;
+pub mod hkbCameraShakeEventPayload_;
+pub use hkbCameraShakeEventPayload_::*;
+pub mod hkbCharacter_;
+pub use hkbCharacter_::*;
+pub mod hkbCharacterAddedInfo_;
+pub use hkbCharacterAddedInfo_::*;
+pub mod hkbCharacterControlCommand_;
+pub use hkbCharacterControlCommand_::*;
+pub mod hkbCharacterControllerControlData_;
+pub use hkbCharacterControllerControlData_::*;
+pub mod hkbCharacterControllerModifier_;
+pub use hkbCharacterControllerModifier_::*;
+pub mod hkbCharacterControllerModifierInternalState_;
+pub use hkbCharacterControllerModifierInternalState_::*;
+pub mod hkbCharacterData_;
+pub use hkbCharacterData_::*;
+pub mod hkbCharacterDataCharacterControllerInfo_;
+pub use hkbCharacterDataCharacterControllerInfo_::*;
+pub mod hkbCharacterInfo_;
+pub use hkbCharacterInfo_::*;
+pub mod hkbCharacterSetup_;
+pub use hkbCharacterSetup_::*;
+pub mod hkbCharacterSkinInfo_;
+pub use hkbCharacterSkinInfo_::*;
+pub mod hkbCharacterSteppedInfo_;
+pub use hkbCharacterSteppedInfo_::*;
+pub mod hkbCharacterStringData_;
+pub use hkbCharacterStringData_::*;
+pub mod hkbClientCharacterState_;
+pub use hkbClientCharacterState_::*;
+pub mod hkbClipGenerator_;
+pub use hkbClipGenerator_::*;
+pub mod hkbClipGeneratorEcho_;
+pub use hkbClipGeneratorEcho_::*;
+pub mod hkbClipGeneratorInternalState_;
+pub use hkbClipGeneratorInternalState_::*;
+pub mod hkbClipTrigger_;
+pub use hkbClipTrigger_::*;
+pub mod hkbClipTriggerArray_;
+pub use hkbClipTriggerArray_::*;
+pub mod hkbCombineTransformsModifier_;
+pub use hkbCombineTransformsModifier_::*;
+pub mod hkbCombineTransformsModifierInternalState_;
+pub use hkbCombineTransformsModifierInternalState_::*;
+pub mod hkbCompiledExpressionSet_;
+pub use hkbCompiledExpressionSet_::*;
+pub mod hkbCompiledExpressionSetToken_;
+pub use hkbCompiledExpressionSetToken_::*;
+pub mod hkbComputeDirectionModifier_;
+pub use hkbComputeDirectionModifier_::*;
+pub mod hkbComputeDirectionModifierInternalState_;
+pub use hkbComputeDirectionModifierInternalState_::*;
+pub mod hkbComputeRotationFromAxisAngleModifier_;
+pub use hkbComputeRotationFromAxisAngleModifier_::*;
+pub mod hkbComputeRotationFromAxisAngleModifierInternalState_;
+pub use hkbComputeRotationFromAxisAngleModifierInternalState_::*;
+pub mod hkbComputeRotationToTargetModifier_;
+pub use hkbComputeRotationToTargetModifier_::*;
+pub mod hkbComputeRotationToTargetModifierInternalState_;
+pub use hkbComputeRotationToTargetModifierInternalState_::*;
+pub mod hkbCondition_;
+pub use hkbCondition_::*;
+pub mod hkbContext_;
+pub use hkbContext_::*;
+pub mod hkbDampingModifier_;
+pub use hkbDampingModifier_::*;
+pub mod hkbDampingModifierInternalState_;
+pub use hkbDampingModifierInternalState_::*;
+pub mod hkbDefaultMessageLog_;
+pub use hkbDefaultMessageLog_::*;
+pub mod hkbDelayedModifier_;
+pub use hkbDelayedModifier_::*;
+pub mod hkbDelayedModifierInternalState_;
+pub use hkbDelayedModifierInternalState_::*;
+pub mod hkbDetectCloseToGroundModifier_;
+pub use hkbDetectCloseToGroundModifier_::*;
+pub mod hkbDetectCloseToGroundModifierInternalState_;
+pub use hkbDetectCloseToGroundModifierInternalState_::*;
+pub mod hkbEvaluateExpressionModifier_;
+pub use hkbEvaluateExpressionModifier_::*;
+pub mod hkbEvaluateExpressionModifierInternalExpressionData_;
+pub use hkbEvaluateExpressionModifierInternalExpressionData_::*;
+pub mod hkbEvaluateExpressionModifierInternalState_;
+pub use hkbEvaluateExpressionModifierInternalState_::*;
+pub mod hkbEvaluateHandleModifier_;
+pub use hkbEvaluateHandleModifier_::*;
+pub mod hkbEvent_;
+pub use hkbEvent_::*;
+pub mod hkbEventBase_;
+pub use hkbEventBase_::*;
+pub mod hkbEventDrivenModifier_;
+pub use hkbEventDrivenModifier_::*;
+pub mod hkbEventDrivenModifierInternalState_;
+pub use hkbEventDrivenModifierInternalState_::*;
+pub mod hkbEventInfo_;
+pub use hkbEventInfo_::*;
+pub mod hkbEventPayload_;
+pub use hkbEventPayload_::*;
+pub mod hkbEventPayloadList_;
+pub use hkbEventPayloadList_::*;
+pub mod hkbEventProperty_;
+pub use hkbEventProperty_::*;
+pub mod hkbEventRaisedInfo_;
+pub use hkbEventRaisedInfo_::*;
+pub mod hkbEventRangeData_;
+pub use hkbEventRangeData_::*;
+pub mod hkbEventRangeDataArray_;
+pub use hkbEventRangeDataArray_::*;
+pub mod hkbEventSequencedData_;
+pub use hkbEventSequencedData_::*;
+pub mod hkbEventSequencedDataSequencedEvent_;
+pub use hkbEventSequencedDataSequencedEvent_::*;
+pub mod hkbEventsFromRangeModifier_;
+pub use hkbEventsFromRangeModifier_::*;
+pub mod hkbEventsFromRangeModifierInternalState_;
+pub use hkbEventsFromRangeModifierInternalState_::*;
+pub mod hkbExpressionCondition_;
+pub use hkbExpressionCondition_::*;
+pub mod hkbExpressionData_;
+pub use hkbExpressionData_::*;
+pub mod hkbExpressionDataArray_;
+pub use hkbExpressionDataArray_::*;
+pub mod hkbExtractRagdollPoseModifier_;
+pub use hkbExtractRagdollPoseModifier_::*;
+pub mod hkbFootIkControlData_;
+pub use hkbFootIkControlData_::*;
+pub mod hkbFootIkControlsModifier_;
+pub use hkbFootIkControlsModifier_::*;
+pub mod hkbFootIkControlsModifierLeg_;
+pub use hkbFootIkControlsModifierLeg_::*;
+pub mod hkbFootIkDriverInfo_;
+pub use hkbFootIkDriverInfo_::*;
+pub mod hkbFootIkDriverInfoLeg_;
+pub use hkbFootIkDriverInfoLeg_::*;
+pub mod hkbFootIkGains_;
+pub use hkbFootIkGains_::*;
+pub mod hkbFootIkModifier_;
+pub use hkbFootIkModifier_::*;
+pub mod hkbFootIkModifierInternalLegData_;
+pub use hkbFootIkModifierInternalLegData_::*;
+pub mod hkbFootIkModifierLeg_;
+pub use hkbFootIkModifierLeg_::*;
+pub mod hkbGenerator_;
+pub use hkbGenerator_::*;
+pub mod hkbGeneratorOutputListener_;
+pub use hkbGeneratorOutputListener_::*;
+pub mod hkbGeneratorSyncInfo_;
+pub use hkbGeneratorSyncInfo_::*;
+pub mod hkbGeneratorSyncInfoSyncPoint_;
+pub use hkbGeneratorSyncInfoSyncPoint_::*;
+pub mod hkbGeneratorTransitionEffect_;
+pub use hkbGeneratorTransitionEffect_::*;
+pub mod hkbGeneratorTransitionEffectInternalState_;
+pub use hkbGeneratorTransitionEffectInternalState_::*;
+pub mod hkbGetHandleOnBoneModifier_;
+pub use hkbGetHandleOnBoneModifier_::*;
+pub mod hkbGetUpModifier_;
+pub use hkbGetUpModifier_::*;
+pub mod hkbGetUpModifierInternalState_;
+pub use hkbGetUpModifierInternalState_::*;
+pub mod hkbGetWorldFromModelModifier_;
+pub use hkbGetWorldFromModelModifier_::*;
+pub mod hkbGetWorldFromModelModifierInternalState_;
+pub use hkbGetWorldFromModelModifierInternalState_::*;
+pub mod hkbHandIkControlData_;
+pub use hkbHandIkControlData_::*;
+pub mod hkbHandIkControlsModifier_;
+pub use hkbHandIkControlsModifier_::*;
+pub mod hkbHandIkControlsModifierHand_;
+pub use hkbHandIkControlsModifierHand_::*;
+pub mod hkbHandIkDriverInfo_;
+pub use hkbHandIkDriverInfo_::*;
+pub mod hkbHandIkDriverInfoHand_;
+pub use hkbHandIkDriverInfoHand_::*;
+pub mod hkbHandIkModifier_;
+pub use hkbHandIkModifier_::*;
+pub mod hkbHandIkModifierHand_;
+pub use hkbHandIkModifierHand_::*;
+pub mod hkbHandle_;
+pub use hkbHandle_::*;
+pub mod hkbIntEventPayload_;
+pub use hkbIntEventPayload_::*;
+pub mod hkbIntVariableSequencedData_;
+pub use hkbIntVariableSequencedData_::*;
+pub mod hkbIntVariableSequencedDataSample_;
+pub use hkbIntVariableSequencedDataSample_::*;
+pub mod hkBitField_;
+pub use hkBitField_::*;
+pub mod hkbKeyframeBonesModifier_;
+pub use hkbKeyframeBonesModifier_::*;
+pub mod hkbKeyframeBonesModifierKeyframeInfo_;
+pub use hkbKeyframeBonesModifierKeyframeInfo_::*;
+pub mod hkbLinkedSymbolInfo_;
+pub use hkbLinkedSymbolInfo_::*;
+pub mod hkbLookAtModifier_;
+pub use hkbLookAtModifier_::*;
+pub mod hkbLookAtModifierInternalState_;
+pub use hkbLookAtModifierInternalState_::*;
+pub mod hkbManualSelectorGenerator_;
+pub use hkbManualSelectorGenerator_::*;
+pub mod hkbManualSelectorGeneratorInternalState_;
+pub use hkbManualSelectorGeneratorInternalState_::*;
+pub mod hkbMessageLog_;
+pub use hkbMessageLog_::*;
+pub mod hkbMirroredSkeletonInfo_;
+pub use hkbMirroredSkeletonInfo_::*;
+pub mod hkbMirrorModifier_;
+pub use hkbMirrorModifier_::*;
+pub mod hkbModifier_;
+pub use hkbModifier_::*;
+pub mod hkbModifierGenerator_;
+pub use hkbModifierGenerator_::*;
+pub mod hkbModifierList_;
+pub use hkbModifierList_::*;
+pub mod hkbModifierWrapper_;
+pub use hkbModifierWrapper_::*;
+pub mod hkbMoveCharacterModifier_;
+pub use hkbMoveCharacterModifier_::*;
+pub mod hkbMoveCharacterModifierInternalState_;
+pub use hkbMoveCharacterModifierInternalState_::*;
+pub mod hkbNamedEventPayload_;
+pub use hkbNamedEventPayload_::*;
+pub mod hkbNamedIntEventPayload_;
+pub use hkbNamedIntEventPayload_::*;
+pub mod hkbNamedRealEventPayload_;
+pub use hkbNamedRealEventPayload_::*;
+pub mod hkbNamedStringEventPayload_;
+pub use hkbNamedStringEventPayload_::*;
+pub mod hkbNode_;
+pub use hkbNode_::*;
+pub mod hkbNodeInternalStateInfo_;
+pub use hkbNodeInternalStateInfo_::*;
+pub mod hkbParticleSystemEventPayload_;
+pub use hkbParticleSystemEventPayload_::*;
+pub mod hkbPoseMatchingGenerator_;
+pub use hkbPoseMatchingGenerator_::*;
+pub mod hkbPoseMatchingGeneratorInternalState_;
+pub use hkbPoseMatchingGeneratorInternalState_::*;
+pub mod hkbPoweredRagdollControlData_;
+pub use hkbPoweredRagdollControlData_::*;
+pub mod hkbPoweredRagdollControlsModifier_;
+pub use hkbPoweredRagdollControlsModifier_::*;
+pub mod hkbProjectData_;
+pub use hkbProjectData_::*;
+pub mod hkbProjectStringData_;
+pub use hkbProjectStringData_::*;
+pub mod hkbProxyModifier_;
+pub use hkbProxyModifier_::*;
+pub mod hkbProxyModifierProxyInfo_;
+pub use hkbProxyModifierProxyInfo_::*;
+pub mod hkbRaiseEventCommand_;
+pub use hkbRaiseEventCommand_::*;
+pub mod hkbRealEventPayload_;
+pub use hkbRealEventPayload_::*;
+pub mod hkbRealVariableSequencedData_;
+pub use hkbRealVariableSequencedData_::*;
+pub mod hkbRealVariableSequencedDataSample_;
+pub use hkbRealVariableSequencedDataSample_::*;
+pub mod hkbReferencePoseGenerator_;
+pub use hkbReferencePoseGenerator_::*;
+pub mod hkbRegisteredGenerator_;
+pub use hkbRegisteredGenerator_::*;
+pub mod hkbRigidBodyRagdollControlData_;
+pub use hkbRigidBodyRagdollControlData_::*;
+pub mod hkbRigidBodyRagdollControlsModifier_;
+pub use hkbRigidBodyRagdollControlsModifier_::*;
+pub mod hkbRoleAttribute_;
+pub use hkbRoleAttribute_::*;
+pub mod hkbRotateCharacterModifier_;
+pub use hkbRotateCharacterModifier_::*;
+pub mod hkbRotateCharacterModifierInternalState_;
+pub use hkbRotateCharacterModifierInternalState_::*;
+pub mod hkbSenseHandleModifier_;
+pub use hkbSenseHandleModifier_::*;
+pub mod hkbSenseHandleModifierRange_;
+pub use hkbSenseHandleModifierRange_::*;
+pub mod hkbSequence_;
+pub use hkbSequence_::*;
+pub mod hkbSequencedData_;
+pub use hkbSequencedData_::*;
+pub mod hkbSequenceInternalState_;
+pub use hkbSequenceInternalState_::*;
+pub mod hkbSequenceStringData_;
+pub use hkbSequenceStringData_::*;
+pub mod hkbSetBehaviorCommand_;
+pub use hkbSetBehaviorCommand_::*;
+pub mod hkbSetLocalTimeOfClipGeneratorCommand_;
+pub use hkbSetLocalTimeOfClipGeneratorCommand_::*;
+pub mod hkbSetNodePropertyCommand_;
+pub use hkbSetNodePropertyCommand_::*;
+pub mod hkbSetWordVariableCommand_;
+pub use hkbSetWordVariableCommand_::*;
+pub mod hkbSetWorldFromModelModifier_;
+pub use hkbSetWorldFromModelModifier_::*;
+pub mod hkbSimulationControlCommand_;
+pub use hkbSimulationControlCommand_::*;
+pub mod hkbSimulationStateInfo_;
+pub use hkbSimulationStateInfo_::*;
+pub mod hkbStateChooser_;
+pub use hkbStateChooser_::*;
+pub mod hkbStateListener_;
+pub use hkbStateListener_::*;
+pub mod hkbStateMachine_;
+pub use hkbStateMachine_::*;
+pub mod hkbStateMachineActiveTransitionInfo_;
+pub use hkbStateMachineActiveTransitionInfo_::*;
+pub mod hkbStateMachineDelayedTransitionInfo_;
+pub use hkbStateMachineDelayedTransitionInfo_::*;
+pub mod hkbStateMachineEventPropertyArray_;
+pub use hkbStateMachineEventPropertyArray_::*;
+pub mod hkbStateMachineInternalState_;
+pub use hkbStateMachineInternalState_::*;
+pub mod hkbStateMachineNestedStateMachineData_;
+pub use hkbStateMachineNestedStateMachineData_::*;
+pub mod hkbStateMachineProspectiveTransitionInfo_;
+pub use hkbStateMachineProspectiveTransitionInfo_::*;
+pub mod hkbStateMachineStateInfo_;
+pub use hkbStateMachineStateInfo_::*;
+pub mod hkbStateMachineTimeInterval_;
+pub use hkbStateMachineTimeInterval_::*;
+pub mod hkbStateMachineTransitionInfo_;
+pub use hkbStateMachineTransitionInfo_::*;
+pub mod hkbStateMachineTransitionInfoArray_;
+pub use hkbStateMachineTransitionInfoArray_::*;
+pub mod hkbStateMachineTransitionInfoReference_;
+pub use hkbStateMachineTransitionInfoReference_::*;
+pub mod hkbStringCondition_;
+pub use hkbStringCondition_::*;
+pub mod hkbStringEventPayload_;
+pub use hkbStringEventPayload_::*;
+pub mod hkbTestStateChooser_;
+pub use hkbTestStateChooser_::*;
+pub mod hkbTimerModifier_;
+pub use hkbTimerModifier_::*;
+pub mod hkbTimerModifierInternalState_;
+pub use hkbTimerModifierInternalState_::*;
+pub mod hkbTransformVectorModifier_;
+pub use hkbTransformVectorModifier_::*;
+pub mod hkbTransformVectorModifierInternalState_;
+pub use hkbTransformVectorModifierInternalState_::*;
+pub mod hkbTransitionEffect_;
+pub use hkbTransitionEffect_::*;
+pub mod hkbTwistModifier_;
+pub use hkbTwistModifier_::*;
+pub mod hkbVariableBindingSet_;
+pub use hkbVariableBindingSet_::*;
+pub mod hkbVariableBindingSetBinding_;
+pub use hkbVariableBindingSetBinding_::*;
+pub mod hkbVariableInfo_;
+pub use hkbVariableInfo_::*;
+pub mod hkbVariableValue_;
+pub use hkbVariableValue_::*;
+pub mod hkbVariableValueSet_;
+pub use hkbVariableValueSet_::*;
+pub mod hkbWorldEnums_;
+pub use hkbWorldEnums_::*;
+pub mod hkbWorldFromModelModeData_;
+pub use hkbWorldFromModelModeData_::*;
+pub mod hkClass_;
+pub use hkClass_::*;
+pub mod hkClassEnum_;
+pub use hkClassEnum_::*;
+pub mod hkClassEnumItem_;
+pub use hkClassEnumItem_::*;
+pub mod hkClassMember_;
+pub use hkClassMember_::*;
+pub mod hkColor_;
+pub use hkColor_::*;
+pub mod hkContactPoint_;
+pub use hkContactPoint_::*;
+pub mod hkContactPointMaterial_;
+pub use hkContactPointMaterial_::*;
+pub mod hkCustomAttributes_;
+pub use hkCustomAttributes_::*;
+pub mod hkCustomAttributesAttribute_;
+pub use hkCustomAttributesAttribute_::*;
+pub mod hkDataObjectTypeAttribute_;
+pub use hkDataObjectTypeAttribute_::*;
+pub mod hkDescriptionAttribute_;
+pub use hkDescriptionAttribute_::*;
+pub mod hkDocumentationAttribute_;
+pub use hkDocumentationAttribute_::*;
+pub mod hkGeometry_;
+pub use hkGeometry_::*;
+pub mod hkGeometryTriangle_;
+pub use hkGeometryTriangle_::*;
+pub mod hkGizmoAttribute_;
+pub use hkGizmoAttribute_::*;
+pub mod hkHalf8_;
+pub use hkHalf8_::*;
+pub mod hkIndexedTransformSet_;
+pub use hkIndexedTransformSet_::*;
+pub mod hkLinkAttribute_;
+pub use hkLinkAttribute_::*;
+pub mod hkLocalFrame_;
+pub use hkLocalFrame_::*;
+pub mod hkLocalFrameGroup_;
+pub use hkLocalFrameGroup_::*;
+pub mod hkMemoryMeshBody_;
+pub use hkMemoryMeshBody_::*;
+pub mod hkMemoryMeshMaterial_;
+pub use hkMemoryMeshMaterial_::*;
+pub mod hkMemoryMeshShape_;
+pub use hkMemoryMeshShape_::*;
+pub mod hkMemoryMeshTexture_;
+pub use hkMemoryMeshTexture_::*;
+pub mod hkMemoryMeshVertexBuffer_;
+pub use hkMemoryMeshVertexBuffer_::*;
+pub mod hkMemoryResourceContainer_;
+pub use hkMemoryResourceContainer_::*;
+pub mod hkMemoryResourceHandle_;
+pub use hkMemoryResourceHandle_::*;
+pub mod hkMemoryResourceHandleExternalLink_;
+pub use hkMemoryResourceHandleExternalLink_::*;
+pub mod hkMemoryTrackerAttribute_;
+pub use hkMemoryTrackerAttribute_::*;
+pub mod hkMeshBody_;
+pub use hkMeshBody_::*;
+pub mod hkMeshBoneIndexMapping_;
+pub use hkMeshBoneIndexMapping_::*;
+pub mod hkMeshMaterial_;
+pub use hkMeshMaterial_::*;
+pub mod hkMeshSection_;
+pub use hkMeshSection_::*;
+pub mod hkMeshSectionCinfo_;
+pub use hkMeshSectionCinfo_::*;
+pub mod hkMeshShape_;
+pub use hkMeshShape_::*;
+pub mod hkMeshTexture_;
+pub use hkMeshTexture_::*;
+pub mod hkMeshVertexBuffer_;
+pub use hkMeshVertexBuffer_::*;
+pub mod hkModelerNodeTypeAttribute_;
+pub use hkModelerNodeTypeAttribute_::*;
+pub mod hkMonitorStreamColorTable_;
+pub use hkMonitorStreamColorTable_::*;
+pub mod hkMonitorStreamColorTableColorPair_;
+pub use hkMonitorStreamColorTableColorPair_::*;
+pub mod hkMonitorStreamFrameInfo_;
+pub use hkMonitorStreamFrameInfo_::*;
+pub mod hkMonitorStreamStringMap_;
+pub use hkMonitorStreamStringMap_::*;
+pub mod hkMonitorStreamStringMapStringMap_;
+pub use hkMonitorStreamStringMapStringMap_::*;
+pub mod hkMoppBvTreeShapeBase_;
+pub use hkMoppBvTreeShapeBase_::*;
+pub mod hkMotionState_;
+pub use hkMotionState_::*;
+pub mod hkMultipleVertexBuffer_;
+pub use hkMultipleVertexBuffer_::*;
+pub mod hkMultipleVertexBufferElementInfo_;
+pub use hkMultipleVertexBufferElementInfo_::*;
+pub mod hkMultipleVertexBufferLockedElement_;
+pub use hkMultipleVertexBufferLockedElement_::*;
+pub mod hkMultipleVertexBufferVertexBufferInfo_;
+pub use hkMultipleVertexBufferVertexBufferInfo_::*;
+pub mod hkMultiThreadCheck_;
+pub use hkMultiThreadCheck_::*;
+pub mod hkp2dAngConstraintAtom_;
+pub use hkp2dAngConstraintAtom_::*;
+pub mod hkpAabbPhantom_;
+pub use hkpAabbPhantom_::*;
+pub mod hkPackedVector3_;
+pub use hkPackedVector3_::*;
+pub mod hkPackfileHeader_;
+pub use hkPackfileHeader_::*;
+pub mod hkPackfileSectionHeader_;
+pub use hkPackfileSectionHeader_::*;
+pub mod hkpAction_;
+pub use hkpAction_::*;
+pub mod hkpAgent1nSector_;
+pub use hkpAgent1nSector_::*;
+pub mod hkpAngConstraintAtom_;
+pub use hkpAngConstraintAtom_::*;
+pub mod hkpAngFrictionConstraintAtom_;
+pub use hkpAngFrictionConstraintAtom_::*;
+pub mod hkpAngLimitConstraintAtom_;
+pub use hkpAngLimitConstraintAtom_::*;
+pub mod hkpAngMotorConstraintAtom_;
+pub use hkpAngMotorConstraintAtom_::*;
+pub mod hkpAngularDashpotAction_;
+pub use hkpAngularDashpotAction_::*;
+pub mod hkpArrayAction_;
+pub use hkpArrayAction_::*;
+pub mod hkpBallAndSocketConstraintData_;
+pub use hkpBallAndSocketConstraintData_::*;
+pub mod hkpBallAndSocketConstraintDataAtoms_;
+pub use hkpBallAndSocketConstraintDataAtoms_::*;
+pub mod hkpBallGun_;
+pub use hkpBallGun_::*;
+pub mod hkpBallSocketChainData_;
+pub use hkpBallSocketChainData_::*;
+pub mod hkpBallSocketChainDataConstraintInfo_;
+pub use hkpBallSocketChainDataConstraintInfo_::*;
+pub mod hkpBallSocketConstraintAtom_;
+pub use hkpBallSocketConstraintAtom_::*;
+pub mod hkpBinaryAction_;
+pub use hkpBinaryAction_::*;
+pub mod hkpBoxMotion_;
+pub use hkpBoxMotion_::*;
+pub mod hkpBoxShape_;
+pub use hkpBoxShape_::*;
+pub mod hkpBreakableBody_;
+pub use hkpBreakableBody_::*;
+pub mod hkpBreakableConstraintData_;
+pub use hkpBreakableConstraintData_::*;
+pub mod hkpBridgeAtoms_;
+pub use hkpBridgeAtoms_::*;
+pub mod hkpBridgeConstraintAtom_;
+pub use hkpBridgeConstraintAtom_::*;
+pub mod hkpBroadPhaseHandle_;
+pub use hkpBroadPhaseHandle_::*;
+pub mod hkpBvShape_;
+pub use hkpBvShape_::*;
+pub mod hkpBvTreeShape_;
+pub use hkpBvTreeShape_::*;
+pub mod hkpCachingShapePhantom_;
+pub use hkpCachingShapePhantom_::*;
+pub mod hkpCallbackConstraintMotor_;
+pub use hkpCallbackConstraintMotor_::*;
+pub mod hkpCapsuleShape_;
+pub use hkpCapsuleShape_::*;
+pub mod hkpCdBody_;
+pub use hkpCdBody_::*;
+pub mod hkpCenterOfMassChangerModifierConstraintAtom_;
+pub use hkpCenterOfMassChangerModifierConstraintAtom_::*;
+pub mod hkpCharacterControllerCinfo_;
+pub use hkpCharacterControllerCinfo_::*;
+pub mod hkpCharacterMotion_;
+pub use hkpCharacterMotion_::*;
+pub mod hkpCharacterProxyCinfo_;
+pub use hkpCharacterProxyCinfo_::*;
+pub mod hkpCharacterRigidBodyCinfo_;
+pub use hkpCharacterRigidBodyCinfo_::*;
+pub mod hkpCogWheelConstraintAtom_;
+pub use hkpCogWheelConstraintAtom_::*;
+pub mod hkpCogWheelConstraintData_;
+pub use hkpCogWheelConstraintData_::*;
+pub mod hkpCogWheelConstraintDataAtoms_;
+pub use hkpCogWheelConstraintDataAtoms_::*;
+pub mod hkpCollidable_;
+pub use hkpCollidable_::*;
+pub mod hkpCollidableBoundingVolumeData_;
+pub use hkpCollidableBoundingVolumeData_::*;
+pub mod hkpCollidableCollidableFilter_;
+pub use hkpCollidableCollidableFilter_::*;
+pub mod hkpCollisionFilter_;
+pub use hkpCollisionFilter_::*;
+pub mod hkpCollisionFilterList_;
+pub use hkpCollisionFilterList_::*;
+pub mod hkpCompressedMeshShape_;
+pub use hkpCompressedMeshShape_::*;
+pub mod hkpCompressedMeshShapeBigTriangle_;
+pub use hkpCompressedMeshShapeBigTriangle_::*;
+pub mod hkpCompressedMeshShapeChunk_;
+pub use hkpCompressedMeshShapeChunk_::*;
+pub mod hkpCompressedMeshShapeConvexPiece_;
+pub use hkpCompressedMeshShapeConvexPiece_::*;
+pub mod hkpCompressedSampledHeightFieldShape_;
+pub use hkpCompressedSampledHeightFieldShape_::*;
+pub mod hkpConeLimitConstraintAtom_;
+pub use hkpConeLimitConstraintAtom_::*;
+pub mod hkpConstrainedSystemFilter_;
+pub use hkpConstrainedSystemFilter_::*;
+pub mod hkpConstraintAtom_;
+pub use hkpConstraintAtom_::*;
+pub mod hkpConstraintChainData_;
+pub use hkpConstraintChainData_::*;
+pub mod hkpConstraintChainInstance_;
+pub use hkpConstraintChainInstance_::*;
+pub mod hkpConstraintChainInstanceAction_;
+pub use hkpConstraintChainInstanceAction_::*;
+pub mod hkpConstraintCollisionFilter_;
+pub use hkpConstraintCollisionFilter_::*;
+pub mod hkpConstraintData_;
+pub use hkpConstraintData_::*;
+pub mod hkpConstraintInstance_;
+pub use hkpConstraintInstance_::*;
+pub mod hkpConstraintInstanceSmallArraySerializeOverrideType_;
+pub use hkpConstraintInstanceSmallArraySerializeOverrideType_::*;
+pub mod hkpConstraintMotor_;
+pub use hkpConstraintMotor_::*;
+pub mod hkpConvexListFilter_;
+pub use hkpConvexListFilter_::*;
+pub mod hkpConvexListShape_;
+pub use hkpConvexListShape_::*;
+pub mod hkpConvexPieceMeshShape_;
+pub use hkpConvexPieceMeshShape_::*;
+pub mod hkpConvexPieceStreamData_;
+pub use hkpConvexPieceStreamData_::*;
+pub mod hkpConvexShape_;
+pub use hkpConvexShape_::*;
+pub mod hkpConvexTransformShape_;
+pub use hkpConvexTransformShape_::*;
+pub mod hkpConvexTransformShapeBase_;
+pub use hkpConvexTransformShapeBase_::*;
+pub mod hkpConvexTranslateShape_;
+pub use hkpConvexTranslateShape_::*;
+pub mod hkpConvexVerticesConnectivity_;
+pub use hkpConvexVerticesConnectivity_::*;
+pub mod hkpConvexVerticesShape_;
+pub use hkpConvexVerticesShape_::*;
+pub mod hkpConvexVerticesShapeFourVectors_;
+pub use hkpConvexVerticesShapeFourVectors_::*;
+pub mod hkpCylinderShape_;
+pub use hkpCylinderShape_::*;
+pub mod hkpDashpotAction_;
+pub use hkpDashpotAction_::*;
+pub mod hkpDefaultConvexListFilter_;
+pub use hkpDefaultConvexListFilter_::*;
+pub mod hkpDefaultWorldMemoryWatchDog_;
+pub use hkpDefaultWorldMemoryWatchDog_::*;
+pub mod hkpDisableEntityCollisionFilter_;
+pub use hkpDisableEntityCollisionFilter_::*;
+pub mod hkpDisplayBindingData_;
+pub use hkpDisplayBindingData_::*;
+pub mod hkpDisplayBindingDataPhysicsSystem_;
+pub use hkpDisplayBindingDataPhysicsSystem_::*;
+pub mod hkpDisplayBindingDataRigidBody_;
+pub use hkpDisplayBindingDataRigidBody_::*;
+pub mod hkpEntity_;
+pub use hkpEntity_::*;
+pub mod hkpEntityExtendedListeners_;
+pub use hkpEntityExtendedListeners_::*;
+pub mod hkpEntitySmallArraySerializeOverrideType_;
+pub use hkpEntitySmallArraySerializeOverrideType_::*;
+pub mod hkpEntitySpuCollisionCallback_;
+pub use hkpEntitySpuCollisionCallback_::*;
+pub mod hkpExtendedMeshShape_;
+pub use hkpExtendedMeshShape_::*;
+pub mod hkpExtendedMeshShapeShapesSubpart_;
+pub use hkpExtendedMeshShapeShapesSubpart_::*;
+pub mod hkpExtendedMeshShapeSubpart_;
+pub use hkpExtendedMeshShapeSubpart_::*;
+pub mod hkpExtendedMeshShapeTrianglesSubpart_;
+pub use hkpExtendedMeshShapeTrianglesSubpart_::*;
+pub mod hkpFastMeshShape_;
+pub use hkpFastMeshShape_::*;
+pub mod hkpFirstPersonGun_;
+pub use hkpFirstPersonGun_::*;
+pub mod hkpFixedRigidMotion_;
+pub use hkpFixedRigidMotion_::*;
+pub mod hkpGenericConstraintData_;
+pub use hkpGenericConstraintData_::*;
+pub mod hkpGenericConstraintDataScheme_;
+pub use hkpGenericConstraintDataScheme_::*;
+pub mod hkpGenericConstraintDataSchemeConstraintInfo_;
+pub use hkpGenericConstraintDataSchemeConstraintInfo_::*;
+pub mod hkpGravityGun_;
+pub use hkpGravityGun_::*;
+pub mod hkpGroupCollisionFilter_;
+pub use hkpGroupCollisionFilter_::*;
+pub mod hkpGroupFilter_;
+pub use hkpGroupFilter_::*;
+pub mod hkpHeightFieldShape_;
+pub use hkpHeightFieldShape_::*;
+pub mod hkpHingeConstraintData_;
+pub use hkpHingeConstraintData_::*;
+pub mod hkpHingeConstraintDataAtoms_;
+pub use hkpHingeConstraintDataAtoms_::*;
+pub mod hkpHingeLimitsData_;
+pub use hkpHingeLimitsData_::*;
+pub mod hkpHingeLimitsDataAtoms_;
+pub use hkpHingeLimitsDataAtoms_::*;
+pub mod hkpIgnoreModifierConstraintAtom_;
+pub use hkpIgnoreModifierConstraintAtom_::*;
+pub mod hkpKeyframedRigidMotion_;
+pub use hkpKeyframedRigidMotion_::*;
+pub mod hkpLimitedForceConstraintMotor_;
+pub use hkpLimitedForceConstraintMotor_::*;
+pub mod hkpLimitedHingeConstraintData_;
+pub use hkpLimitedHingeConstraintData_::*;
+pub mod hkpLimitedHingeConstraintDataAtoms_;
+pub use hkpLimitedHingeConstraintDataAtoms_::*;
+pub mod hkpLinConstraintAtom_;
+pub use hkpLinConstraintAtom_::*;
+pub mod hkpLinearParametricCurve_;
+pub use hkpLinearParametricCurve_::*;
+pub mod hkpLinFrictionConstraintAtom_;
+pub use hkpLinFrictionConstraintAtom_::*;
+pub mod hkpLinkedCollidable_;
+pub use hkpLinkedCollidable_::*;
+pub mod hkpLinLimitConstraintAtom_;
+pub use hkpLinLimitConstraintAtom_::*;
+pub mod hkpLinMotorConstraintAtom_;
+pub use hkpLinMotorConstraintAtom_::*;
+pub mod hkpLinSoftConstraintAtom_;
+pub use hkpLinSoftConstraintAtom_::*;
+pub mod hkpListShape_;
+pub use hkpListShape_::*;
+pub mod hkpListShapeChildInfo_;
+pub use hkpListShapeChildInfo_::*;
+pub mod hkpMalleableConstraintData_;
+pub use hkpMalleableConstraintData_::*;
+pub mod hkpMassChangerModifierConstraintAtom_;
+pub use hkpMassChangerModifierConstraintAtom_::*;
+pub mod hkpMassProperties_;
+pub use hkpMassProperties_::*;
+pub mod hkpMaterial_;
+pub use hkpMaterial_::*;
+pub mod hkpMaxSizeMotion_;
+pub use hkpMaxSizeMotion_::*;
+pub mod hkpMeshMaterial_;
+pub use hkpMeshMaterial_::*;
+pub mod hkpMeshShape_;
+pub use hkpMeshShape_::*;
+pub mod hkpMeshShapeSubpart_;
+pub use hkpMeshShapeSubpart_::*;
+pub mod hkpModifierConstraintAtom_;
+pub use hkpModifierConstraintAtom_::*;
+pub mod hkpMoppBvTreeShape_;
+pub use hkpMoppBvTreeShape_::*;
+pub mod hkpMoppCode_;
+pub use hkpMoppCode_::*;
+pub mod hkpMoppCodeCodeInfo_;
+pub use hkpMoppCodeCodeInfo_::*;
+pub mod hkpMoppCodeReindexedTerminal_;
+pub use hkpMoppCodeReindexedTerminal_::*;
+pub mod hkpMotion_;
+pub use hkpMotion_::*;
+pub mod hkpMotorAction_;
+pub use hkpMotorAction_::*;
+pub mod hkpMountedBallGun_;
+pub use hkpMountedBallGun_::*;
+pub mod hkpMouseSpringAction_;
+pub use hkpMouseSpringAction_::*;
+pub mod hkpMovingSurfaceModifierConstraintAtom_;
+pub use hkpMovingSurfaceModifierConstraintAtom_::*;
+pub mod hkpMultiRayShape_;
+pub use hkpMultiRayShape_::*;
+pub mod hkpMultiRayShapeRay_;
+pub use hkpMultiRayShapeRay_::*;
+pub mod hkpMultiSphereShape_;
+pub use hkpMultiSphereShape_::*;
+pub mod hkpMultithreadedVehicleManager_;
+pub use hkpMultithreadedVehicleManager_::*;
+pub mod hkpNamedMeshMaterial_;
+pub use hkpNamedMeshMaterial_::*;
+pub mod hkpNullCollisionFilter_;
+pub use hkpNullCollisionFilter_::*;
+pub mod hkPostFinishAttribute_;
+pub use hkPostFinishAttribute_::*;
+pub mod hkpOverwritePivotConstraintAtom_;
+pub use hkpOverwritePivotConstraintAtom_::*;
+pub mod hkpPairCollisionFilter_;
+pub use hkpPairCollisionFilter_::*;
+pub mod hkpPairCollisionFilterMapPairFilterKeyOverrideType_;
+pub use hkpPairCollisionFilterMapPairFilterKeyOverrideType_::*;
+pub mod hkpParametricCurve_;
+pub use hkpParametricCurve_::*;
+pub mod hkpPhantom_;
+pub use hkpPhantom_::*;
+pub mod hkpPhantomCallbackShape_;
+pub use hkpPhantomCallbackShape_::*;
+pub mod hkpPhysicsData_;
+pub use hkpPhysicsData_::*;
+pub mod hkpPhysicsSystem_;
+pub use hkpPhysicsSystem_::*;
+pub mod hkpPhysicsSystemWithContacts_;
+pub use hkpPhysicsSystemWithContacts_::*;
+pub mod hkpPlaneShape_;
+pub use hkpPlaneShape_::*;
+pub mod hkpPointToPathConstraintData_;
+pub use hkpPointToPathConstraintData_::*;
+pub mod hkpPointToPlaneConstraintData_;
+pub use hkpPointToPlaneConstraintData_::*;
+pub mod hkpPointToPlaneConstraintDataAtoms_;
+pub use hkpPointToPlaneConstraintDataAtoms_::*;
+pub mod hkpPositionConstraintMotor_;
+pub use hkpPositionConstraintMotor_::*;
+pub mod hkpPoweredChainData_;
+pub use hkpPoweredChainData_::*;
+pub mod hkpPoweredChainDataConstraintInfo_;
+pub use hkpPoweredChainDataConstraintInfo_::*;
+pub mod hkpPoweredChainMapper_;
+pub use hkpPoweredChainMapper_::*;
+pub mod hkpPoweredChainMapperLinkInfo_;
+pub use hkpPoweredChainMapperLinkInfo_::*;
+pub mod hkpPoweredChainMapperTarget_;
+pub use hkpPoweredChainMapperTarget_::*;
+pub mod hkpPrismaticConstraintData_;
+pub use hkpPrismaticConstraintData_::*;
+pub mod hkpPrismaticConstraintDataAtoms_;
+pub use hkpPrismaticConstraintDataAtoms_::*;
+pub mod hkpProjectileGun_;
+pub use hkpProjectileGun_::*;
+pub mod hkpProperty_;
+pub use hkpProperty_::*;
+pub mod hkpPropertyValue_;
+pub use hkpPropertyValue_::*;
+pub mod hkpPulleyConstraintAtom_;
+pub use hkpPulleyConstraintAtom_::*;
+pub mod hkpPulleyConstraintData_;
+pub use hkpPulleyConstraintData_::*;
+pub mod hkpPulleyConstraintDataAtoms_;
+pub use hkpPulleyConstraintDataAtoms_::*;
+pub mod hkpRackAndPinionConstraintAtom_;
+pub use hkpRackAndPinionConstraintAtom_::*;
+pub mod hkpRackAndPinionConstraintData_;
+pub use hkpRackAndPinionConstraintData_::*;
+pub mod hkpRackAndPinionConstraintDataAtoms_;
+pub use hkpRackAndPinionConstraintDataAtoms_::*;
+pub mod hkpRagdollConstraintData_;
+pub use hkpRagdollConstraintData_::*;
+pub mod hkpRagdollConstraintDataAtoms_;
+pub use hkpRagdollConstraintDataAtoms_::*;
+pub mod hkpRagdollLimitsData_;
+pub use hkpRagdollLimitsData_::*;
+pub mod hkpRagdollLimitsDataAtoms_;
+pub use hkpRagdollLimitsDataAtoms_::*;
+pub mod hkpRagdollMotorConstraintAtom_;
+pub use hkpRagdollMotorConstraintAtom_::*;
+pub mod hkpRayCollidableFilter_;
+pub use hkpRayCollidableFilter_::*;
+pub mod hkpRayShapeCollectionFilter_;
+pub use hkpRayShapeCollectionFilter_::*;
+pub mod hkpRejectChassisListener_;
+pub use hkpRejectChassisListener_::*;
+pub mod hkpRemoveTerminalsMoppModifier_;
+pub use hkpRemoveTerminalsMoppModifier_::*;
+pub mod hkpReorientAction_;
+pub use hkpReorientAction_::*;
+pub mod hkpRigidBody_;
+pub use hkpRigidBody_::*;
+pub mod hkpRotationalConstraintData_;
+pub use hkpRotationalConstraintData_::*;
+pub mod hkpRotationalConstraintDataAtoms_;
+pub use hkpRotationalConstraintDataAtoms_::*;
+pub mod hkpSampledHeightFieldShape_;
+pub use hkpSampledHeightFieldShape_::*;
+pub mod hkpSerializedAgentNnEntry_;
+pub use hkpSerializedAgentNnEntry_::*;
+pub mod hkpSerializedDisplayMarker_;
+pub use hkpSerializedDisplayMarker_::*;
+pub mod hkpSerializedDisplayMarkerList_;
+pub use hkpSerializedDisplayMarkerList_::*;
+pub mod hkpSerializedDisplayRbTransforms_;
+pub use hkpSerializedDisplayRbTransforms_::*;
+pub mod hkpSerializedDisplayRbTransformsDisplayTransformPair_;
+pub use hkpSerializedDisplayRbTransformsDisplayTransformPair_::*;
+pub mod hkpSerializedSubTrack1nInfo_;
+pub use hkpSerializedSubTrack1nInfo_::*;
+pub mod hkpSerializedTrack1nInfo_;
+pub use hkpSerializedTrack1nInfo_::*;
+pub mod hkpSetLocalRotationsConstraintAtom_;
+pub use hkpSetLocalRotationsConstraintAtom_::*;
+pub mod hkpSetLocalTransformsConstraintAtom_;
+pub use hkpSetLocalTransformsConstraintAtom_::*;
+pub mod hkpSetLocalTranslationsConstraintAtom_;
+pub use hkpSetLocalTranslationsConstraintAtom_::*;
+pub mod hkpSetupStabilizationAtom_;
+pub use hkpSetupStabilizationAtom_::*;
+pub mod hkpShape_;
+pub use hkpShape_::*;
+pub mod hkpShapeCollection_;
+pub use hkpShapeCollection_::*;
+pub mod hkpShapeCollectionFilter_;
+pub use hkpShapeCollectionFilter_::*;
+pub mod hkpShapeContainer_;
+pub use hkpShapeContainer_::*;
+pub mod hkpShapeInfo_;
+pub use hkpShapeInfo_::*;
+pub mod hkpShapeModifier_;
+pub use hkpShapeModifier_::*;
+pub mod hkpShapePhantom_;
+pub use hkpShapePhantom_::*;
+pub mod hkpSimpleContactConstraintAtom_;
+pub use hkpSimpleContactConstraintAtom_::*;
+pub mod hkpSimpleContactConstraintDataInfo_;
+pub use hkpSimpleContactConstraintDataInfo_::*;
+pub mod hkpSimpleMeshShape_;
+pub use hkpSimpleMeshShape_::*;
+pub mod hkpSimpleMeshShapeTriangle_;
+pub use hkpSimpleMeshShapeTriangle_::*;
+pub mod hkpSimpleShapePhantom_;
+pub use hkpSimpleShapePhantom_::*;
+pub mod hkpSimpleShapePhantomCollisionDetail_;
+pub use hkpSimpleShapePhantomCollisionDetail_::*;
+pub mod hkpSimulation_;
+pub use hkpSimulation_::*;
+pub mod hkpSingleShapeContainer_;
+pub use hkpSingleShapeContainer_::*;
+pub mod hkpSoftContactModifierConstraintAtom_;
+pub use hkpSoftContactModifierConstraintAtom_::*;
+pub mod hkpSphereMotion_;
+pub use hkpSphereMotion_::*;
+pub mod hkpSphereRepShape_;
+pub use hkpSphereRepShape_::*;
+pub mod hkpSphereShape_;
+pub use hkpSphereShape_::*;
+pub mod hkpSpringAction_;
+pub use hkpSpringAction_::*;
+pub mod hkpSpringDamperConstraintMotor_;
+pub use hkpSpringDamperConstraintMotor_::*;
+pub mod hkpStiffSpringChainData_;
+pub use hkpStiffSpringChainData_::*;
+pub mod hkpStiffSpringChainDataConstraintInfo_;
+pub use hkpStiffSpringChainDataConstraintInfo_::*;
+pub mod hkpStiffSpringConstraintAtom_;
+pub use hkpStiffSpringConstraintAtom_::*;
+pub mod hkpStiffSpringConstraintData_;
+pub use hkpStiffSpringConstraintData_::*;
+pub mod hkpStiffSpringConstraintDataAtoms_;
+pub use hkpStiffSpringConstraintDataAtoms_::*;
+pub mod hkpStorageExtendedMeshShape_;
+pub use hkpStorageExtendedMeshShape_::*;
+pub mod hkpStorageExtendedMeshShapeMaterial_;
+pub use hkpStorageExtendedMeshShapeMaterial_::*;
+pub mod hkpStorageExtendedMeshShapeMeshSubpartStorage_;
+pub use hkpStorageExtendedMeshShapeMeshSubpartStorage_::*;
+pub mod hkpStorageExtendedMeshShapeShapeSubpartStorage_;
+pub use hkpStorageExtendedMeshShapeShapeSubpartStorage_::*;
+pub mod hkpStorageMeshShape_;
+pub use hkpStorageMeshShape_::*;
+pub mod hkpStorageMeshShapeSubpartStorage_;
+pub use hkpStorageMeshShapeSubpartStorage_::*;
+pub mod hkpStorageSampledHeightFieldShape_;
+pub use hkpStorageSampledHeightFieldShape_::*;
+pub mod hkpThinBoxMotion_;
+pub use hkpThinBoxMotion_::*;
+pub mod hkpTransformShape_;
+pub use hkpTransformShape_::*;
+pub mod hkpTriangleShape_;
+pub use hkpTriangleShape_::*;
+pub mod hkpTriggerVolume_;
+pub use hkpTriggerVolume_::*;
+pub mod hkpTriggerVolumeEventInfo_;
+pub use hkpTriggerVolumeEventInfo_::*;
+pub mod hkpTriSampledHeightFieldBvTreeShape_;
+pub use hkpTriSampledHeightFieldBvTreeShape_::*;
+pub mod hkpTriSampledHeightFieldCollection_;
+pub use hkpTriSampledHeightFieldCollection_::*;
+pub mod hkpTwistLimitConstraintAtom_;
+pub use hkpTwistLimitConstraintAtom_::*;
+pub mod hkpTypedBroadPhaseHandle_;
+pub use hkpTypedBroadPhaseHandle_::*;
+pub mod hkpTyremarkPoint_;
+pub use hkpTyremarkPoint_::*;
+pub mod hkpTyremarksInfo_;
+pub use hkpTyremarksInfo_::*;
+pub mod hkpTyremarksWheel_;
+pub use hkpTyremarksWheel_::*;
+pub mod hkpUnaryAction_;
+pub use hkpUnaryAction_::*;
+pub mod hkpVehicleAerodynamics_;
+pub use hkpVehicleAerodynamics_::*;
+pub mod hkpVehicleBrake_;
+pub use hkpVehicleBrake_::*;
+pub mod hkpVehicleCastBatchingManager_;
+pub use hkpVehicleCastBatchingManager_::*;
+pub mod hkpVehicleData_;
+pub use hkpVehicleData_::*;
+pub mod hkpVehicleDataWheelComponentParams_;
+pub use hkpVehicleDataWheelComponentParams_::*;
+pub mod hkpVehicleDefaultAerodynamics_;
+pub use hkpVehicleDefaultAerodynamics_::*;
+pub mod hkpVehicleDefaultAnalogDriverInput_;
+pub use hkpVehicleDefaultAnalogDriverInput_::*;
+pub mod hkpVehicleDefaultBrake_;
+pub use hkpVehicleDefaultBrake_::*;
+pub mod hkpVehicleDefaultBrakeWheelBrakingProperties_;
+pub use hkpVehicleDefaultBrakeWheelBrakingProperties_::*;
+pub mod hkpVehicleDefaultEngine_;
+pub use hkpVehicleDefaultEngine_::*;
+pub mod hkpVehicleDefaultSteering_;
+pub use hkpVehicleDefaultSteering_::*;
+pub mod hkpVehicleDefaultSuspension_;
+pub use hkpVehicleDefaultSuspension_::*;
+pub mod hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters_;
+pub use hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters_::*;
+pub mod hkpVehicleDefaultTransmission_;
+pub use hkpVehicleDefaultTransmission_::*;
+pub mod hkpVehicleDefaultVelocityDamper_;
+pub use hkpVehicleDefaultVelocityDamper_::*;
+pub mod hkpVehicleDriverInput_;
+pub use hkpVehicleDriverInput_::*;
+pub mod hkpVehicleDriverInputAnalogStatus_;
+pub use hkpVehicleDriverInputAnalogStatus_::*;
+pub mod hkpVehicleDriverInputStatus_;
+pub use hkpVehicleDriverInputStatus_::*;
+pub mod hkpVehicleEngine_;
+pub use hkpVehicleEngine_::*;
+pub mod hkpVehicleFrictionDescription_;
+pub use hkpVehicleFrictionDescription_::*;
+pub mod hkpVehicleFrictionDescriptionAxisDescription_;
+pub use hkpVehicleFrictionDescriptionAxisDescription_::*;
+pub mod hkpVehicleFrictionStatus_;
+pub use hkpVehicleFrictionStatus_::*;
+pub mod hkpVehicleFrictionStatusAxisStatus_;
+pub use hkpVehicleFrictionStatusAxisStatus_::*;
+pub mod hkpVehicleInstance_;
+pub use hkpVehicleInstance_::*;
+pub mod hkpVehicleInstanceWheelInfo_;
+pub use hkpVehicleInstanceWheelInfo_::*;
+pub mod hkpVehicleLinearCastBatchingManager_;
+pub use hkpVehicleLinearCastBatchingManager_::*;
+pub mod hkpVehicleLinearCastWheelCollide_;
+pub use hkpVehicleLinearCastWheelCollide_::*;
+pub mod hkpVehicleLinearCastWheelCollideWheelState_;
+pub use hkpVehicleLinearCastWheelCollideWheelState_::*;
+pub mod hkpVehicleManager_;
+pub use hkpVehicleManager_::*;
+pub mod hkpVehicleRayCastBatchingManager_;
+pub use hkpVehicleRayCastBatchingManager_::*;
+pub mod hkpVehicleRayCastWheelCollide_;
+pub use hkpVehicleRayCastWheelCollide_::*;
+pub mod hkpVehicleSteering_;
+pub use hkpVehicleSteering_::*;
+pub mod hkpVehicleSuspension_;
+pub use hkpVehicleSuspension_::*;
+pub mod hkpVehicleSuspensionSuspensionWheelParameters_;
+pub use hkpVehicleSuspensionSuspensionWheelParameters_::*;
+pub mod hkpVehicleTransmission_;
+pub use hkpVehicleTransmission_::*;
+pub mod hkpVehicleVelocityDamper_;
+pub use hkpVehicleVelocityDamper_::*;
+pub mod hkpVehicleWheelCollide_;
+pub use hkpVehicleWheelCollide_::*;
+pub mod hkpVelocityConstraintMotor_;
+pub use hkpVelocityConstraintMotor_::*;
+pub mod hkpViscousSurfaceModifierConstraintAtom_;
+pub use hkpViscousSurfaceModifierConstraintAtom_::*;
+pub mod hkpWeldingUtility_;
+pub use hkpWeldingUtility_::*;
+pub mod hkpWheelConstraintData_;
+pub use hkpWheelConstraintData_::*;
+pub mod hkpWheelConstraintDataAtoms_;
+pub use hkpWheelConstraintDataAtoms_::*;
+pub mod hkpWorld_;
+pub use hkpWorld_::*;
+pub mod hkpWorldCinfo_;
+pub use hkpWorldCinfo_::*;
+pub mod hkpWorldObject_;
+pub use hkpWorldObject_::*;
+pub mod hkQTransform_;
+pub use hkQTransform_::*;
+pub mod hkRangeInt32Attribute_;
+pub use hkRangeInt32Attribute_::*;
+pub mod hkRangeRealAttribute_;
+pub use hkRangeRealAttribute_::*;
+pub mod hkReferencedObject_;
+pub use hkReferencedObject_::*;
+pub mod hkReflectedFileAttribute_;
+pub use hkReflectedFileAttribute_::*;
+pub mod hkResourceBase_;
+pub use hkResourceBase_::*;
+pub mod hkResourceContainer_;
+pub use hkResourceContainer_::*;
+pub mod hkResourceHandle_;
+pub use hkResourceHandle_::*;
+pub mod hkRootLevelContainer_;
+pub use hkRootLevelContainer_::*;
+pub mod hkRootLevelContainerNamedVariant_;
+pub use hkRootLevelContainerNamedVariant_::*;
+pub mod hkSemanticsAttribute_;
+pub use hkSemanticsAttribute_::*;
+pub mod hkSimpleLocalFrame_;
+pub use hkSimpleLocalFrame_::*;
+pub mod hkSphere_;
+pub use hkSphere_::*;
+pub mod hkSweptTransform_;
+pub use hkSweptTransform_::*;
+pub mod hkTraceStreamTitle_;
+pub use hkTraceStreamTitle_::*;
+pub mod hkTrackerSerializableScanSnapshot_;
+pub use hkTrackerSerializableScanSnapshot_::*;
+pub mod hkTrackerSerializableScanSnapshotAllocation_;
+pub use hkTrackerSerializableScanSnapshotAllocation_::*;
+pub mod hkTrackerSerializableScanSnapshotBlock_;
+pub use hkTrackerSerializableScanSnapshotBlock_::*;
+pub mod hkUiAttribute_;
+pub use hkUiAttribute_::*;
+pub mod hkVertexFormat_;
+pub use hkVertexFormat_::*;
+pub mod hkVertexFormatElement_;
+pub use hkVertexFormatElement_::*;
+pub mod hkWorldMemoryAvailableWatchDog_;
+pub use hkWorldMemoryAvailableWatchDog_::*;
+pub mod hkxAnimatedFloat_;
+pub use hkxAnimatedFloat_::*;
+pub mod hkxAnimatedMatrix_;
+pub use hkxAnimatedMatrix_::*;
+pub mod hkxAnimatedQuaternion_;
+pub use hkxAnimatedQuaternion_::*;
+pub mod hkxAnimatedVector_;
+pub use hkxAnimatedVector_::*;
+pub mod hkxAttribute_;
+pub use hkxAttribute_::*;
+pub mod hkxAttributeGroup_;
+pub use hkxAttributeGroup_::*;
+pub mod hkxAttributeHolder_;
+pub use hkxAttributeHolder_::*;
+pub mod hkxCamera_;
+pub use hkxCamera_::*;
+pub mod hkxEdgeSelectionChannel_;
+pub use hkxEdgeSelectionChannel_::*;
+pub mod hkxEnum_;
+pub use hkxEnum_::*;
+pub mod hkxEnumItem_;
+pub use hkxEnumItem_::*;
+pub mod hkxEnvironment_;
+pub use hkxEnvironment_::*;
+pub mod hkxEnvironmentVariable_;
+pub use hkxEnvironmentVariable_::*;
+pub mod hkxIndexBuffer_;
+pub use hkxIndexBuffer_::*;
+pub mod hkxLight_;
+pub use hkxLight_::*;
+pub mod hkxMaterial_;
+pub use hkxMaterial_::*;
+pub mod hkxMaterialEffect_;
+pub use hkxMaterialEffect_::*;
+pub mod hkxMaterialProperty_;
+pub use hkxMaterialProperty_::*;
+pub mod hkxMaterialShader_;
+pub use hkxMaterialShader_::*;
+pub mod hkxMaterialShaderSet_;
+pub use hkxMaterialShaderSet_::*;
+pub mod hkxMaterialTextureStage_;
+pub use hkxMaterialTextureStage_::*;
+pub mod hkxMesh_;
+pub use hkxMesh_::*;
+pub mod hkxMeshSection_;
+pub use hkxMeshSection_::*;
+pub mod hkxMeshUserChannelInfo_;
+pub use hkxMeshUserChannelInfo_::*;
+pub mod hkxNode_;
+pub use hkxNode_::*;
+pub mod hkxNodeAnnotationData_;
+pub use hkxNodeAnnotationData_::*;
+pub mod hkxNodeSelectionSet_;
+pub use hkxNodeSelectionSet_::*;
+pub mod hkxScene_;
+pub use hkxScene_::*;
+pub mod hkxSkinBinding_;
+pub use hkxSkinBinding_::*;
+pub mod hkxSparselyAnimatedBool_;
+pub use hkxSparselyAnimatedBool_::*;
+pub mod hkxSparselyAnimatedEnum_;
+pub use hkxSparselyAnimatedEnum_::*;
+pub mod hkxSparselyAnimatedInt_;
+pub use hkxSparselyAnimatedInt_::*;
+pub mod hkxSparselyAnimatedString_;
+pub use hkxSparselyAnimatedString_::*;
+pub mod hkxTextureFile_;
+pub use hkxTextureFile_::*;
+pub mod hkxTextureInplace_;
+pub use hkxTextureInplace_::*;
+pub mod hkxTriangleSelectionChannel_;
+pub use hkxTriangleSelectionChannel_::*;
+pub mod hkxVertexBuffer_;
+pub use hkxVertexBuffer_::*;
+pub mod hkxVertexBufferVertexData_;
+pub use hkxVertexBufferVertexData_::*;
+pub mod hkxVertexDescription_;
+pub use hkxVertexDescription_::*;
+pub mod hkxVertexDescriptionElementDecl_;
+pub use hkxVertexDescriptionElementDecl_::*;
+pub mod hkxVertexFloatDataChannel_;
+pub use hkxVertexFloatDataChannel_::*;
+pub mod hkxVertexIntDataChannel_;
+pub use hkxVertexIntDataChannel_::*;
+pub mod hkxVertexSelectionChannel_;
+pub use hkxVertexSelectionChannel_::*;
+pub mod hkxVertexVectorDataChannel_;
+pub use hkxVertexVectorDataChannel_::*;
+use havok_serde as _serde;
+#[cfg_attr(feature = "json_schema", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone, PartialEq)]
+pub enum Classes<'a> {
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BGSGamebryoSequenceGenerator(BGSGamebryoSequenceGenerator<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSBoneSwitchGenerator(BSBoneSwitchGenerator<'a>),
+    BSBoneSwitchGeneratorBoneData(BSBoneSwitchGeneratorBoneData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSComputeAddBoneAnimModifier(BSComputeAddBoneAnimModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSCyclicBlendTransitionGenerator(BSCyclicBlendTransitionGenerator<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSDecomposeVectorModifier(BSDecomposeVectorModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSDirectAtModifier(BSDirectAtModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSDistTriggerModifier(BSDistTriggerModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSEventEveryNEventsModifier(BSEventEveryNEventsModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSEventOnDeactivateModifier(BSEventOnDeactivateModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSEventOnFalseToTrueModifier(BSEventOnFalseToTrueModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSGetTimeStepModifier(BSGetTimeStepModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSInterpValueModifier(BSInterpValueModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSIsActiveModifier(BSIsActiveModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSIStateManagerModifier(BSIStateManagerModifier<'a>),
+    BSIStateManagerModifierBSiStateData(BSIStateManagerModifierBSiStateData),
+    BSIStateManagerModifierBSIStateManagerStateListener(
+        BSIStateManagerModifierBSIStateManagerStateListener,
+    ),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSiStateTaggingGenerator(BSiStateTaggingGenerator<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSLimbIKModifier(BSLimbIKModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSLookAtModifier(BSLookAtModifier<'a>),
+    BSLookAtModifierBoneData(BSLookAtModifierBoneData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSModifyOnceModifier(BSModifyOnceModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSOffsetAnimationGenerator(BSOffsetAnimationGenerator<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSPassByTargetTriggerModifier(BSPassByTargetTriggerModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSRagdollContactListenerModifier(BSRagdollContactListenerModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSSpeedSamplerModifier(BSSpeedSamplerModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSSynchronizedClipGenerator(BSSynchronizedClipGenerator<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSTimerModifier(BSTimerModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    BSTweenerModifier(BSTweenerModifier<'a>),
+    hkAabb(hkAabb),
+    hkAabbHalf(hkAabbHalf),
+    hkAabbUint32(hkAabbUint32),
+    hkaAnimatedReferenceFrame(hkaAnimatedReferenceFrame),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaAnimation(hkaAnimation<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaAnimationBinding(hkaAnimationBinding<'a>),
+    hkaAnimationContainer(hkaAnimationContainer),
+    hkaAnimationPreviewColorContainer(hkaAnimationPreviewColorContainer),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaAnnotationTrack(hkaAnnotationTrack<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaAnnotationTrackAnnotation(hkaAnnotationTrackAnnotation<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaBone(hkaBone<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaBoneAttachment(hkaBoneAttachment<'a>),
+    hkaDefaultAnimatedReferenceFrame(hkaDefaultAnimatedReferenceFrame),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaDeltaCompressedAnimation(hkaDeltaCompressedAnimation<'a>),
+    hkaDeltaCompressedAnimationQuantizationFormat(
+        hkaDeltaCompressedAnimationQuantizationFormat,
+    ),
+    hkaFootstepAnalysisInfo(hkaFootstepAnalysisInfo),
+    hkaFootstepAnalysisInfoContainer(hkaFootstepAnalysisInfoContainer),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaInterleavedUncompressedAnimation(hkaInterleavedUncompressedAnimation<'a>),
+    hkaKeyFrameHierarchyUtility(hkaKeyFrameHierarchyUtility),
+    hkaKeyFrameHierarchyUtilityControlData(hkaKeyFrameHierarchyUtilityControlData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkAlignSceneToNodeOptions(hkAlignSceneToNodeOptions<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaMeshBinding(hkaMeshBinding<'a>),
+    hkaMeshBindingMapping(hkaMeshBindingMapping),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaQuantizedAnimation(hkaQuantizedAnimation<'a>),
+    hkaQuantizedAnimationTrackCompressionParams(
+        hkaQuantizedAnimationTrackCompressionParams,
+    ),
+    hkaRagdollInstance(hkaRagdollInstance),
+    hkArrayTypeAttribute(hkArrayTypeAttribute),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaSkeleton(hkaSkeleton<'a>),
+    hkaSkeletonLocalFrameOnBone(hkaSkeletonLocalFrameOnBone),
+    hkaSkeletonMapper(hkaSkeletonMapper),
+    hkaSkeletonMapperData(hkaSkeletonMapperData),
+    hkaSkeletonMapperDataChainMapping(hkaSkeletonMapperDataChainMapping),
+    hkaSkeletonMapperDataSimpleMapping(hkaSkeletonMapperDataSimpleMapping),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaSplineCompressedAnimation(hkaSplineCompressedAnimation<'a>),
+    hkaSplineCompressedAnimationAnimationCompressionParams(
+        hkaSplineCompressedAnimationAnimationCompressionParams,
+    ),
+    hkaSplineCompressedAnimationTrackCompressionParams(
+        hkaSplineCompressedAnimationTrackCompressionParams,
+    ),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkaWaveletCompressedAnimation(hkaWaveletCompressedAnimation<'a>),
+    hkaWaveletCompressedAnimationCompressionParams(
+        hkaWaveletCompressedAnimationCompressionParams,
+    ),
+    hkaWaveletCompressedAnimationQuantizationFormat(
+        hkaWaveletCompressedAnimationQuantizationFormat,
+    ),
+    hkBaseObject(hkBaseObject),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbAttachmentModifier(hkbAttachmentModifier<'a>),
+    hkbAttachmentSetup(hkbAttachmentSetup),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbAttributeModifier(hkbAttributeModifier<'a>),
+    hkbAttributeModifierAssignment(hkbAttributeModifierAssignment),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbAuxiliaryNodeInfo(hkbAuxiliaryNodeInfo<'a>),
+    hkbBehaviorEventsInfo(hkbBehaviorEventsInfo),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbBehaviorGraph(hkbBehaviorGraph<'a>),
+    hkbBehaviorGraphData(hkbBehaviorGraphData),
+    hkbBehaviorGraphInternalState(hkbBehaviorGraphInternalState),
+    hkbBehaviorGraphInternalStateInfo(hkbBehaviorGraphInternalStateInfo),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbBehaviorGraphStringData(hkbBehaviorGraphStringData<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbBehaviorInfo(hkbBehaviorInfo<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbBehaviorInfoIdToNamePair(hkbBehaviorInfoIdToNamePair<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbBehaviorReferenceGenerator(hkbBehaviorReferenceGenerator<'a>),
+    hkbBindable(hkbBindable),
+    hkbBlendCurveUtils(hkbBlendCurveUtils),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbBlenderGenerator(hkbBlenderGenerator<'a>),
+    hkbBlenderGeneratorChild(hkbBlenderGeneratorChild),
+    hkbBlenderGeneratorChildInternalState(hkbBlenderGeneratorChildInternalState),
+    hkbBlenderGeneratorInternalState(hkbBlenderGeneratorInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbBlendingTransitionEffect(hkbBlendingTransitionEffect<'a>),
+    hkbBlendingTransitionEffectInternalState(hkbBlendingTransitionEffectInternalState),
+    hkbBoneIndexArray(hkbBoneIndexArray),
+    hkbBoneWeightArray(hkbBoneWeightArray),
+    hkbBoolVariableSequencedData(hkbBoolVariableSequencedData),
+    hkbBoolVariableSequencedDataSample(hkbBoolVariableSequencedDataSample),
+    hkbCameraShakeEventPayload(hkbCameraShakeEventPayload),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbCharacter(hkbCharacter<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbCharacterAddedInfo(hkbCharacterAddedInfo<'a>),
+    hkbCharacterControlCommand(hkbCharacterControlCommand),
+    hkbCharacterControllerControlData(hkbCharacterControllerControlData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbCharacterControllerModifier(hkbCharacterControllerModifier<'a>),
+    hkbCharacterControllerModifierInternalState(
+        hkbCharacterControllerModifierInternalState,
+    ),
+    hkbCharacterData(hkbCharacterData),
+    hkbCharacterDataCharacterControllerInfo(hkbCharacterDataCharacterControllerInfo),
+    hkbCharacterInfo(hkbCharacterInfo),
+    hkbCharacterSetup(hkbCharacterSetup),
+    hkbCharacterSkinInfo(hkbCharacterSkinInfo),
+    hkbCharacterSteppedInfo(hkbCharacterSteppedInfo),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbCharacterStringData(hkbCharacterStringData<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbClientCharacterState(hkbClientCharacterState<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbClipGenerator(hkbClipGenerator<'a>),
+    hkbClipGeneratorEcho(hkbClipGeneratorEcho),
+    hkbClipGeneratorInternalState(hkbClipGeneratorInternalState),
+    hkbClipTrigger(hkbClipTrigger),
+    hkbClipTriggerArray(hkbClipTriggerArray),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbCombineTransformsModifier(hkbCombineTransformsModifier<'a>),
+    hkbCombineTransformsModifierInternalState(hkbCombineTransformsModifierInternalState),
+    hkbCompiledExpressionSet(hkbCompiledExpressionSet),
+    hkbCompiledExpressionSetToken(hkbCompiledExpressionSetToken),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbComputeDirectionModifier(hkbComputeDirectionModifier<'a>),
+    hkbComputeDirectionModifierInternalState(hkbComputeDirectionModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbComputeRotationFromAxisAngleModifier(hkbComputeRotationFromAxisAngleModifier<'a>),
+    hkbComputeRotationFromAxisAngleModifierInternalState(
+        hkbComputeRotationFromAxisAngleModifierInternalState,
+    ),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbComputeRotationToTargetModifier(hkbComputeRotationToTargetModifier<'a>),
+    hkbComputeRotationToTargetModifierInternalState(
+        hkbComputeRotationToTargetModifierInternalState,
+    ),
+    hkbCondition(hkbCondition),
+    hkbContext(hkbContext),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbDampingModifier(hkbDampingModifier<'a>),
+    hkbDampingModifierInternalState(hkbDampingModifierInternalState),
+    hkbDefaultMessageLog(hkbDefaultMessageLog),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbDelayedModifier(hkbDelayedModifier<'a>),
+    hkbDelayedModifierInternalState(hkbDelayedModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbDetectCloseToGroundModifier(hkbDetectCloseToGroundModifier<'a>),
+    hkbDetectCloseToGroundModifierInternalState(
+        hkbDetectCloseToGroundModifierInternalState,
+    ),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbEvaluateExpressionModifier(hkbEvaluateExpressionModifier<'a>),
+    hkbEvaluateExpressionModifierInternalExpressionData(
+        hkbEvaluateExpressionModifierInternalExpressionData,
+    ),
+    hkbEvaluateExpressionModifierInternalState(
+        hkbEvaluateExpressionModifierInternalState,
+    ),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbEvaluateHandleModifier(hkbEvaluateHandleModifier<'a>),
+    hkbEvent(hkbEvent),
+    hkbEventBase(hkbEventBase),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbEventDrivenModifier(hkbEventDrivenModifier<'a>),
+    hkbEventDrivenModifierInternalState(hkbEventDrivenModifierInternalState),
+    hkbEventInfo(hkbEventInfo),
+    hkbEventPayload(hkbEventPayload),
+    hkbEventPayloadList(hkbEventPayloadList),
+    hkbEventProperty(hkbEventProperty),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbEventRaisedInfo(hkbEventRaisedInfo<'a>),
+    hkbEventRangeData(hkbEventRangeData),
+    hkbEventRangeDataArray(hkbEventRangeDataArray),
+    hkbEventSequencedData(hkbEventSequencedData),
+    hkbEventSequencedDataSequencedEvent(hkbEventSequencedDataSequencedEvent),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbEventsFromRangeModifier(hkbEventsFromRangeModifier<'a>),
+    hkbEventsFromRangeModifierInternalState(hkbEventsFromRangeModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbExpressionCondition(hkbExpressionCondition<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbExpressionData(hkbExpressionData<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbExpressionDataArray(hkbExpressionDataArray<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbExtractRagdollPoseModifier(hkbExtractRagdollPoseModifier<'a>),
+    hkbFootIkControlData(hkbFootIkControlData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbFootIkControlsModifier(hkbFootIkControlsModifier<'a>),
+    hkbFootIkControlsModifierLeg(hkbFootIkControlsModifierLeg),
+    hkbFootIkDriverInfo(hkbFootIkDriverInfo),
+    hkbFootIkDriverInfoLeg(hkbFootIkDriverInfoLeg),
+    hkbFootIkGains(hkbFootIkGains),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbFootIkModifier(hkbFootIkModifier<'a>),
+    hkbFootIkModifierInternalLegData(hkbFootIkModifierInternalLegData),
+    hkbFootIkModifierLeg(hkbFootIkModifierLeg),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbGenerator(hkbGenerator<'a>),
+    hkbGeneratorOutputListener(hkbGeneratorOutputListener),
+    hkbGeneratorSyncInfo(hkbGeneratorSyncInfo),
+    hkbGeneratorSyncInfoSyncPoint(hkbGeneratorSyncInfoSyncPoint),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbGeneratorTransitionEffect(hkbGeneratorTransitionEffect<'a>),
+    hkbGeneratorTransitionEffectInternalState(hkbGeneratorTransitionEffectInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbGetHandleOnBoneModifier(hkbGetHandleOnBoneModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbGetUpModifier(hkbGetUpModifier<'a>),
+    hkbGetUpModifierInternalState(hkbGetUpModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbGetWorldFromModelModifier(hkbGetWorldFromModelModifier<'a>),
+    hkbGetWorldFromModelModifierInternalState(hkbGetWorldFromModelModifierInternalState),
+    hkbHandIkControlData(hkbHandIkControlData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbHandIkControlsModifier(hkbHandIkControlsModifier<'a>),
+    hkbHandIkControlsModifierHand(hkbHandIkControlsModifierHand),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbHandIkDriverInfo(hkbHandIkDriverInfo<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbHandIkDriverInfoHand(hkbHandIkDriverInfoHand<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbHandIkModifier(hkbHandIkModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbHandIkModifierHand(hkbHandIkModifierHand<'a>),
+    hkbHandle(hkbHandle),
+    hkbIntEventPayload(hkbIntEventPayload),
+    hkbIntVariableSequencedData(hkbIntVariableSequencedData),
+    hkbIntVariableSequencedDataSample(hkbIntVariableSequencedDataSample),
+    hkBitField(hkBitField),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbKeyframeBonesModifier(hkbKeyframeBonesModifier<'a>),
+    hkbKeyframeBonesModifierKeyframeInfo(hkbKeyframeBonesModifierKeyframeInfo),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbLinkedSymbolInfo(hkbLinkedSymbolInfo<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbLookAtModifier(hkbLookAtModifier<'a>),
+    hkbLookAtModifierInternalState(hkbLookAtModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbManualSelectorGenerator(hkbManualSelectorGenerator<'a>),
+    hkbManualSelectorGeneratorInternalState(hkbManualSelectorGeneratorInternalState),
+    hkbMessageLog(hkbMessageLog),
+    hkbMirroredSkeletonInfo(hkbMirroredSkeletonInfo),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbMirrorModifier(hkbMirrorModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbModifier(hkbModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbModifierGenerator(hkbModifierGenerator<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbModifierList(hkbModifierList<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbModifierWrapper(hkbModifierWrapper<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbMoveCharacterModifier(hkbMoveCharacterModifier<'a>),
+    hkbMoveCharacterModifierInternalState(hkbMoveCharacterModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbNamedEventPayload(hkbNamedEventPayload<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbNamedIntEventPayload(hkbNamedIntEventPayload<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbNamedRealEventPayload(hkbNamedRealEventPayload<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbNamedStringEventPayload(hkbNamedStringEventPayload<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbNode(hkbNode<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbNodeInternalStateInfo(hkbNodeInternalStateInfo<'a>),
+    hkbParticleSystemEventPayload(hkbParticleSystemEventPayload),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbPoseMatchingGenerator(hkbPoseMatchingGenerator<'a>),
+    hkbPoseMatchingGeneratorInternalState(hkbPoseMatchingGeneratorInternalState),
+    hkbPoweredRagdollControlData(hkbPoweredRagdollControlData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbPoweredRagdollControlsModifier(hkbPoweredRagdollControlsModifier<'a>),
+    hkbProjectData(hkbProjectData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbProjectStringData(hkbProjectStringData<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbProxyModifier(hkbProxyModifier<'a>),
+    hkbProxyModifierProxyInfo(hkbProxyModifierProxyInfo),
+    hkbRaiseEventCommand(hkbRaiseEventCommand),
+    hkbRealEventPayload(hkbRealEventPayload),
+    hkbRealVariableSequencedData(hkbRealVariableSequencedData),
+    hkbRealVariableSequencedDataSample(hkbRealVariableSequencedDataSample),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbReferencePoseGenerator(hkbReferencePoseGenerator<'a>),
+    hkbRegisteredGenerator(hkbRegisteredGenerator),
+    hkbRigidBodyRagdollControlData(hkbRigidBodyRagdollControlData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbRigidBodyRagdollControlsModifier(hkbRigidBodyRagdollControlsModifier<'a>),
+    hkbRoleAttribute(hkbRoleAttribute),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbRotateCharacterModifier(hkbRotateCharacterModifier<'a>),
+    hkbRotateCharacterModifierInternalState(hkbRotateCharacterModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbSenseHandleModifier(hkbSenseHandleModifier<'a>),
+    hkbSenseHandleModifierRange(hkbSenseHandleModifierRange),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbSequence(hkbSequence<'a>),
+    hkbSequencedData(hkbSequencedData),
+    hkbSequenceInternalState(hkbSequenceInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbSequenceStringData(hkbSequenceStringData<'a>),
+    hkbSetBehaviorCommand(hkbSetBehaviorCommand),
+    hkbSetLocalTimeOfClipGeneratorCommand(hkbSetLocalTimeOfClipGeneratorCommand),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbSetNodePropertyCommand(hkbSetNodePropertyCommand<'a>),
+    hkbSetWordVariableCommand(hkbSetWordVariableCommand),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbSetWorldFromModelModifier(hkbSetWorldFromModelModifier<'a>),
+    hkbSimulationControlCommand(hkbSimulationControlCommand),
+    hkbSimulationStateInfo(hkbSimulationStateInfo),
+    hkbStateChooser(hkbStateChooser),
+    hkbStateListener(hkbStateListener),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbStateMachine(hkbStateMachine<'a>),
+    hkbStateMachineActiveTransitionInfo(hkbStateMachineActiveTransitionInfo),
+    hkbStateMachineDelayedTransitionInfo(hkbStateMachineDelayedTransitionInfo),
+    hkbStateMachineEventPropertyArray(hkbStateMachineEventPropertyArray),
+    hkbStateMachineInternalState(hkbStateMachineInternalState),
+    hkbStateMachineNestedStateMachineData(hkbStateMachineNestedStateMachineData),
+    hkbStateMachineProspectiveTransitionInfo(hkbStateMachineProspectiveTransitionInfo),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbStateMachineStateInfo(hkbStateMachineStateInfo<'a>),
+    hkbStateMachineTimeInterval(hkbStateMachineTimeInterval),
+    hkbStateMachineTransitionInfo(hkbStateMachineTransitionInfo),
+    hkbStateMachineTransitionInfoArray(hkbStateMachineTransitionInfoArray),
+    hkbStateMachineTransitionInfoReference(hkbStateMachineTransitionInfoReference),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbStringCondition(hkbStringCondition<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbStringEventPayload(hkbStringEventPayload<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbTestStateChooser(hkbTestStateChooser<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbTimerModifier(hkbTimerModifier<'a>),
+    hkbTimerModifierInternalState(hkbTimerModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbTransformVectorModifier(hkbTransformVectorModifier<'a>),
+    hkbTransformVectorModifierInternalState(hkbTransformVectorModifierInternalState),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbTransitionEffect(hkbTransitionEffect<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbTwistModifier(hkbTwistModifier<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbVariableBindingSet(hkbVariableBindingSet<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkbVariableBindingSetBinding(hkbVariableBindingSetBinding<'a>),
+    hkbVariableInfo(hkbVariableInfo),
+    hkbVariableValue(hkbVariableValue),
+    hkbVariableValueSet(hkbVariableValueSet),
+    hkbWorldEnums(hkbWorldEnums),
+    hkbWorldFromModelModeData(hkbWorldFromModelModeData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkClass(hkClass<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkClassEnum(hkClassEnum<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkClassEnumItem(hkClassEnumItem<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkClassMember(hkClassMember<'a>),
+    hkColor(hkColor),
+    hkContactPoint(hkContactPoint),
+    hkContactPointMaterial(hkContactPointMaterial),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkCustomAttributes(hkCustomAttributes<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkCustomAttributesAttribute(hkCustomAttributesAttribute<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkDataObjectTypeAttribute(hkDataObjectTypeAttribute<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkDescriptionAttribute(hkDescriptionAttribute<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkDocumentationAttribute(hkDocumentationAttribute<'a>),
+    hkGeometry(hkGeometry),
+    hkGeometryTriangle(hkGeometryTriangle),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkGizmoAttribute(hkGizmoAttribute<'a>),
+    hkHalf8(hkHalf8),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkIndexedTransformSet(hkIndexedTransformSet<'a>),
+    hkLinkAttribute(hkLinkAttribute),
+    hkLocalFrame(hkLocalFrame),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkLocalFrameGroup(hkLocalFrameGroup<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMemoryMeshBody(hkMemoryMeshBody<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMemoryMeshMaterial(hkMemoryMeshMaterial<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMemoryMeshShape(hkMemoryMeshShape<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMemoryMeshTexture(hkMemoryMeshTexture<'a>),
+    hkMemoryMeshVertexBuffer(hkMemoryMeshVertexBuffer),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMemoryResourceContainer(hkMemoryResourceContainer<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMemoryResourceHandle(hkMemoryResourceHandle<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMemoryResourceHandleExternalLink(hkMemoryResourceHandleExternalLink<'a>),
+    hkMemoryTrackerAttribute(hkMemoryTrackerAttribute),
+    hkMeshBody(hkMeshBody),
+    hkMeshBoneIndexMapping(hkMeshBoneIndexMapping),
+    hkMeshMaterial(hkMeshMaterial),
+    hkMeshSection(hkMeshSection),
+    hkMeshSectionCinfo(hkMeshSectionCinfo),
+    hkMeshShape(hkMeshShape),
+    hkMeshTexture(hkMeshTexture),
+    hkMeshVertexBuffer(hkMeshVertexBuffer),
+    hkModelerNodeTypeAttribute(hkModelerNodeTypeAttribute),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMonitorStreamColorTable(hkMonitorStreamColorTable<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMonitorStreamColorTableColorPair(hkMonitorStreamColorTableColorPair<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMonitorStreamFrameInfo(hkMonitorStreamFrameInfo<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMonitorStreamStringMap(hkMonitorStreamStringMap<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkMonitorStreamStringMapStringMap(hkMonitorStreamStringMapStringMap<'a>),
+    hkMoppBvTreeShapeBase(hkMoppBvTreeShapeBase),
+    hkMotionState(hkMotionState),
+    hkMultipleVertexBuffer(hkMultipleVertexBuffer),
+    hkMultipleVertexBufferElementInfo(hkMultipleVertexBufferElementInfo),
+    hkMultipleVertexBufferLockedElement(hkMultipleVertexBufferLockedElement),
+    hkMultipleVertexBufferVertexBufferInfo(hkMultipleVertexBufferVertexBufferInfo),
+    hkMultiThreadCheck(hkMultiThreadCheck),
+    hkp2dAngConstraintAtom(hkp2dAngConstraintAtom),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpAabbPhantom(hkpAabbPhantom<'a>),
+    hkPackedVector3(hkPackedVector3),
+    hkPackfileHeader(hkPackfileHeader),
+    hkPackfileSectionHeader(hkPackfileSectionHeader),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpAction(hkpAction<'a>),
+    hkpAgent1nSector(hkpAgent1nSector),
+    hkpAngConstraintAtom(hkpAngConstraintAtom),
+    hkpAngFrictionConstraintAtom(hkpAngFrictionConstraintAtom),
+    hkpAngLimitConstraintAtom(hkpAngLimitConstraintAtom),
+    hkpAngMotorConstraintAtom(hkpAngMotorConstraintAtom),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpAngularDashpotAction(hkpAngularDashpotAction<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpArrayAction(hkpArrayAction<'a>),
+    hkpBallAndSocketConstraintData(hkpBallAndSocketConstraintData),
+    hkpBallAndSocketConstraintDataAtoms(hkpBallAndSocketConstraintDataAtoms),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpBallGun(hkpBallGun<'a>),
+    hkpBallSocketChainData(hkpBallSocketChainData),
+    hkpBallSocketChainDataConstraintInfo(hkpBallSocketChainDataConstraintInfo),
+    hkpBallSocketConstraintAtom(hkpBallSocketConstraintAtom),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpBinaryAction(hkpBinaryAction<'a>),
+    hkpBoxMotion(hkpBoxMotion),
+    hkpBoxShape(hkpBoxShape),
+    hkpBreakableBody(hkpBreakableBody),
+    hkpBreakableConstraintData(hkpBreakableConstraintData),
+    hkpBridgeAtoms(hkpBridgeAtoms),
+    hkpBridgeConstraintAtom(hkpBridgeConstraintAtom),
+    hkpBroadPhaseHandle(hkpBroadPhaseHandle),
+    hkpBvShape(hkpBvShape),
+    hkpBvTreeShape(hkpBvTreeShape),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpCachingShapePhantom(hkpCachingShapePhantom<'a>),
+    hkpCallbackConstraintMotor(hkpCallbackConstraintMotor),
+    hkpCapsuleShape(hkpCapsuleShape),
+    hkpCdBody(hkpCdBody),
+    hkpCenterOfMassChangerModifierConstraintAtom(
+        hkpCenterOfMassChangerModifierConstraintAtom,
+    ),
+    hkpCharacterControllerCinfo(hkpCharacterControllerCinfo),
+    hkpCharacterMotion(hkpCharacterMotion),
+    hkpCharacterProxyCinfo(hkpCharacterProxyCinfo),
+    hkpCharacterRigidBodyCinfo(hkpCharacterRigidBodyCinfo),
+    hkpCogWheelConstraintAtom(hkpCogWheelConstraintAtom),
+    hkpCogWheelConstraintData(hkpCogWheelConstraintData),
+    hkpCogWheelConstraintDataAtoms(hkpCogWheelConstraintDataAtoms),
+    hkpCollidable(hkpCollidable),
+    hkpCollidableBoundingVolumeData(hkpCollidableBoundingVolumeData),
+    hkpCollidableCollidableFilter(hkpCollidableCollidableFilter),
+    hkpCollisionFilter(hkpCollisionFilter),
+    hkpCollisionFilterList(hkpCollisionFilterList),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpCompressedMeshShape(hkpCompressedMeshShape<'a>),
+    hkpCompressedMeshShapeBigTriangle(hkpCompressedMeshShapeBigTriangle),
+    hkpCompressedMeshShapeChunk(hkpCompressedMeshShapeChunk),
+    hkpCompressedMeshShapeConvexPiece(hkpCompressedMeshShapeConvexPiece),
+    hkpCompressedSampledHeightFieldShape(hkpCompressedSampledHeightFieldShape),
+    hkpConeLimitConstraintAtom(hkpConeLimitConstraintAtom),
+    hkpConstrainedSystemFilter(hkpConstrainedSystemFilter),
+    hkpConstraintAtom(hkpConstraintAtom),
+    hkpConstraintChainData(hkpConstraintChainData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpConstraintChainInstance(hkpConstraintChainInstance<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpConstraintChainInstanceAction(hkpConstraintChainInstanceAction<'a>),
+    hkpConstraintCollisionFilter(hkpConstraintCollisionFilter),
+    hkpConstraintData(hkpConstraintData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpConstraintInstance(hkpConstraintInstance<'a>),
+    hkpConstraintInstanceSmallArraySerializeOverrideType(
+        hkpConstraintInstanceSmallArraySerializeOverrideType,
+    ),
+    hkpConstraintMotor(hkpConstraintMotor),
+    hkpConvexListFilter(hkpConvexListFilter),
+    hkpConvexListShape(hkpConvexListShape),
+    hkpConvexPieceMeshShape(hkpConvexPieceMeshShape),
+    hkpConvexPieceStreamData(hkpConvexPieceStreamData),
+    hkpConvexShape(hkpConvexShape),
+    hkpConvexTransformShape(hkpConvexTransformShape),
+    hkpConvexTransformShapeBase(hkpConvexTransformShapeBase),
+    hkpConvexTranslateShape(hkpConvexTranslateShape),
+    hkpConvexVerticesConnectivity(hkpConvexVerticesConnectivity),
+    hkpConvexVerticesShape(hkpConvexVerticesShape),
+    hkpConvexVerticesShapeFourVectors(hkpConvexVerticesShapeFourVectors),
+    hkpCylinderShape(hkpCylinderShape),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpDashpotAction(hkpDashpotAction<'a>),
+    hkpDefaultConvexListFilter(hkpDefaultConvexListFilter),
+    hkpDefaultWorldMemoryWatchDog(hkpDefaultWorldMemoryWatchDog),
+    hkpDisableEntityCollisionFilter(hkpDisableEntityCollisionFilter),
+    hkpDisplayBindingData(hkpDisplayBindingData),
+    hkpDisplayBindingDataPhysicsSystem(hkpDisplayBindingDataPhysicsSystem),
+    hkpDisplayBindingDataRigidBody(hkpDisplayBindingDataRigidBody),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpEntity(hkpEntity<'a>),
+    hkpEntityExtendedListeners(hkpEntityExtendedListeners),
+    hkpEntitySmallArraySerializeOverrideType(hkpEntitySmallArraySerializeOverrideType),
+    hkpEntitySpuCollisionCallback(hkpEntitySpuCollisionCallback),
+    hkpExtendedMeshShape(hkpExtendedMeshShape),
+    hkpExtendedMeshShapeShapesSubpart(hkpExtendedMeshShapeShapesSubpart),
+    hkpExtendedMeshShapeSubpart(hkpExtendedMeshShapeSubpart),
+    hkpExtendedMeshShapeTrianglesSubpart(hkpExtendedMeshShapeTrianglesSubpart),
+    hkpFastMeshShape(hkpFastMeshShape),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpFirstPersonGun(hkpFirstPersonGun<'a>),
+    hkpFixedRigidMotion(hkpFixedRigidMotion),
+    hkpGenericConstraintData(hkpGenericConstraintData),
+    hkpGenericConstraintDataScheme(hkpGenericConstraintDataScheme),
+    hkpGenericConstraintDataSchemeConstraintInfo(
+        hkpGenericConstraintDataSchemeConstraintInfo,
+    ),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpGravityGun(hkpGravityGun<'a>),
+    hkpGroupCollisionFilter(hkpGroupCollisionFilter),
+    hkpGroupFilter(hkpGroupFilter),
+    hkpHeightFieldShape(hkpHeightFieldShape),
+    hkpHingeConstraintData(hkpHingeConstraintData),
+    hkpHingeConstraintDataAtoms(hkpHingeConstraintDataAtoms),
+    hkpHingeLimitsData(hkpHingeLimitsData),
+    hkpHingeLimitsDataAtoms(hkpHingeLimitsDataAtoms),
+    hkpIgnoreModifierConstraintAtom(hkpIgnoreModifierConstraintAtom),
+    hkpKeyframedRigidMotion(hkpKeyframedRigidMotion),
+    hkpLimitedForceConstraintMotor(hkpLimitedForceConstraintMotor),
+    hkpLimitedHingeConstraintData(hkpLimitedHingeConstraintData),
+    hkpLimitedHingeConstraintDataAtoms(hkpLimitedHingeConstraintDataAtoms),
+    hkpLinConstraintAtom(hkpLinConstraintAtom),
+    hkpLinearParametricCurve(hkpLinearParametricCurve),
+    hkpLinFrictionConstraintAtom(hkpLinFrictionConstraintAtom),
+    hkpLinkedCollidable(hkpLinkedCollidable),
+    hkpLinLimitConstraintAtom(hkpLinLimitConstraintAtom),
+    hkpLinMotorConstraintAtom(hkpLinMotorConstraintAtom),
+    hkpLinSoftConstraintAtom(hkpLinSoftConstraintAtom),
+    hkpListShape(hkpListShape),
+    hkpListShapeChildInfo(hkpListShapeChildInfo),
+    hkpMalleableConstraintData(hkpMalleableConstraintData),
+    hkpMassChangerModifierConstraintAtom(hkpMassChangerModifierConstraintAtom),
+    hkpMassProperties(hkpMassProperties),
+    hkpMaterial(hkpMaterial),
+    hkpMaxSizeMotion(hkpMaxSizeMotion),
+    hkpMeshMaterial(hkpMeshMaterial),
+    hkpMeshShape(hkpMeshShape),
+    hkpMeshShapeSubpart(hkpMeshShapeSubpart),
+    hkpModifierConstraintAtom(hkpModifierConstraintAtom),
+    hkpMoppBvTreeShape(hkpMoppBvTreeShape),
+    hkpMoppCode(hkpMoppCode),
+    hkpMoppCodeCodeInfo(hkpMoppCodeCodeInfo),
+    hkpMoppCodeReindexedTerminal(hkpMoppCodeReindexedTerminal),
+    hkpMotion(hkpMotion),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpMotorAction(hkpMotorAction<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpMountedBallGun(hkpMountedBallGun<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpMouseSpringAction(hkpMouseSpringAction<'a>),
+    hkpMovingSurfaceModifierConstraintAtom(hkpMovingSurfaceModifierConstraintAtom),
+    hkpMultiRayShape(hkpMultiRayShape),
+    hkpMultiRayShapeRay(hkpMultiRayShapeRay),
+    hkpMultiSphereShape(hkpMultiSphereShape),
+    hkpMultithreadedVehicleManager(hkpMultithreadedVehicleManager),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpNamedMeshMaterial(hkpNamedMeshMaterial<'a>),
+    hkpNullCollisionFilter(hkpNullCollisionFilter),
+    hkPostFinishAttribute(hkPostFinishAttribute),
+    hkpOverwritePivotConstraintAtom(hkpOverwritePivotConstraintAtom),
+    hkpPairCollisionFilter(hkpPairCollisionFilter),
+    hkpPairCollisionFilterMapPairFilterKeyOverrideType(
+        hkpPairCollisionFilterMapPairFilterKeyOverrideType,
+    ),
+    hkpParametricCurve(hkpParametricCurve),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpPhantom(hkpPhantom<'a>),
+    hkpPhantomCallbackShape(hkpPhantomCallbackShape),
+    hkpPhysicsData(hkpPhysicsData),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpPhysicsSystem(hkpPhysicsSystem<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpPhysicsSystemWithContacts(hkpPhysicsSystemWithContacts<'a>),
+    hkpPlaneShape(hkpPlaneShape),
+    hkpPointToPathConstraintData(hkpPointToPathConstraintData),
+    hkpPointToPlaneConstraintData(hkpPointToPlaneConstraintData),
+    hkpPointToPlaneConstraintDataAtoms(hkpPointToPlaneConstraintDataAtoms),
+    hkpPositionConstraintMotor(hkpPositionConstraintMotor),
+    hkpPoweredChainData(hkpPoweredChainData),
+    hkpPoweredChainDataConstraintInfo(hkpPoweredChainDataConstraintInfo),
+    hkpPoweredChainMapper(hkpPoweredChainMapper),
+    hkpPoweredChainMapperLinkInfo(hkpPoweredChainMapperLinkInfo),
+    hkpPoweredChainMapperTarget(hkpPoweredChainMapperTarget),
+    hkpPrismaticConstraintData(hkpPrismaticConstraintData),
+    hkpPrismaticConstraintDataAtoms(hkpPrismaticConstraintDataAtoms),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpProjectileGun(hkpProjectileGun<'a>),
+    hkpProperty(hkpProperty),
+    hkpPropertyValue(hkpPropertyValue),
+    hkpPulleyConstraintAtom(hkpPulleyConstraintAtom),
+    hkpPulleyConstraintData(hkpPulleyConstraintData),
+    hkpPulleyConstraintDataAtoms(hkpPulleyConstraintDataAtoms),
+    hkpRackAndPinionConstraintAtom(hkpRackAndPinionConstraintAtom),
+    hkpRackAndPinionConstraintData(hkpRackAndPinionConstraintData),
+    hkpRackAndPinionConstraintDataAtoms(hkpRackAndPinionConstraintDataAtoms),
+    hkpRagdollConstraintData(hkpRagdollConstraintData),
+    hkpRagdollConstraintDataAtoms(hkpRagdollConstraintDataAtoms),
+    hkpRagdollLimitsData(hkpRagdollLimitsData),
+    hkpRagdollLimitsDataAtoms(hkpRagdollLimitsDataAtoms),
+    hkpRagdollMotorConstraintAtom(hkpRagdollMotorConstraintAtom),
+    hkpRayCollidableFilter(hkpRayCollidableFilter),
+    hkpRayShapeCollectionFilter(hkpRayShapeCollectionFilter),
+    hkpRejectChassisListener(hkpRejectChassisListener),
+    hkpRemoveTerminalsMoppModifier(hkpRemoveTerminalsMoppModifier),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpReorientAction(hkpReorientAction<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpRigidBody(hkpRigidBody<'a>),
+    hkpRotationalConstraintData(hkpRotationalConstraintData),
+    hkpRotationalConstraintDataAtoms(hkpRotationalConstraintDataAtoms),
+    hkpSampledHeightFieldShape(hkpSampledHeightFieldShape),
+    hkpSerializedAgentNnEntry(hkpSerializedAgentNnEntry),
+    hkpSerializedDisplayMarker(hkpSerializedDisplayMarker),
+    hkpSerializedDisplayMarkerList(hkpSerializedDisplayMarkerList),
+    hkpSerializedDisplayRbTransforms(hkpSerializedDisplayRbTransforms),
+    hkpSerializedDisplayRbTransformsDisplayTransformPair(
+        hkpSerializedDisplayRbTransformsDisplayTransformPair,
+    ),
+    hkpSerializedSubTrack1nInfo(hkpSerializedSubTrack1nInfo),
+    hkpSerializedTrack1nInfo(hkpSerializedTrack1nInfo),
+    hkpSetLocalRotationsConstraintAtom(hkpSetLocalRotationsConstraintAtom),
+    hkpSetLocalTransformsConstraintAtom(hkpSetLocalTransformsConstraintAtom),
+    hkpSetLocalTranslationsConstraintAtom(hkpSetLocalTranslationsConstraintAtom),
+    hkpSetupStabilizationAtom(hkpSetupStabilizationAtom),
+    hkpShape(hkpShape),
+    hkpShapeCollection(hkpShapeCollection),
+    hkpShapeCollectionFilter(hkpShapeCollectionFilter),
+    hkpShapeContainer(hkpShapeContainer),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpShapeInfo(hkpShapeInfo<'a>),
+    hkpShapeModifier(hkpShapeModifier),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpShapePhantom(hkpShapePhantom<'a>),
+    hkpSimpleContactConstraintAtom(hkpSimpleContactConstraintAtom),
+    hkpSimpleContactConstraintDataInfo(hkpSimpleContactConstraintDataInfo),
+    hkpSimpleMeshShape(hkpSimpleMeshShape),
+    hkpSimpleMeshShapeTriangle(hkpSimpleMeshShapeTriangle),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpSimpleShapePhantom(hkpSimpleShapePhantom<'a>),
+    hkpSimpleShapePhantomCollisionDetail(hkpSimpleShapePhantomCollisionDetail),
+    hkpSimulation(hkpSimulation),
+    hkpSingleShapeContainer(hkpSingleShapeContainer),
+    hkpSoftContactModifierConstraintAtom(hkpSoftContactModifierConstraintAtom),
+    hkpSphereMotion(hkpSphereMotion),
+    hkpSphereRepShape(hkpSphereRepShape),
+    hkpSphereShape(hkpSphereShape),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpSpringAction(hkpSpringAction<'a>),
+    hkpSpringDamperConstraintMotor(hkpSpringDamperConstraintMotor),
+    hkpStiffSpringChainData(hkpStiffSpringChainData),
+    hkpStiffSpringChainDataConstraintInfo(hkpStiffSpringChainDataConstraintInfo),
+    hkpStiffSpringConstraintAtom(hkpStiffSpringConstraintAtom),
+    hkpStiffSpringConstraintData(hkpStiffSpringConstraintData),
+    hkpStiffSpringConstraintDataAtoms(hkpStiffSpringConstraintDataAtoms),
+    hkpStorageExtendedMeshShape(hkpStorageExtendedMeshShape),
+    hkpStorageExtendedMeshShapeMaterial(hkpStorageExtendedMeshShapeMaterial),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpStorageExtendedMeshShapeMeshSubpartStorage(
+        hkpStorageExtendedMeshShapeMeshSubpartStorage<'a>,
+    ),
+    hkpStorageExtendedMeshShapeShapeSubpartStorage(
+        hkpStorageExtendedMeshShapeShapeSubpartStorage,
+    ),
+    hkpStorageMeshShape(hkpStorageMeshShape),
+    hkpStorageMeshShapeSubpartStorage(hkpStorageMeshShapeSubpartStorage),
+    hkpStorageSampledHeightFieldShape(hkpStorageSampledHeightFieldShape),
+    hkpThinBoxMotion(hkpThinBoxMotion),
+    hkpTransformShape(hkpTransformShape),
+    hkpTriangleShape(hkpTriangleShape),
+    hkpTriggerVolume(hkpTriggerVolume),
+    hkpTriggerVolumeEventInfo(hkpTriggerVolumeEventInfo),
+    hkpTriSampledHeightFieldBvTreeShape(hkpTriSampledHeightFieldBvTreeShape),
+    hkpTriSampledHeightFieldCollection(hkpTriSampledHeightFieldCollection),
+    hkpTwistLimitConstraintAtom(hkpTwistLimitConstraintAtom),
+    hkpTypedBroadPhaseHandle(hkpTypedBroadPhaseHandle),
+    hkpTyremarkPoint(hkpTyremarkPoint),
+    hkpTyremarksInfo(hkpTyremarksInfo),
+    hkpTyremarksWheel(hkpTyremarksWheel),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpUnaryAction(hkpUnaryAction<'a>),
+    hkpVehicleAerodynamics(hkpVehicleAerodynamics),
+    hkpVehicleBrake(hkpVehicleBrake),
+    hkpVehicleCastBatchingManager(hkpVehicleCastBatchingManager),
+    hkpVehicleData(hkpVehicleData),
+    hkpVehicleDataWheelComponentParams(hkpVehicleDataWheelComponentParams),
+    hkpVehicleDefaultAerodynamics(hkpVehicleDefaultAerodynamics),
+    hkpVehicleDefaultAnalogDriverInput(hkpVehicleDefaultAnalogDriverInput),
+    hkpVehicleDefaultBrake(hkpVehicleDefaultBrake),
+    hkpVehicleDefaultBrakeWheelBrakingProperties(
+        hkpVehicleDefaultBrakeWheelBrakingProperties,
+    ),
+    hkpVehicleDefaultEngine(hkpVehicleDefaultEngine),
+    hkpVehicleDefaultSteering(hkpVehicleDefaultSteering),
+    hkpVehicleDefaultSuspension(hkpVehicleDefaultSuspension),
+    hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters(
+        hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters,
+    ),
+    hkpVehicleDefaultTransmission(hkpVehicleDefaultTransmission),
+    hkpVehicleDefaultVelocityDamper(hkpVehicleDefaultVelocityDamper),
+    hkpVehicleDriverInput(hkpVehicleDriverInput),
+    hkpVehicleDriverInputAnalogStatus(hkpVehicleDriverInputAnalogStatus),
+    hkpVehicleDriverInputStatus(hkpVehicleDriverInputStatus),
+    hkpVehicleEngine(hkpVehicleEngine),
+    hkpVehicleFrictionDescription(hkpVehicleFrictionDescription),
+    hkpVehicleFrictionDescriptionAxisDescription(
+        hkpVehicleFrictionDescriptionAxisDescription,
+    ),
+    hkpVehicleFrictionStatus(hkpVehicleFrictionStatus),
+    hkpVehicleFrictionStatusAxisStatus(hkpVehicleFrictionStatusAxisStatus),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpVehicleInstance(hkpVehicleInstance<'a>),
+    hkpVehicleInstanceWheelInfo(hkpVehicleInstanceWheelInfo),
+    hkpVehicleLinearCastBatchingManager(hkpVehicleLinearCastBatchingManager),
+    hkpVehicleLinearCastWheelCollide(hkpVehicleLinearCastWheelCollide),
+    hkpVehicleLinearCastWheelCollideWheelState(
+        hkpVehicleLinearCastWheelCollideWheelState,
+    ),
+    hkpVehicleManager(hkpVehicleManager),
+    hkpVehicleRayCastBatchingManager(hkpVehicleRayCastBatchingManager),
+    hkpVehicleRayCastWheelCollide(hkpVehicleRayCastWheelCollide),
+    hkpVehicleSteering(hkpVehicleSteering),
+    hkpVehicleSuspension(hkpVehicleSuspension),
+    hkpVehicleSuspensionSuspensionWheelParameters(
+        hkpVehicleSuspensionSuspensionWheelParameters,
+    ),
+    hkpVehicleTransmission(hkpVehicleTransmission),
+    hkpVehicleVelocityDamper(hkpVehicleVelocityDamper),
+    hkpVehicleWheelCollide(hkpVehicleWheelCollide),
+    hkpVelocityConstraintMotor(hkpVelocityConstraintMotor),
+    hkpViscousSurfaceModifierConstraintAtom(hkpViscousSurfaceModifierConstraintAtom),
+    hkpWeldingUtility(hkpWeldingUtility),
+    hkpWheelConstraintData(hkpWheelConstraintData),
+    hkpWheelConstraintDataAtoms(hkpWheelConstraintDataAtoms),
+    hkpWorld(hkpWorld),
+    hkpWorldCinfo(hkpWorldCinfo),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkpWorldObject(hkpWorldObject<'a>),
+    hkQTransform(hkQTransform),
+    hkRangeInt32Attribute(hkRangeInt32Attribute),
+    hkRangeRealAttribute(hkRangeRealAttribute),
+    hkReferencedObject(hkReferencedObject),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkReflectedFileAttribute(hkReflectedFileAttribute<'a>),
+    hkResourceBase(hkResourceBase),
+    hkResourceContainer(hkResourceContainer),
+    hkResourceHandle(hkResourceHandle),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkRootLevelContainer(hkRootLevelContainer<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkRootLevelContainerNamedVariant(hkRootLevelContainerNamedVariant<'a>),
+    hkSemanticsAttribute(hkSemanticsAttribute),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkSimpleLocalFrame(hkSimpleLocalFrame<'a>),
+    hkSphere(hkSphere),
+    hkSweptTransform(hkSweptTransform),
+    hkTraceStreamTitle(hkTraceStreamTitle),
+    hkTrackerSerializableScanSnapshot(hkTrackerSerializableScanSnapshot),
+    hkTrackerSerializableScanSnapshotAllocation(
+        hkTrackerSerializableScanSnapshotAllocation,
+    ),
+    hkTrackerSerializableScanSnapshotBlock(hkTrackerSerializableScanSnapshotBlock),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkUiAttribute(hkUiAttribute<'a>),
+    hkVertexFormat(hkVertexFormat),
+    hkVertexFormatElement(hkVertexFormatElement),
+    hkWorldMemoryAvailableWatchDog(hkWorldMemoryAvailableWatchDog),
+    hkxAnimatedFloat(hkxAnimatedFloat),
+    hkxAnimatedMatrix(hkxAnimatedMatrix),
+    hkxAnimatedQuaternion(hkxAnimatedQuaternion),
+    hkxAnimatedVector(hkxAnimatedVector),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxAttribute(hkxAttribute<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxAttributeGroup(hkxAttributeGroup<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxAttributeHolder(hkxAttributeHolder<'a>),
+    hkxCamera(hkxCamera),
+    hkxEdgeSelectionChannel(hkxEdgeSelectionChannel),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxEnum(hkxEnum<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxEnumItem(hkxEnumItem<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxEnvironment(hkxEnvironment<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxEnvironmentVariable(hkxEnvironmentVariable<'a>),
+    hkxIndexBuffer(hkxIndexBuffer),
+    hkxLight(hkxLight),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxMaterial(hkxMaterial<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxMaterialEffect(hkxMaterialEffect<'a>),
+    hkxMaterialProperty(hkxMaterialProperty),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxMaterialShader(hkxMaterialShader<'a>),
+    hkxMaterialShaderSet(hkxMaterialShaderSet),
+    hkxMaterialTextureStage(hkxMaterialTextureStage),
+    hkxMesh(hkxMesh),
+    hkxMeshSection(hkxMeshSection),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxMeshUserChannelInfo(hkxMeshUserChannelInfo<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxNode(hkxNode<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxNodeAnnotationData(hkxNodeAnnotationData<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxNodeSelectionSet(hkxNodeSelectionSet<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxScene(hkxScene<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxSkinBinding(hkxSkinBinding<'a>),
+    hkxSparselyAnimatedBool(hkxSparselyAnimatedBool),
+    hkxSparselyAnimatedEnum(hkxSparselyAnimatedEnum),
+    hkxSparselyAnimatedInt(hkxSparselyAnimatedInt),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxSparselyAnimatedString(hkxSparselyAnimatedString<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxTextureFile(hkxTextureFile<'a>),
+    #[cfg_attr(feature = "serde", serde(borrow))]
+    hkxTextureInplace(hkxTextureInplace<'a>),
+    hkxTriangleSelectionChannel(hkxTriangleSelectionChannel),
+    hkxVertexBuffer(hkxVertexBuffer),
+    hkxVertexBufferVertexData(hkxVertexBufferVertexData),
+    hkxVertexDescription(hkxVertexDescription),
+    hkxVertexDescriptionElementDecl(hkxVertexDescriptionElementDecl),
+    hkxVertexFloatDataChannel(hkxVertexFloatDataChannel),
+    hkxVertexIntDataChannel(hkxVertexIntDataChannel),
+    hkxVertexSelectionChannel(hkxVertexSelectionChannel),
+    hkxVertexVectorDataChannel(hkxVertexVectorDataChannel),
+}
+impl Default for Classes<'_> {
+    fn default() -> Self {
+        Self::BGSGamebryoSequenceGenerator(BGSGamebryoSequenceGenerator::default())
+    }
+}
+impl _serde::HavokClass for Classes<'_> {
+    fn name(&self) -> &'static str {
+        match &self {
+            Classes::BGSGamebryoSequenceGenerator(class) => class.name(),
+            Classes::BSBoneSwitchGenerator(class) => class.name(),
+            Classes::BSBoneSwitchGeneratorBoneData(class) => class.name(),
+            Classes::BSComputeAddBoneAnimModifier(class) => class.name(),
+            Classes::BSCyclicBlendTransitionGenerator(class) => class.name(),
+            Classes::BSDecomposeVectorModifier(class) => class.name(),
+            Classes::BSDirectAtModifier(class) => class.name(),
+            Classes::BSDistTriggerModifier(class) => class.name(),
+            Classes::BSEventEveryNEventsModifier(class) => class.name(),
+            Classes::BSEventOnDeactivateModifier(class) => class.name(),
+            Classes::BSEventOnFalseToTrueModifier(class) => class.name(),
+            Classes::BSGetTimeStepModifier(class) => class.name(),
+            Classes::BSInterpValueModifier(class) => class.name(),
+            Classes::BSIsActiveModifier(class) => class.name(),
+            Classes::BSIStateManagerModifier(class) => class.name(),
+            Classes::BSIStateManagerModifierBSiStateData(class) => class.name(),
+            Classes::BSIStateManagerModifierBSIStateManagerStateListener(class) => {
+                class.name()
+            }
+            Classes::BSiStateTaggingGenerator(class) => class.name(),
+            Classes::BSLimbIKModifier(class) => class.name(),
+            Classes::BSLookAtModifier(class) => class.name(),
+            Classes::BSLookAtModifierBoneData(class) => class.name(),
+            Classes::BSModifyOnceModifier(class) => class.name(),
+            Classes::BSOffsetAnimationGenerator(class) => class.name(),
+            Classes::BSPassByTargetTriggerModifier(class) => class.name(),
+            Classes::BSRagdollContactListenerModifier(class) => class.name(),
+            Classes::BSSpeedSamplerModifier(class) => class.name(),
+            Classes::BSSynchronizedClipGenerator(class) => class.name(),
+            Classes::BSTimerModifier(class) => class.name(),
+            Classes::BSTweenerModifier(class) => class.name(),
+            Classes::hkAabb(class) => class.name(),
+            Classes::hkAabbHalf(class) => class.name(),
+            Classes::hkAabbUint32(class) => class.name(),
+            Classes::hkaAnimatedReferenceFrame(class) => class.name(),
+            Classes::hkaAnimation(class) => class.name(),
+            Classes::hkaAnimationBinding(class) => class.name(),
+            Classes::hkaAnimationContainer(class) => class.name(),
+            Classes::hkaAnimationPreviewColorContainer(class) => class.name(),
+            Classes::hkaAnnotationTrack(class) => class.name(),
+            Classes::hkaAnnotationTrackAnnotation(class) => class.name(),
+            Classes::hkaBone(class) => class.name(),
+            Classes::hkaBoneAttachment(class) => class.name(),
+            Classes::hkaDefaultAnimatedReferenceFrame(class) => class.name(),
+            Classes::hkaDeltaCompressedAnimation(class) => class.name(),
+            Classes::hkaDeltaCompressedAnimationQuantizationFormat(class) => class.name(),
+            Classes::hkaFootstepAnalysisInfo(class) => class.name(),
+            Classes::hkaFootstepAnalysisInfoContainer(class) => class.name(),
+            Classes::hkaInterleavedUncompressedAnimation(class) => class.name(),
+            Classes::hkaKeyFrameHierarchyUtility(class) => class.name(),
+            Classes::hkaKeyFrameHierarchyUtilityControlData(class) => class.name(),
+            Classes::hkAlignSceneToNodeOptions(class) => class.name(),
+            Classes::hkaMeshBinding(class) => class.name(),
+            Classes::hkaMeshBindingMapping(class) => class.name(),
+            Classes::hkaQuantizedAnimation(class) => class.name(),
+            Classes::hkaQuantizedAnimationTrackCompressionParams(class) => class.name(),
+            Classes::hkaRagdollInstance(class) => class.name(),
+            Classes::hkArrayTypeAttribute(class) => class.name(),
+            Classes::hkaSkeleton(class) => class.name(),
+            Classes::hkaSkeletonLocalFrameOnBone(class) => class.name(),
+            Classes::hkaSkeletonMapper(class) => class.name(),
+            Classes::hkaSkeletonMapperData(class) => class.name(),
+            Classes::hkaSkeletonMapperDataChainMapping(class) => class.name(),
+            Classes::hkaSkeletonMapperDataSimpleMapping(class) => class.name(),
+            Classes::hkaSplineCompressedAnimation(class) => class.name(),
+            Classes::hkaSplineCompressedAnimationAnimationCompressionParams(class) => {
+                class.name()
+            }
+            Classes::hkaSplineCompressedAnimationTrackCompressionParams(class) => {
+                class.name()
+            }
+            Classes::hkaWaveletCompressedAnimation(class) => class.name(),
+            Classes::hkaWaveletCompressedAnimationCompressionParams(class) => {
+                class.name()
+            }
+            Classes::hkaWaveletCompressedAnimationQuantizationFormat(class) => {
+                class.name()
+            }
+            Classes::hkBaseObject(class) => class.name(),
+            Classes::hkbAttachmentModifier(class) => class.name(),
+            Classes::hkbAttachmentSetup(class) => class.name(),
+            Classes::hkbAttributeModifier(class) => class.name(),
+            Classes::hkbAttributeModifierAssignment(class) => class.name(),
+            Classes::hkbAuxiliaryNodeInfo(class) => class.name(),
+            Classes::hkbBehaviorEventsInfo(class) => class.name(),
+            Classes::hkbBehaviorGraph(class) => class.name(),
+            Classes::hkbBehaviorGraphData(class) => class.name(),
+            Classes::hkbBehaviorGraphInternalState(class) => class.name(),
+            Classes::hkbBehaviorGraphInternalStateInfo(class) => class.name(),
+            Classes::hkbBehaviorGraphStringData(class) => class.name(),
+            Classes::hkbBehaviorInfo(class) => class.name(),
+            Classes::hkbBehaviorInfoIdToNamePair(class) => class.name(),
+            Classes::hkbBehaviorReferenceGenerator(class) => class.name(),
+            Classes::hkbBindable(class) => class.name(),
+            Classes::hkbBlendCurveUtils(class) => class.name(),
+            Classes::hkbBlenderGenerator(class) => class.name(),
+            Classes::hkbBlenderGeneratorChild(class) => class.name(),
+            Classes::hkbBlenderGeneratorChildInternalState(class) => class.name(),
+            Classes::hkbBlenderGeneratorInternalState(class) => class.name(),
+            Classes::hkbBlendingTransitionEffect(class) => class.name(),
+            Classes::hkbBlendingTransitionEffectInternalState(class) => class.name(),
+            Classes::hkbBoneIndexArray(class) => class.name(),
+            Classes::hkbBoneWeightArray(class) => class.name(),
+            Classes::hkbBoolVariableSequencedData(class) => class.name(),
+            Classes::hkbBoolVariableSequencedDataSample(class) => class.name(),
+            Classes::hkbCameraShakeEventPayload(class) => class.name(),
+            Classes::hkbCharacter(class) => class.name(),
+            Classes::hkbCharacterAddedInfo(class) => class.name(),
+            Classes::hkbCharacterControlCommand(class) => class.name(),
+            Classes::hkbCharacterControllerControlData(class) => class.name(),
+            Classes::hkbCharacterControllerModifier(class) => class.name(),
+            Classes::hkbCharacterControllerModifierInternalState(class) => class.name(),
+            Classes::hkbCharacterData(class) => class.name(),
+            Classes::hkbCharacterDataCharacterControllerInfo(class) => class.name(),
+            Classes::hkbCharacterInfo(class) => class.name(),
+            Classes::hkbCharacterSetup(class) => class.name(),
+            Classes::hkbCharacterSkinInfo(class) => class.name(),
+            Classes::hkbCharacterSteppedInfo(class) => class.name(),
+            Classes::hkbCharacterStringData(class) => class.name(),
+            Classes::hkbClientCharacterState(class) => class.name(),
+            Classes::hkbClipGenerator(class) => class.name(),
+            Classes::hkbClipGeneratorEcho(class) => class.name(),
+            Classes::hkbClipGeneratorInternalState(class) => class.name(),
+            Classes::hkbClipTrigger(class) => class.name(),
+            Classes::hkbClipTriggerArray(class) => class.name(),
+            Classes::hkbCombineTransformsModifier(class) => class.name(),
+            Classes::hkbCombineTransformsModifierInternalState(class) => class.name(),
+            Classes::hkbCompiledExpressionSet(class) => class.name(),
+            Classes::hkbCompiledExpressionSetToken(class) => class.name(),
+            Classes::hkbComputeDirectionModifier(class) => class.name(),
+            Classes::hkbComputeDirectionModifierInternalState(class) => class.name(),
+            Classes::hkbComputeRotationFromAxisAngleModifier(class) => class.name(),
+            Classes::hkbComputeRotationFromAxisAngleModifierInternalState(class) => {
+                class.name()
+            }
+            Classes::hkbComputeRotationToTargetModifier(class) => class.name(),
+            Classes::hkbComputeRotationToTargetModifierInternalState(class) => {
+                class.name()
+            }
+            Classes::hkbCondition(class) => class.name(),
+            Classes::hkbContext(class) => class.name(),
+            Classes::hkbDampingModifier(class) => class.name(),
+            Classes::hkbDampingModifierInternalState(class) => class.name(),
+            Classes::hkbDefaultMessageLog(class) => class.name(),
+            Classes::hkbDelayedModifier(class) => class.name(),
+            Classes::hkbDelayedModifierInternalState(class) => class.name(),
+            Classes::hkbDetectCloseToGroundModifier(class) => class.name(),
+            Classes::hkbDetectCloseToGroundModifierInternalState(class) => class.name(),
+            Classes::hkbEvaluateExpressionModifier(class) => class.name(),
+            Classes::hkbEvaluateExpressionModifierInternalExpressionData(class) => {
+                class.name()
+            }
+            Classes::hkbEvaluateExpressionModifierInternalState(class) => class.name(),
+            Classes::hkbEvaluateHandleModifier(class) => class.name(),
+            Classes::hkbEvent(class) => class.name(),
+            Classes::hkbEventBase(class) => class.name(),
+            Classes::hkbEventDrivenModifier(class) => class.name(),
+            Classes::hkbEventDrivenModifierInternalState(class) => class.name(),
+            Classes::hkbEventInfo(class) => class.name(),
+            Classes::hkbEventPayload(class) => class.name(),
+            Classes::hkbEventPayloadList(class) => class.name(),
+            Classes::hkbEventProperty(class) => class.name(),
+            Classes::hkbEventRaisedInfo(class) => class.name(),
+            Classes::hkbEventRangeData(class) => class.name(),
+            Classes::hkbEventRangeDataArray(class) => class.name(),
+            Classes::hkbEventSequencedData(class) => class.name(),
+            Classes::hkbEventSequencedDataSequencedEvent(class) => class.name(),
+            Classes::hkbEventsFromRangeModifier(class) => class.name(),
+            Classes::hkbEventsFromRangeModifierInternalState(class) => class.name(),
+            Classes::hkbExpressionCondition(class) => class.name(),
+            Classes::hkbExpressionData(class) => class.name(),
+            Classes::hkbExpressionDataArray(class) => class.name(),
+            Classes::hkbExtractRagdollPoseModifier(class) => class.name(),
+            Classes::hkbFootIkControlData(class) => class.name(),
+            Classes::hkbFootIkControlsModifier(class) => class.name(),
+            Classes::hkbFootIkControlsModifierLeg(class) => class.name(),
+            Classes::hkbFootIkDriverInfo(class) => class.name(),
+            Classes::hkbFootIkDriverInfoLeg(class) => class.name(),
+            Classes::hkbFootIkGains(class) => class.name(),
+            Classes::hkbFootIkModifier(class) => class.name(),
+            Classes::hkbFootIkModifierInternalLegData(class) => class.name(),
+            Classes::hkbFootIkModifierLeg(class) => class.name(),
+            Classes::hkbGenerator(class) => class.name(),
+            Classes::hkbGeneratorOutputListener(class) => class.name(),
+            Classes::hkbGeneratorSyncInfo(class) => class.name(),
+            Classes::hkbGeneratorSyncInfoSyncPoint(class) => class.name(),
+            Classes::hkbGeneratorTransitionEffect(class) => class.name(),
+            Classes::hkbGeneratorTransitionEffectInternalState(class) => class.name(),
+            Classes::hkbGetHandleOnBoneModifier(class) => class.name(),
+            Classes::hkbGetUpModifier(class) => class.name(),
+            Classes::hkbGetUpModifierInternalState(class) => class.name(),
+            Classes::hkbGetWorldFromModelModifier(class) => class.name(),
+            Classes::hkbGetWorldFromModelModifierInternalState(class) => class.name(),
+            Classes::hkbHandIkControlData(class) => class.name(),
+            Classes::hkbHandIkControlsModifier(class) => class.name(),
+            Classes::hkbHandIkControlsModifierHand(class) => class.name(),
+            Classes::hkbHandIkDriverInfo(class) => class.name(),
+            Classes::hkbHandIkDriverInfoHand(class) => class.name(),
+            Classes::hkbHandIkModifier(class) => class.name(),
+            Classes::hkbHandIkModifierHand(class) => class.name(),
+            Classes::hkbHandle(class) => class.name(),
+            Classes::hkbIntEventPayload(class) => class.name(),
+            Classes::hkbIntVariableSequencedData(class) => class.name(),
+            Classes::hkbIntVariableSequencedDataSample(class) => class.name(),
+            Classes::hkBitField(class) => class.name(),
+            Classes::hkbKeyframeBonesModifier(class) => class.name(),
+            Classes::hkbKeyframeBonesModifierKeyframeInfo(class) => class.name(),
+            Classes::hkbLinkedSymbolInfo(class) => class.name(),
+            Classes::hkbLookAtModifier(class) => class.name(),
+            Classes::hkbLookAtModifierInternalState(class) => class.name(),
+            Classes::hkbManualSelectorGenerator(class) => class.name(),
+            Classes::hkbManualSelectorGeneratorInternalState(class) => class.name(),
+            Classes::hkbMessageLog(class) => class.name(),
+            Classes::hkbMirroredSkeletonInfo(class) => class.name(),
+            Classes::hkbMirrorModifier(class) => class.name(),
+            Classes::hkbModifier(class) => class.name(),
+            Classes::hkbModifierGenerator(class) => class.name(),
+            Classes::hkbModifierList(class) => class.name(),
+            Classes::hkbModifierWrapper(class) => class.name(),
+            Classes::hkbMoveCharacterModifier(class) => class.name(),
+            Classes::hkbMoveCharacterModifierInternalState(class) => class.name(),
+            Classes::hkbNamedEventPayload(class) => class.name(),
+            Classes::hkbNamedIntEventPayload(class) => class.name(),
+            Classes::hkbNamedRealEventPayload(class) => class.name(),
+            Classes::hkbNamedStringEventPayload(class) => class.name(),
+            Classes::hkbNode(class) => class.name(),
+            Classes::hkbNodeInternalStateInfo(class) => class.name(),
+            Classes::hkbParticleSystemEventPayload(class) => class.name(),
+            Classes::hkbPoseMatchingGenerator(class) => class.name(),
+            Classes::hkbPoseMatchingGeneratorInternalState(class) => class.name(),
+            Classes::hkbPoweredRagdollControlData(class) => class.name(),
+            Classes::hkbPoweredRagdollControlsModifier(class) => class.name(),
+            Classes::hkbProjectData(class) => class.name(),
+            Classes::hkbProjectStringData(class) => class.name(),
+            Classes::hkbProxyModifier(class) => class.name(),
+            Classes::hkbProxyModifierProxyInfo(class) => class.name(),
+            Classes::hkbRaiseEventCommand(class) => class.name(),
+            Classes::hkbRealEventPayload(class) => class.name(),
+            Classes::hkbRealVariableSequencedData(class) => class.name(),
+            Classes::hkbRealVariableSequencedDataSample(class) => class.name(),
+            Classes::hkbReferencePoseGenerator(class) => class.name(),
+            Classes::hkbRegisteredGenerator(class) => class.name(),
+            Classes::hkbRigidBodyRagdollControlData(class) => class.name(),
+            Classes::hkbRigidBodyRagdollControlsModifier(class) => class.name(),
+            Classes::hkbRoleAttribute(class) => class.name(),
+            Classes::hkbRotateCharacterModifier(class) => class.name(),
+            Classes::hkbRotateCharacterModifierInternalState(class) => class.name(),
+            Classes::hkbSenseHandleModifier(class) => class.name(),
+            Classes::hkbSenseHandleModifierRange(class) => class.name(),
+            Classes::hkbSequence(class) => class.name(),
+            Classes::hkbSequencedData(class) => class.name(),
+            Classes::hkbSequenceInternalState(class) => class.name(),
+            Classes::hkbSequenceStringData(class) => class.name(),
+            Classes::hkbSetBehaviorCommand(class) => class.name(),
+            Classes::hkbSetLocalTimeOfClipGeneratorCommand(class) => class.name(),
+            Classes::hkbSetNodePropertyCommand(class) => class.name(),
+            Classes::hkbSetWordVariableCommand(class) => class.name(),
+            Classes::hkbSetWorldFromModelModifier(class) => class.name(),
+            Classes::hkbSimulationControlCommand(class) => class.name(),
+            Classes::hkbSimulationStateInfo(class) => class.name(),
+            Classes::hkbStateChooser(class) => class.name(),
+            Classes::hkbStateListener(class) => class.name(),
+            Classes::hkbStateMachine(class) => class.name(),
+            Classes::hkbStateMachineActiveTransitionInfo(class) => class.name(),
+            Classes::hkbStateMachineDelayedTransitionInfo(class) => class.name(),
+            Classes::hkbStateMachineEventPropertyArray(class) => class.name(),
+            Classes::hkbStateMachineInternalState(class) => class.name(),
+            Classes::hkbStateMachineNestedStateMachineData(class) => class.name(),
+            Classes::hkbStateMachineProspectiveTransitionInfo(class) => class.name(),
+            Classes::hkbStateMachineStateInfo(class) => class.name(),
+            Classes::hkbStateMachineTimeInterval(class) => class.name(),
+            Classes::hkbStateMachineTransitionInfo(class) => class.name(),
+            Classes::hkbStateMachineTransitionInfoArray(class) => class.name(),
+            Classes::hkbStateMachineTransitionInfoReference(class) => class.name(),
+            Classes::hkbStringCondition(class) => class.name(),
+            Classes::hkbStringEventPayload(class) => class.name(),
+            Classes::hkbTestStateChooser(class) => class.name(),
+            Classes::hkbTimerModifier(class) => class.name(),
+            Classes::hkbTimerModifierInternalState(class) => class.name(),
+            Classes::hkbTransformVectorModifier(class) => class.name(),
+            Classes::hkbTransformVectorModifierInternalState(class) => class.name(),
+            Classes::hkbTransitionEffect(class) => class.name(),
+            Classes::hkbTwistModifier(class) => class.name(),
+            Classes::hkbVariableBindingSet(class) => class.name(),
+            Classes::hkbVariableBindingSetBinding(class) => class.name(),
+            Classes::hkbVariableInfo(class) => class.name(),
+            Classes::hkbVariableValue(class) => class.name(),
+            Classes::hkbVariableValueSet(class) => class.name(),
+            Classes::hkbWorldEnums(class) => class.name(),
+            Classes::hkbWorldFromModelModeData(class) => class.name(),
+            Classes::hkClass(class) => class.name(),
+            Classes::hkClassEnum(class) => class.name(),
+            Classes::hkClassEnumItem(class) => class.name(),
+            Classes::hkClassMember(class) => class.name(),
+            Classes::hkColor(class) => class.name(),
+            Classes::hkContactPoint(class) => class.name(),
+            Classes::hkContactPointMaterial(class) => class.name(),
+            Classes::hkCustomAttributes(class) => class.name(),
+            Classes::hkCustomAttributesAttribute(class) => class.name(),
+            Classes::hkDataObjectTypeAttribute(class) => class.name(),
+            Classes::hkDescriptionAttribute(class) => class.name(),
+            Classes::hkDocumentationAttribute(class) => class.name(),
+            Classes::hkGeometry(class) => class.name(),
+            Classes::hkGeometryTriangle(class) => class.name(),
+            Classes::hkGizmoAttribute(class) => class.name(),
+            Classes::hkHalf8(class) => class.name(),
+            Classes::hkIndexedTransformSet(class) => class.name(),
+            Classes::hkLinkAttribute(class) => class.name(),
+            Classes::hkLocalFrame(class) => class.name(),
+            Classes::hkLocalFrameGroup(class) => class.name(),
+            Classes::hkMemoryMeshBody(class) => class.name(),
+            Classes::hkMemoryMeshMaterial(class) => class.name(),
+            Classes::hkMemoryMeshShape(class) => class.name(),
+            Classes::hkMemoryMeshTexture(class) => class.name(),
+            Classes::hkMemoryMeshVertexBuffer(class) => class.name(),
+            Classes::hkMemoryResourceContainer(class) => class.name(),
+            Classes::hkMemoryResourceHandle(class) => class.name(),
+            Classes::hkMemoryResourceHandleExternalLink(class) => class.name(),
+            Classes::hkMemoryTrackerAttribute(class) => class.name(),
+            Classes::hkMeshBody(class) => class.name(),
+            Classes::hkMeshBoneIndexMapping(class) => class.name(),
+            Classes::hkMeshMaterial(class) => class.name(),
+            Classes::hkMeshSection(class) => class.name(),
+            Classes::hkMeshSectionCinfo(class) => class.name(),
+            Classes::hkMeshShape(class) => class.name(),
+            Classes::hkMeshTexture(class) => class.name(),
+            Classes::hkMeshVertexBuffer(class) => class.name(),
+            Classes::hkModelerNodeTypeAttribute(class) => class.name(),
+            Classes::hkMonitorStreamColorTable(class) => class.name(),
+            Classes::hkMonitorStreamColorTableColorPair(class) => class.name(),
+            Classes::hkMonitorStreamFrameInfo(class) => class.name(),
+            Classes::hkMonitorStreamStringMap(class) => class.name(),
+            Classes::hkMonitorStreamStringMapStringMap(class) => class.name(),
+            Classes::hkMoppBvTreeShapeBase(class) => class.name(),
+            Classes::hkMotionState(class) => class.name(),
+            Classes::hkMultipleVertexBuffer(class) => class.name(),
+            Classes::hkMultipleVertexBufferElementInfo(class) => class.name(),
+            Classes::hkMultipleVertexBufferLockedElement(class) => class.name(),
+            Classes::hkMultipleVertexBufferVertexBufferInfo(class) => class.name(),
+            Classes::hkMultiThreadCheck(class) => class.name(),
+            Classes::hkp2dAngConstraintAtom(class) => class.name(),
+            Classes::hkpAabbPhantom(class) => class.name(),
+            Classes::hkPackedVector3(class) => class.name(),
+            Classes::hkPackfileHeader(class) => class.name(),
+            Classes::hkPackfileSectionHeader(class) => class.name(),
+            Classes::hkpAction(class) => class.name(),
+            Classes::hkpAgent1nSector(class) => class.name(),
+            Classes::hkpAngConstraintAtom(class) => class.name(),
+            Classes::hkpAngFrictionConstraintAtom(class) => class.name(),
+            Classes::hkpAngLimitConstraintAtom(class) => class.name(),
+            Classes::hkpAngMotorConstraintAtom(class) => class.name(),
+            Classes::hkpAngularDashpotAction(class) => class.name(),
+            Classes::hkpArrayAction(class) => class.name(),
+            Classes::hkpBallAndSocketConstraintData(class) => class.name(),
+            Classes::hkpBallAndSocketConstraintDataAtoms(class) => class.name(),
+            Classes::hkpBallGun(class) => class.name(),
+            Classes::hkpBallSocketChainData(class) => class.name(),
+            Classes::hkpBallSocketChainDataConstraintInfo(class) => class.name(),
+            Classes::hkpBallSocketConstraintAtom(class) => class.name(),
+            Classes::hkpBinaryAction(class) => class.name(),
+            Classes::hkpBoxMotion(class) => class.name(),
+            Classes::hkpBoxShape(class) => class.name(),
+            Classes::hkpBreakableBody(class) => class.name(),
+            Classes::hkpBreakableConstraintData(class) => class.name(),
+            Classes::hkpBridgeAtoms(class) => class.name(),
+            Classes::hkpBridgeConstraintAtom(class) => class.name(),
+            Classes::hkpBroadPhaseHandle(class) => class.name(),
+            Classes::hkpBvShape(class) => class.name(),
+            Classes::hkpBvTreeShape(class) => class.name(),
+            Classes::hkpCachingShapePhantom(class) => class.name(),
+            Classes::hkpCallbackConstraintMotor(class) => class.name(),
+            Classes::hkpCapsuleShape(class) => class.name(),
+            Classes::hkpCdBody(class) => class.name(),
+            Classes::hkpCenterOfMassChangerModifierConstraintAtom(class) => class.name(),
+            Classes::hkpCharacterControllerCinfo(class) => class.name(),
+            Classes::hkpCharacterMotion(class) => class.name(),
+            Classes::hkpCharacterProxyCinfo(class) => class.name(),
+            Classes::hkpCharacterRigidBodyCinfo(class) => class.name(),
+            Classes::hkpCogWheelConstraintAtom(class) => class.name(),
+            Classes::hkpCogWheelConstraintData(class) => class.name(),
+            Classes::hkpCogWheelConstraintDataAtoms(class) => class.name(),
+            Classes::hkpCollidable(class) => class.name(),
+            Classes::hkpCollidableBoundingVolumeData(class) => class.name(),
+            Classes::hkpCollidableCollidableFilter(class) => class.name(),
+            Classes::hkpCollisionFilter(class) => class.name(),
+            Classes::hkpCollisionFilterList(class) => class.name(),
+            Classes::hkpCompressedMeshShape(class) => class.name(),
+            Classes::hkpCompressedMeshShapeBigTriangle(class) => class.name(),
+            Classes::hkpCompressedMeshShapeChunk(class) => class.name(),
+            Classes::hkpCompressedMeshShapeConvexPiece(class) => class.name(),
+            Classes::hkpCompressedSampledHeightFieldShape(class) => class.name(),
+            Classes::hkpConeLimitConstraintAtom(class) => class.name(),
+            Classes::hkpConstrainedSystemFilter(class) => class.name(),
+            Classes::hkpConstraintAtom(class) => class.name(),
+            Classes::hkpConstraintChainData(class) => class.name(),
+            Classes::hkpConstraintChainInstance(class) => class.name(),
+            Classes::hkpConstraintChainInstanceAction(class) => class.name(),
+            Classes::hkpConstraintCollisionFilter(class) => class.name(),
+            Classes::hkpConstraintData(class) => class.name(),
+            Classes::hkpConstraintInstance(class) => class.name(),
+            Classes::hkpConstraintInstanceSmallArraySerializeOverrideType(class) => {
+                class.name()
+            }
+            Classes::hkpConstraintMotor(class) => class.name(),
+            Classes::hkpConvexListFilter(class) => class.name(),
+            Classes::hkpConvexListShape(class) => class.name(),
+            Classes::hkpConvexPieceMeshShape(class) => class.name(),
+            Classes::hkpConvexPieceStreamData(class) => class.name(),
+            Classes::hkpConvexShape(class) => class.name(),
+            Classes::hkpConvexTransformShape(class) => class.name(),
+            Classes::hkpConvexTransformShapeBase(class) => class.name(),
+            Classes::hkpConvexTranslateShape(class) => class.name(),
+            Classes::hkpConvexVerticesConnectivity(class) => class.name(),
+            Classes::hkpConvexVerticesShape(class) => class.name(),
+            Classes::hkpConvexVerticesShapeFourVectors(class) => class.name(),
+            Classes::hkpCylinderShape(class) => class.name(),
+            Classes::hkpDashpotAction(class) => class.name(),
+            Classes::hkpDefaultConvexListFilter(class) => class.name(),
+            Classes::hkpDefaultWorldMemoryWatchDog(class) => class.name(),
+            Classes::hkpDisableEntityCollisionFilter(class) => class.name(),
+            Classes::hkpDisplayBindingData(class) => class.name(),
+            Classes::hkpDisplayBindingDataPhysicsSystem(class) => class.name(),
+            Classes::hkpDisplayBindingDataRigidBody(class) => class.name(),
+            Classes::hkpEntity(class) => class.name(),
+            Classes::hkpEntityExtendedListeners(class) => class.name(),
+            Classes::hkpEntitySmallArraySerializeOverrideType(class) => class.name(),
+            Classes::hkpEntitySpuCollisionCallback(class) => class.name(),
+            Classes::hkpExtendedMeshShape(class) => class.name(),
+            Classes::hkpExtendedMeshShapeShapesSubpart(class) => class.name(),
+            Classes::hkpExtendedMeshShapeSubpart(class) => class.name(),
+            Classes::hkpExtendedMeshShapeTrianglesSubpart(class) => class.name(),
+            Classes::hkpFastMeshShape(class) => class.name(),
+            Classes::hkpFirstPersonGun(class) => class.name(),
+            Classes::hkpFixedRigidMotion(class) => class.name(),
+            Classes::hkpGenericConstraintData(class) => class.name(),
+            Classes::hkpGenericConstraintDataScheme(class) => class.name(),
+            Classes::hkpGenericConstraintDataSchemeConstraintInfo(class) => class.name(),
+            Classes::hkpGravityGun(class) => class.name(),
+            Classes::hkpGroupCollisionFilter(class) => class.name(),
+            Classes::hkpGroupFilter(class) => class.name(),
+            Classes::hkpHeightFieldShape(class) => class.name(),
+            Classes::hkpHingeConstraintData(class) => class.name(),
+            Classes::hkpHingeConstraintDataAtoms(class) => class.name(),
+            Classes::hkpHingeLimitsData(class) => class.name(),
+            Classes::hkpHingeLimitsDataAtoms(class) => class.name(),
+            Classes::hkpIgnoreModifierConstraintAtom(class) => class.name(),
+            Classes::hkpKeyframedRigidMotion(class) => class.name(),
+            Classes::hkpLimitedForceConstraintMotor(class) => class.name(),
+            Classes::hkpLimitedHingeConstraintData(class) => class.name(),
+            Classes::hkpLimitedHingeConstraintDataAtoms(class) => class.name(),
+            Classes::hkpLinConstraintAtom(class) => class.name(),
+            Classes::hkpLinearParametricCurve(class) => class.name(),
+            Classes::hkpLinFrictionConstraintAtom(class) => class.name(),
+            Classes::hkpLinkedCollidable(class) => class.name(),
+            Classes::hkpLinLimitConstraintAtom(class) => class.name(),
+            Classes::hkpLinMotorConstraintAtom(class) => class.name(),
+            Classes::hkpLinSoftConstraintAtom(class) => class.name(),
+            Classes::hkpListShape(class) => class.name(),
+            Classes::hkpListShapeChildInfo(class) => class.name(),
+            Classes::hkpMalleableConstraintData(class) => class.name(),
+            Classes::hkpMassChangerModifierConstraintAtom(class) => class.name(),
+            Classes::hkpMassProperties(class) => class.name(),
+            Classes::hkpMaterial(class) => class.name(),
+            Classes::hkpMaxSizeMotion(class) => class.name(),
+            Classes::hkpMeshMaterial(class) => class.name(),
+            Classes::hkpMeshShape(class) => class.name(),
+            Classes::hkpMeshShapeSubpart(class) => class.name(),
+            Classes::hkpModifierConstraintAtom(class) => class.name(),
+            Classes::hkpMoppBvTreeShape(class) => class.name(),
+            Classes::hkpMoppCode(class) => class.name(),
+            Classes::hkpMoppCodeCodeInfo(class) => class.name(),
+            Classes::hkpMoppCodeReindexedTerminal(class) => class.name(),
+            Classes::hkpMotion(class) => class.name(),
+            Classes::hkpMotorAction(class) => class.name(),
+            Classes::hkpMountedBallGun(class) => class.name(),
+            Classes::hkpMouseSpringAction(class) => class.name(),
+            Classes::hkpMovingSurfaceModifierConstraintAtom(class) => class.name(),
+            Classes::hkpMultiRayShape(class) => class.name(),
+            Classes::hkpMultiRayShapeRay(class) => class.name(),
+            Classes::hkpMultiSphereShape(class) => class.name(),
+            Classes::hkpMultithreadedVehicleManager(class) => class.name(),
+            Classes::hkpNamedMeshMaterial(class) => class.name(),
+            Classes::hkpNullCollisionFilter(class) => class.name(),
+            Classes::hkPostFinishAttribute(class) => class.name(),
+            Classes::hkpOverwritePivotConstraintAtom(class) => class.name(),
+            Classes::hkpPairCollisionFilter(class) => class.name(),
+            Classes::hkpPairCollisionFilterMapPairFilterKeyOverrideType(class) => {
+                class.name()
+            }
+            Classes::hkpParametricCurve(class) => class.name(),
+            Classes::hkpPhantom(class) => class.name(),
+            Classes::hkpPhantomCallbackShape(class) => class.name(),
+            Classes::hkpPhysicsData(class) => class.name(),
+            Classes::hkpPhysicsSystem(class) => class.name(),
+            Classes::hkpPhysicsSystemWithContacts(class) => class.name(),
+            Classes::hkpPlaneShape(class) => class.name(),
+            Classes::hkpPointToPathConstraintData(class) => class.name(),
+            Classes::hkpPointToPlaneConstraintData(class) => class.name(),
+            Classes::hkpPointToPlaneConstraintDataAtoms(class) => class.name(),
+            Classes::hkpPositionConstraintMotor(class) => class.name(),
+            Classes::hkpPoweredChainData(class) => class.name(),
+            Classes::hkpPoweredChainDataConstraintInfo(class) => class.name(),
+            Classes::hkpPoweredChainMapper(class) => class.name(),
+            Classes::hkpPoweredChainMapperLinkInfo(class) => class.name(),
+            Classes::hkpPoweredChainMapperTarget(class) => class.name(),
+            Classes::hkpPrismaticConstraintData(class) => class.name(),
+            Classes::hkpPrismaticConstraintDataAtoms(class) => class.name(),
+            Classes::hkpProjectileGun(class) => class.name(),
+            Classes::hkpProperty(class) => class.name(),
+            Classes::hkpPropertyValue(class) => class.name(),
+            Classes::hkpPulleyConstraintAtom(class) => class.name(),
+            Classes::hkpPulleyConstraintData(class) => class.name(),
+            Classes::hkpPulleyConstraintDataAtoms(class) => class.name(),
+            Classes::hkpRackAndPinionConstraintAtom(class) => class.name(),
+            Classes::hkpRackAndPinionConstraintData(class) => class.name(),
+            Classes::hkpRackAndPinionConstraintDataAtoms(class) => class.name(),
+            Classes::hkpRagdollConstraintData(class) => class.name(),
+            Classes::hkpRagdollConstraintDataAtoms(class) => class.name(),
+            Classes::hkpRagdollLimitsData(class) => class.name(),
+            Classes::hkpRagdollLimitsDataAtoms(class) => class.name(),
+            Classes::hkpRagdollMotorConstraintAtom(class) => class.name(),
+            Classes::hkpRayCollidableFilter(class) => class.name(),
+            Classes::hkpRayShapeCollectionFilter(class) => class.name(),
+            Classes::hkpRejectChassisListener(class) => class.name(),
+            Classes::hkpRemoveTerminalsMoppModifier(class) => class.name(),
+            Classes::hkpReorientAction(class) => class.name(),
+            Classes::hkpRigidBody(class) => class.name(),
+            Classes::hkpRotationalConstraintData(class) => class.name(),
+            Classes::hkpRotationalConstraintDataAtoms(class) => class.name(),
+            Classes::hkpSampledHeightFieldShape(class) => class.name(),
+            Classes::hkpSerializedAgentNnEntry(class) => class.name(),
+            Classes::hkpSerializedDisplayMarker(class) => class.name(),
+            Classes::hkpSerializedDisplayMarkerList(class) => class.name(),
+            Classes::hkpSerializedDisplayRbTransforms(class) => class.name(),
+            Classes::hkpSerializedDisplayRbTransformsDisplayTransformPair(class) => {
+                class.name()
+            }
+            Classes::hkpSerializedSubTrack1nInfo(class) => class.name(),
+            Classes::hkpSerializedTrack1nInfo(class) => class.name(),
+            Classes::hkpSetLocalRotationsConstraintAtom(class) => class.name(),
+            Classes::hkpSetLocalTransformsConstraintAtom(class) => class.name(),
+            Classes::hkpSetLocalTranslationsConstraintAtom(class) => class.name(),
+            Classes::hkpSetupStabilizationAtom(class) => class.name(),
+            Classes::hkpShape(class) => class.name(),
+            Classes::hkpShapeCollection(class) => class.name(),
+            Classes::hkpShapeCollectionFilter(class) => class.name(),
+            Classes::hkpShapeContainer(class) => class.name(),
+            Classes::hkpShapeInfo(class) => class.name(),
+            Classes::hkpShapeModifier(class) => class.name(),
+            Classes::hkpShapePhantom(class) => class.name(),
+            Classes::hkpSimpleContactConstraintAtom(class) => class.name(),
+            Classes::hkpSimpleContactConstraintDataInfo(class) => class.name(),
+            Classes::hkpSimpleMeshShape(class) => class.name(),
+            Classes::hkpSimpleMeshShapeTriangle(class) => class.name(),
+            Classes::hkpSimpleShapePhantom(class) => class.name(),
+            Classes::hkpSimpleShapePhantomCollisionDetail(class) => class.name(),
+            Classes::hkpSimulation(class) => class.name(),
+            Classes::hkpSingleShapeContainer(class) => class.name(),
+            Classes::hkpSoftContactModifierConstraintAtom(class) => class.name(),
+            Classes::hkpSphereMotion(class) => class.name(),
+            Classes::hkpSphereRepShape(class) => class.name(),
+            Classes::hkpSphereShape(class) => class.name(),
+            Classes::hkpSpringAction(class) => class.name(),
+            Classes::hkpSpringDamperConstraintMotor(class) => class.name(),
+            Classes::hkpStiffSpringChainData(class) => class.name(),
+            Classes::hkpStiffSpringChainDataConstraintInfo(class) => class.name(),
+            Classes::hkpStiffSpringConstraintAtom(class) => class.name(),
+            Classes::hkpStiffSpringConstraintData(class) => class.name(),
+            Classes::hkpStiffSpringConstraintDataAtoms(class) => class.name(),
+            Classes::hkpStorageExtendedMeshShape(class) => class.name(),
+            Classes::hkpStorageExtendedMeshShapeMaterial(class) => class.name(),
+            Classes::hkpStorageExtendedMeshShapeMeshSubpartStorage(class) => class.name(),
+            Classes::hkpStorageExtendedMeshShapeShapeSubpartStorage(class) => {
+                class.name()
+            }
+            Classes::hkpStorageMeshShape(class) => class.name(),
+            Classes::hkpStorageMeshShapeSubpartStorage(class) => class.name(),
+            Classes::hkpStorageSampledHeightFieldShape(class) => class.name(),
+            Classes::hkpThinBoxMotion(class) => class.name(),
+            Classes::hkpTransformShape(class) => class.name(),
+            Classes::hkpTriangleShape(class) => class.name(),
+            Classes::hkpTriggerVolume(class) => class.name(),
+            Classes::hkpTriggerVolumeEventInfo(class) => class.name(),
+            Classes::hkpTriSampledHeightFieldBvTreeShape(class) => class.name(),
+            Classes::hkpTriSampledHeightFieldCollection(class) => class.name(),
+            Classes::hkpTwistLimitConstraintAtom(class) => class.name(),
+            Classes::hkpTypedBroadPhaseHandle(class) => class.name(),
+            Classes::hkpTyremarkPoint(class) => class.name(),
+            Classes::hkpTyremarksInfo(class) => class.name(),
+            Classes::hkpTyremarksWheel(class) => class.name(),
+            Classes::hkpUnaryAction(class) => class.name(),
+            Classes::hkpVehicleAerodynamics(class) => class.name(),
+            Classes::hkpVehicleBrake(class) => class.name(),
+            Classes::hkpVehicleCastBatchingManager(class) => class.name(),
+            Classes::hkpVehicleData(class) => class.name(),
+            Classes::hkpVehicleDataWheelComponentParams(class) => class.name(),
+            Classes::hkpVehicleDefaultAerodynamics(class) => class.name(),
+            Classes::hkpVehicleDefaultAnalogDriverInput(class) => class.name(),
+            Classes::hkpVehicleDefaultBrake(class) => class.name(),
+            Classes::hkpVehicleDefaultBrakeWheelBrakingProperties(class) => class.name(),
+            Classes::hkpVehicleDefaultEngine(class) => class.name(),
+            Classes::hkpVehicleDefaultSteering(class) => class.name(),
+            Classes::hkpVehicleDefaultSuspension(class) => class.name(),
+            Classes::hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters(
+                class,
+            ) => class.name(),
+            Classes::hkpVehicleDefaultTransmission(class) => class.name(),
+            Classes::hkpVehicleDefaultVelocityDamper(class) => class.name(),
+            Classes::hkpVehicleDriverInput(class) => class.name(),
+            Classes::hkpVehicleDriverInputAnalogStatus(class) => class.name(),
+            Classes::hkpVehicleDriverInputStatus(class) => class.name(),
+            Classes::hkpVehicleEngine(class) => class.name(),
+            Classes::hkpVehicleFrictionDescription(class) => class.name(),
+            Classes::hkpVehicleFrictionDescriptionAxisDescription(class) => class.name(),
+            Classes::hkpVehicleFrictionStatus(class) => class.name(),
+            Classes::hkpVehicleFrictionStatusAxisStatus(class) => class.name(),
+            Classes::hkpVehicleInstance(class) => class.name(),
+            Classes::hkpVehicleInstanceWheelInfo(class) => class.name(),
+            Classes::hkpVehicleLinearCastBatchingManager(class) => class.name(),
+            Classes::hkpVehicleLinearCastWheelCollide(class) => class.name(),
+            Classes::hkpVehicleLinearCastWheelCollideWheelState(class) => class.name(),
+            Classes::hkpVehicleManager(class) => class.name(),
+            Classes::hkpVehicleRayCastBatchingManager(class) => class.name(),
+            Classes::hkpVehicleRayCastWheelCollide(class) => class.name(),
+            Classes::hkpVehicleSteering(class) => class.name(),
+            Classes::hkpVehicleSuspension(class) => class.name(),
+            Classes::hkpVehicleSuspensionSuspensionWheelParameters(class) => class.name(),
+            Classes::hkpVehicleTransmission(class) => class.name(),
+            Classes::hkpVehicleVelocityDamper(class) => class.name(),
+            Classes::hkpVehicleWheelCollide(class) => class.name(),
+            Classes::hkpVelocityConstraintMotor(class) => class.name(),
+            Classes::hkpViscousSurfaceModifierConstraintAtom(class) => class.name(),
+            Classes::hkpWeldingUtility(class) => class.name(),
+            Classes::hkpWheelConstraintData(class) => class.name(),
+            Classes::hkpWheelConstraintDataAtoms(class) => class.name(),
+            Classes::hkpWorld(class) => class.name(),
+            Classes::hkpWorldCinfo(class) => class.name(),
+            Classes::hkpWorldObject(class) => class.name(),
+            Classes::hkQTransform(class) => class.name(),
+            Classes::hkRangeInt32Attribute(class) => class.name(),
+            Classes::hkRangeRealAttribute(class) => class.name(),
+            Classes::hkReferencedObject(class) => class.name(),
+            Classes::hkReflectedFileAttribute(class) => class.name(),
+            Classes::hkResourceBase(class) => class.name(),
+            Classes::hkResourceContainer(class) => class.name(),
+            Classes::hkResourceHandle(class) => class.name(),
+            Classes::hkRootLevelContainer(class) => class.name(),
+            Classes::hkRootLevelContainerNamedVariant(class) => class.name(),
+            Classes::hkSemanticsAttribute(class) => class.name(),
+            Classes::hkSimpleLocalFrame(class) => class.name(),
+            Classes::hkSphere(class) => class.name(),
+            Classes::hkSweptTransform(class) => class.name(),
+            Classes::hkTraceStreamTitle(class) => class.name(),
+            Classes::hkTrackerSerializableScanSnapshot(class) => class.name(),
+            Classes::hkTrackerSerializableScanSnapshotAllocation(class) => class.name(),
+            Classes::hkTrackerSerializableScanSnapshotBlock(class) => class.name(),
+            Classes::hkUiAttribute(class) => class.name(),
+            Classes::hkVertexFormat(class) => class.name(),
+            Classes::hkVertexFormatElement(class) => class.name(),
+            Classes::hkWorldMemoryAvailableWatchDog(class) => class.name(),
+            Classes::hkxAnimatedFloat(class) => class.name(),
+            Classes::hkxAnimatedMatrix(class) => class.name(),
+            Classes::hkxAnimatedQuaternion(class) => class.name(),
+            Classes::hkxAnimatedVector(class) => class.name(),
+            Classes::hkxAttribute(class) => class.name(),
+            Classes::hkxAttributeGroup(class) => class.name(),
+            Classes::hkxAttributeHolder(class) => class.name(),
+            Classes::hkxCamera(class) => class.name(),
+            Classes::hkxEdgeSelectionChannel(class) => class.name(),
+            Classes::hkxEnum(class) => class.name(),
+            Classes::hkxEnumItem(class) => class.name(),
+            Classes::hkxEnvironment(class) => class.name(),
+            Classes::hkxEnvironmentVariable(class) => class.name(),
+            Classes::hkxIndexBuffer(class) => class.name(),
+            Classes::hkxLight(class) => class.name(),
+            Classes::hkxMaterial(class) => class.name(),
+            Classes::hkxMaterialEffect(class) => class.name(),
+            Classes::hkxMaterialProperty(class) => class.name(),
+            Classes::hkxMaterialShader(class) => class.name(),
+            Classes::hkxMaterialShaderSet(class) => class.name(),
+            Classes::hkxMaterialTextureStage(class) => class.name(),
+            Classes::hkxMesh(class) => class.name(),
+            Classes::hkxMeshSection(class) => class.name(),
+            Classes::hkxMeshUserChannelInfo(class) => class.name(),
+            Classes::hkxNode(class) => class.name(),
+            Classes::hkxNodeAnnotationData(class) => class.name(),
+            Classes::hkxNodeSelectionSet(class) => class.name(),
+            Classes::hkxScene(class) => class.name(),
+            Classes::hkxSkinBinding(class) => class.name(),
+            Classes::hkxSparselyAnimatedBool(class) => class.name(),
+            Classes::hkxSparselyAnimatedEnum(class) => class.name(),
+            Classes::hkxSparselyAnimatedInt(class) => class.name(),
+            Classes::hkxSparselyAnimatedString(class) => class.name(),
+            Classes::hkxTextureFile(class) => class.name(),
+            Classes::hkxTextureInplace(class) => class.name(),
+            Classes::hkxTriangleSelectionChannel(class) => class.name(),
+            Classes::hkxVertexBuffer(class) => class.name(),
+            Classes::hkxVertexBufferVertexData(class) => class.name(),
+            Classes::hkxVertexDescription(class) => class.name(),
+            Classes::hkxVertexDescriptionElementDecl(class) => class.name(),
+            Classes::hkxVertexFloatDataChannel(class) => class.name(),
+            Classes::hkxVertexIntDataChannel(class) => class.name(),
+            Classes::hkxVertexSelectionChannel(class) => class.name(),
+            Classes::hkxVertexVectorDataChannel(class) => class.name(),
+        }
+    }
+    fn signature(&self) -> _serde::__private::Signature {
+        match &self {
+            Classes::BGSGamebryoSequenceGenerator(class) => class.signature(),
+            Classes::BSBoneSwitchGenerator(class) => class.signature(),
+            Classes::BSBoneSwitchGeneratorBoneData(class) => class.signature(),
+            Classes::BSComputeAddBoneAnimModifier(class) => class.signature(),
+            Classes::BSCyclicBlendTransitionGenerator(class) => class.signature(),
+            Classes::BSDecomposeVectorModifier(class) => class.signature(),
+            Classes::BSDirectAtModifier(class) => class.signature(),
+            Classes::BSDistTriggerModifier(class) => class.signature(),
+            Classes::BSEventEveryNEventsModifier(class) => class.signature(),
+            Classes::BSEventOnDeactivateModifier(class) => class.signature(),
+            Classes::BSEventOnFalseToTrueModifier(class) => class.signature(),
+            Classes::BSGetTimeStepModifier(class) => class.signature(),
+            Classes::BSInterpValueModifier(class) => class.signature(),
+            Classes::BSIsActiveModifier(class) => class.signature(),
+            Classes::BSIStateManagerModifier(class) => class.signature(),
+            Classes::BSIStateManagerModifierBSiStateData(class) => class.signature(),
+            Classes::BSIStateManagerModifierBSIStateManagerStateListener(class) => {
+                class.signature()
+            }
+            Classes::BSiStateTaggingGenerator(class) => class.signature(),
+            Classes::BSLimbIKModifier(class) => class.signature(),
+            Classes::BSLookAtModifier(class) => class.signature(),
+            Classes::BSLookAtModifierBoneData(class) => class.signature(),
+            Classes::BSModifyOnceModifier(class) => class.signature(),
+            Classes::BSOffsetAnimationGenerator(class) => class.signature(),
+            Classes::BSPassByTargetTriggerModifier(class) => class.signature(),
+            Classes::BSRagdollContactListenerModifier(class) => class.signature(),
+            Classes::BSSpeedSamplerModifier(class) => class.signature(),
+            Classes::BSSynchronizedClipGenerator(class) => class.signature(),
+            Classes::BSTimerModifier(class) => class.signature(),
+            Classes::BSTweenerModifier(class) => class.signature(),
+            Classes::hkAabb(class) => class.signature(),
+            Classes::hkAabbHalf(class) => class.signature(),
+            Classes::hkAabbUint32(class) => class.signature(),
+            Classes::hkaAnimatedReferenceFrame(class) => class.signature(),
+            Classes::hkaAnimation(class) => class.signature(),
+            Classes::hkaAnimationBinding(class) => class.signature(),
+            Classes::hkaAnimationContainer(class) => class.signature(),
+            Classes::hkaAnimationPreviewColorContainer(class) => class.signature(),
+            Classes::hkaAnnotationTrack(class) => class.signature(),
+            Classes::hkaAnnotationTrackAnnotation(class) => class.signature(),
+            Classes::hkaBone(class) => class.signature(),
+            Classes::hkaBoneAttachment(class) => class.signature(),
+            Classes::hkaDefaultAnimatedReferenceFrame(class) => class.signature(),
+            Classes::hkaDeltaCompressedAnimation(class) => class.signature(),
+            Classes::hkaDeltaCompressedAnimationQuantizationFormat(class) => {
+                class.signature()
+            }
+            Classes::hkaFootstepAnalysisInfo(class) => class.signature(),
+            Classes::hkaFootstepAnalysisInfoContainer(class) => class.signature(),
+            Classes::hkaInterleavedUncompressedAnimation(class) => class.signature(),
+            Classes::hkaKeyFrameHierarchyUtility(class) => class.signature(),
+            Classes::hkaKeyFrameHierarchyUtilityControlData(class) => class.signature(),
+            Classes::hkAlignSceneToNodeOptions(class) => class.signature(),
+            Classes::hkaMeshBinding(class) => class.signature(),
+            Classes::hkaMeshBindingMapping(class) => class.signature(),
+            Classes::hkaQuantizedAnimation(class) => class.signature(),
+            Classes::hkaQuantizedAnimationTrackCompressionParams(class) => {
+                class.signature()
+            }
+            Classes::hkaRagdollInstance(class) => class.signature(),
+            Classes::hkArrayTypeAttribute(class) => class.signature(),
+            Classes::hkaSkeleton(class) => class.signature(),
+            Classes::hkaSkeletonLocalFrameOnBone(class) => class.signature(),
+            Classes::hkaSkeletonMapper(class) => class.signature(),
+            Classes::hkaSkeletonMapperData(class) => class.signature(),
+            Classes::hkaSkeletonMapperDataChainMapping(class) => class.signature(),
+            Classes::hkaSkeletonMapperDataSimpleMapping(class) => class.signature(),
+            Classes::hkaSplineCompressedAnimation(class) => class.signature(),
+            Classes::hkaSplineCompressedAnimationAnimationCompressionParams(class) => {
+                class.signature()
+            }
+            Classes::hkaSplineCompressedAnimationTrackCompressionParams(class) => {
+                class.signature()
+            }
+            Classes::hkaWaveletCompressedAnimation(class) => class.signature(),
+            Classes::hkaWaveletCompressedAnimationCompressionParams(class) => {
+                class.signature()
+            }
+            Classes::hkaWaveletCompressedAnimationQuantizationFormat(class) => {
+                class.signature()
+            }
+            Classes::hkBaseObject(class) => class.signature(),
+            Classes::hkbAttachmentModifier(class) => class.signature(),
+            Classes::hkbAttachmentSetup(class) => class.signature(),
+            Classes::hkbAttributeModifier(class) => class.signature(),
+            Classes::hkbAttributeModifierAssignment(class) => class.signature(),
+            Classes::hkbAuxiliaryNodeInfo(class) => class.signature(),
+            Classes::hkbBehaviorEventsInfo(class) => class.signature(),
+            Classes::hkbBehaviorGraph(class) => class.signature(),
+            Classes::hkbBehaviorGraphData(class) => class.signature(),
+            Classes::hkbBehaviorGraphInternalState(class) => class.signature(),
+            Classes::hkbBehaviorGraphInternalStateInfo(class) => class.signature(),
+            Classes::hkbBehaviorGraphStringData(class) => class.signature(),
+            Classes::hkbBehaviorInfo(class) => class.signature(),
+            Classes::hkbBehaviorInfoIdToNamePair(class) => class.signature(),
+            Classes::hkbBehaviorReferenceGenerator(class) => class.signature(),
+            Classes::hkbBindable(class) => class.signature(),
+            Classes::hkbBlendCurveUtils(class) => class.signature(),
+            Classes::hkbBlenderGenerator(class) => class.signature(),
+            Classes::hkbBlenderGeneratorChild(class) => class.signature(),
+            Classes::hkbBlenderGeneratorChildInternalState(class) => class.signature(),
+            Classes::hkbBlenderGeneratorInternalState(class) => class.signature(),
+            Classes::hkbBlendingTransitionEffect(class) => class.signature(),
+            Classes::hkbBlendingTransitionEffectInternalState(class) => class.signature(),
+            Classes::hkbBoneIndexArray(class) => class.signature(),
+            Classes::hkbBoneWeightArray(class) => class.signature(),
+            Classes::hkbBoolVariableSequencedData(class) => class.signature(),
+            Classes::hkbBoolVariableSequencedDataSample(class) => class.signature(),
+            Classes::hkbCameraShakeEventPayload(class) => class.signature(),
+            Classes::hkbCharacter(class) => class.signature(),
+            Classes::hkbCharacterAddedInfo(class) => class.signature(),
+            Classes::hkbCharacterControlCommand(class) => class.signature(),
+            Classes::hkbCharacterControllerControlData(class) => class.signature(),
+            Classes::hkbCharacterControllerModifier(class) => class.signature(),
+            Classes::hkbCharacterControllerModifierInternalState(class) => {
+                class.signature()
+            }
+            Classes::hkbCharacterData(class) => class.signature(),
+            Classes::hkbCharacterDataCharacterControllerInfo(class) => class.signature(),
+            Classes::hkbCharacterInfo(class) => class.signature(),
+            Classes::hkbCharacterSetup(class) => class.signature(),
+            Classes::hkbCharacterSkinInfo(class) => class.signature(),
+            Classes::hkbCharacterSteppedInfo(class) => class.signature(),
+            Classes::hkbCharacterStringData(class) => class.signature(),
+            Classes::hkbClientCharacterState(class) => class.signature(),
+            Classes::hkbClipGenerator(class) => class.signature(),
+            Classes::hkbClipGeneratorEcho(class) => class.signature(),
+            Classes::hkbClipGeneratorInternalState(class) => class.signature(),
+            Classes::hkbClipTrigger(class) => class.signature(),
+            Classes::hkbClipTriggerArray(class) => class.signature(),
+            Classes::hkbCombineTransformsModifier(class) => class.signature(),
+            Classes::hkbCombineTransformsModifierInternalState(class) => {
+                class.signature()
+            }
+            Classes::hkbCompiledExpressionSet(class) => class.signature(),
+            Classes::hkbCompiledExpressionSetToken(class) => class.signature(),
+            Classes::hkbComputeDirectionModifier(class) => class.signature(),
+            Classes::hkbComputeDirectionModifierInternalState(class) => class.signature(),
+            Classes::hkbComputeRotationFromAxisAngleModifier(class) => class.signature(),
+            Classes::hkbComputeRotationFromAxisAngleModifierInternalState(class) => {
+                class.signature()
+            }
+            Classes::hkbComputeRotationToTargetModifier(class) => class.signature(),
+            Classes::hkbComputeRotationToTargetModifierInternalState(class) => {
+                class.signature()
+            }
+            Classes::hkbCondition(class) => class.signature(),
+            Classes::hkbContext(class) => class.signature(),
+            Classes::hkbDampingModifier(class) => class.signature(),
+            Classes::hkbDampingModifierInternalState(class) => class.signature(),
+            Classes::hkbDefaultMessageLog(class) => class.signature(),
+            Classes::hkbDelayedModifier(class) => class.signature(),
+            Classes::hkbDelayedModifierInternalState(class) => class.signature(),
+            Classes::hkbDetectCloseToGroundModifier(class) => class.signature(),
+            Classes::hkbDetectCloseToGroundModifierInternalState(class) => {
+                class.signature()
+            }
+            Classes::hkbEvaluateExpressionModifier(class) => class.signature(),
+            Classes::hkbEvaluateExpressionModifierInternalExpressionData(class) => {
+                class.signature()
+            }
+            Classes::hkbEvaluateExpressionModifierInternalState(class) => {
+                class.signature()
+            }
+            Classes::hkbEvaluateHandleModifier(class) => class.signature(),
+            Classes::hkbEvent(class) => class.signature(),
+            Classes::hkbEventBase(class) => class.signature(),
+            Classes::hkbEventDrivenModifier(class) => class.signature(),
+            Classes::hkbEventDrivenModifierInternalState(class) => class.signature(),
+            Classes::hkbEventInfo(class) => class.signature(),
+            Classes::hkbEventPayload(class) => class.signature(),
+            Classes::hkbEventPayloadList(class) => class.signature(),
+            Classes::hkbEventProperty(class) => class.signature(),
+            Classes::hkbEventRaisedInfo(class) => class.signature(),
+            Classes::hkbEventRangeData(class) => class.signature(),
+            Classes::hkbEventRangeDataArray(class) => class.signature(),
+            Classes::hkbEventSequencedData(class) => class.signature(),
+            Classes::hkbEventSequencedDataSequencedEvent(class) => class.signature(),
+            Classes::hkbEventsFromRangeModifier(class) => class.signature(),
+            Classes::hkbEventsFromRangeModifierInternalState(class) => class.signature(),
+            Classes::hkbExpressionCondition(class) => class.signature(),
+            Classes::hkbExpressionData(class) => class.signature(),
+            Classes::hkbExpressionDataArray(class) => class.signature(),
+            Classes::hkbExtractRagdollPoseModifier(class) => class.signature(),
+            Classes::hkbFootIkControlData(class) => class.signature(),
+            Classes::hkbFootIkControlsModifier(class) => class.signature(),
+            Classes::hkbFootIkControlsModifierLeg(class) => class.signature(),
+            Classes::hkbFootIkDriverInfo(class) => class.signature(),
+            Classes::hkbFootIkDriverInfoLeg(class) => class.signature(),
+            Classes::hkbFootIkGains(class) => class.signature(),
+            Classes::hkbFootIkModifier(class) => class.signature(),
+            Classes::hkbFootIkModifierInternalLegData(class) => class.signature(),
+            Classes::hkbFootIkModifierLeg(class) => class.signature(),
+            Classes::hkbGenerator(class) => class.signature(),
+            Classes::hkbGeneratorOutputListener(class) => class.signature(),
+            Classes::hkbGeneratorSyncInfo(class) => class.signature(),
+            Classes::hkbGeneratorSyncInfoSyncPoint(class) => class.signature(),
+            Classes::hkbGeneratorTransitionEffect(class) => class.signature(),
+            Classes::hkbGeneratorTransitionEffectInternalState(class) => {
+                class.signature()
+            }
+            Classes::hkbGetHandleOnBoneModifier(class) => class.signature(),
+            Classes::hkbGetUpModifier(class) => class.signature(),
+            Classes::hkbGetUpModifierInternalState(class) => class.signature(),
+            Classes::hkbGetWorldFromModelModifier(class) => class.signature(),
+            Classes::hkbGetWorldFromModelModifierInternalState(class) => {
+                class.signature()
+            }
+            Classes::hkbHandIkControlData(class) => class.signature(),
+            Classes::hkbHandIkControlsModifier(class) => class.signature(),
+            Classes::hkbHandIkControlsModifierHand(class) => class.signature(),
+            Classes::hkbHandIkDriverInfo(class) => class.signature(),
+            Classes::hkbHandIkDriverInfoHand(class) => class.signature(),
+            Classes::hkbHandIkModifier(class) => class.signature(),
+            Classes::hkbHandIkModifierHand(class) => class.signature(),
+            Classes::hkbHandle(class) => class.signature(),
+            Classes::hkbIntEventPayload(class) => class.signature(),
+            Classes::hkbIntVariableSequencedData(class) => class.signature(),
+            Classes::hkbIntVariableSequencedDataSample(class) => class.signature(),
+            Classes::hkBitField(class) => class.signature(),
+            Classes::hkbKeyframeBonesModifier(class) => class.signature(),
+            Classes::hkbKeyframeBonesModifierKeyframeInfo(class) => class.signature(),
+            Classes::hkbLinkedSymbolInfo(class) => class.signature(),
+            Classes::hkbLookAtModifier(class) => class.signature(),
+            Classes::hkbLookAtModifierInternalState(class) => class.signature(),
+            Classes::hkbManualSelectorGenerator(class) => class.signature(),
+            Classes::hkbManualSelectorGeneratorInternalState(class) => class.signature(),
+            Classes::hkbMessageLog(class) => class.signature(),
+            Classes::hkbMirroredSkeletonInfo(class) => class.signature(),
+            Classes::hkbMirrorModifier(class) => class.signature(),
+            Classes::hkbModifier(class) => class.signature(),
+            Classes::hkbModifierGenerator(class) => class.signature(),
+            Classes::hkbModifierList(class) => class.signature(),
+            Classes::hkbModifierWrapper(class) => class.signature(),
+            Classes::hkbMoveCharacterModifier(class) => class.signature(),
+            Classes::hkbMoveCharacterModifierInternalState(class) => class.signature(),
+            Classes::hkbNamedEventPayload(class) => class.signature(),
+            Classes::hkbNamedIntEventPayload(class) => class.signature(),
+            Classes::hkbNamedRealEventPayload(class) => class.signature(),
+            Classes::hkbNamedStringEventPayload(class) => class.signature(),
+            Classes::hkbNode(class) => class.signature(),
+            Classes::hkbNodeInternalStateInfo(class) => class.signature(),
+            Classes::hkbParticleSystemEventPayload(class) => class.signature(),
+            Classes::hkbPoseMatchingGenerator(class) => class.signature(),
+            Classes::hkbPoseMatchingGeneratorInternalState(class) => class.signature(),
+            Classes::hkbPoweredRagdollControlData(class) => class.signature(),
+            Classes::hkbPoweredRagdollControlsModifier(class) => class.signature(),
+            Classes::hkbProjectData(class) => class.signature(),
+            Classes::hkbProjectStringData(class) => class.signature(),
+            Classes::hkbProxyModifier(class) => class.signature(),
+            Classes::hkbProxyModifierProxyInfo(class) => class.signature(),
+            Classes::hkbRaiseEventCommand(class) => class.signature(),
+            Classes::hkbRealEventPayload(class) => class.signature(),
+            Classes::hkbRealVariableSequencedData(class) => class.signature(),
+            Classes::hkbRealVariableSequencedDataSample(class) => class.signature(),
+            Classes::hkbReferencePoseGenerator(class) => class.signature(),
+            Classes::hkbRegisteredGenerator(class) => class.signature(),
+            Classes::hkbRigidBodyRagdollControlData(class) => class.signature(),
+            Classes::hkbRigidBodyRagdollControlsModifier(class) => class.signature(),
+            Classes::hkbRoleAttribute(class) => class.signature(),
+            Classes::hkbRotateCharacterModifier(class) => class.signature(),
+            Classes::hkbRotateCharacterModifierInternalState(class) => class.signature(),
+            Classes::hkbSenseHandleModifier(class) => class.signature(),
+            Classes::hkbSenseHandleModifierRange(class) => class.signature(),
+            Classes::hkbSequence(class) => class.signature(),
+            Classes::hkbSequencedData(class) => class.signature(),
+            Classes::hkbSequenceInternalState(class) => class.signature(),
+            Classes::hkbSequenceStringData(class) => class.signature(),
+            Classes::hkbSetBehaviorCommand(class) => class.signature(),
+            Classes::hkbSetLocalTimeOfClipGeneratorCommand(class) => class.signature(),
+            Classes::hkbSetNodePropertyCommand(class) => class.signature(),
+            Classes::hkbSetWordVariableCommand(class) => class.signature(),
+            Classes::hkbSetWorldFromModelModifier(class) => class.signature(),
+            Classes::hkbSimulationControlCommand(class) => class.signature(),
+            Classes::hkbSimulationStateInfo(class) => class.signature(),
+            Classes::hkbStateChooser(class) => class.signature(),
+            Classes::hkbStateListener(class) => class.signature(),
+            Classes::hkbStateMachine(class) => class.signature(),
+            Classes::hkbStateMachineActiveTransitionInfo(class) => class.signature(),
+            Classes::hkbStateMachineDelayedTransitionInfo(class) => class.signature(),
+            Classes::hkbStateMachineEventPropertyArray(class) => class.signature(),
+            Classes::hkbStateMachineInternalState(class) => class.signature(),
+            Classes::hkbStateMachineNestedStateMachineData(class) => class.signature(),
+            Classes::hkbStateMachineProspectiveTransitionInfo(class) => class.signature(),
+            Classes::hkbStateMachineStateInfo(class) => class.signature(),
+            Classes::hkbStateMachineTimeInterval(class) => class.signature(),
+            Classes::hkbStateMachineTransitionInfo(class) => class.signature(),
+            Classes::hkbStateMachineTransitionInfoArray(class) => class.signature(),
+            Classes::hkbStateMachineTransitionInfoReference(class) => class.signature(),
+            Classes::hkbStringCondition(class) => class.signature(),
+            Classes::hkbStringEventPayload(class) => class.signature(),
+            Classes::hkbTestStateChooser(class) => class.signature(),
+            Classes::hkbTimerModifier(class) => class.signature(),
+            Classes::hkbTimerModifierInternalState(class) => class.signature(),
+            Classes::hkbTransformVectorModifier(class) => class.signature(),
+            Classes::hkbTransformVectorModifierInternalState(class) => class.signature(),
+            Classes::hkbTransitionEffect(class) => class.signature(),
+            Classes::hkbTwistModifier(class) => class.signature(),
+            Classes::hkbVariableBindingSet(class) => class.signature(),
+            Classes::hkbVariableBindingSetBinding(class) => class.signature(),
+            Classes::hkbVariableInfo(class) => class.signature(),
+            Classes::hkbVariableValue(class) => class.signature(),
+            Classes::hkbVariableValueSet(class) => class.signature(),
+            Classes::hkbWorldEnums(class) => class.signature(),
+            Classes::hkbWorldFromModelModeData(class) => class.signature(),
+            Classes::hkClass(class) => class.signature(),
+            Classes::hkClassEnum(class) => class.signature(),
+            Classes::hkClassEnumItem(class) => class.signature(),
+            Classes::hkClassMember(class) => class.signature(),
+            Classes::hkColor(class) => class.signature(),
+            Classes::hkContactPoint(class) => class.signature(),
+            Classes::hkContactPointMaterial(class) => class.signature(),
+            Classes::hkCustomAttributes(class) => class.signature(),
+            Classes::hkCustomAttributesAttribute(class) => class.signature(),
+            Classes::hkDataObjectTypeAttribute(class) => class.signature(),
+            Classes::hkDescriptionAttribute(class) => class.signature(),
+            Classes::hkDocumentationAttribute(class) => class.signature(),
+            Classes::hkGeometry(class) => class.signature(),
+            Classes::hkGeometryTriangle(class) => class.signature(),
+            Classes::hkGizmoAttribute(class) => class.signature(),
+            Classes::hkHalf8(class) => class.signature(),
+            Classes::hkIndexedTransformSet(class) => class.signature(),
+            Classes::hkLinkAttribute(class) => class.signature(),
+            Classes::hkLocalFrame(class) => class.signature(),
+            Classes::hkLocalFrameGroup(class) => class.signature(),
+            Classes::hkMemoryMeshBody(class) => class.signature(),
+            Classes::hkMemoryMeshMaterial(class) => class.signature(),
+            Classes::hkMemoryMeshShape(class) => class.signature(),
+            Classes::hkMemoryMeshTexture(class) => class.signature(),
+            Classes::hkMemoryMeshVertexBuffer(class) => class.signature(),
+            Classes::hkMemoryResourceContainer(class) => class.signature(),
+            Classes::hkMemoryResourceHandle(class) => class.signature(),
+            Classes::hkMemoryResourceHandleExternalLink(class) => class.signature(),
+            Classes::hkMemoryTrackerAttribute(class) => class.signature(),
+            Classes::hkMeshBody(class) => class.signature(),
+            Classes::hkMeshBoneIndexMapping(class) => class.signature(),
+            Classes::hkMeshMaterial(class) => class.signature(),
+            Classes::hkMeshSection(class) => class.signature(),
+            Classes::hkMeshSectionCinfo(class) => class.signature(),
+            Classes::hkMeshShape(class) => class.signature(),
+            Classes::hkMeshTexture(class) => class.signature(),
+            Classes::hkMeshVertexBuffer(class) => class.signature(),
+            Classes::hkModelerNodeTypeAttribute(class) => class.signature(),
+            Classes::hkMonitorStreamColorTable(class) => class.signature(),
+            Classes::hkMonitorStreamColorTableColorPair(class) => class.signature(),
+            Classes::hkMonitorStreamFrameInfo(class) => class.signature(),
+            Classes::hkMonitorStreamStringMap(class) => class.signature(),
+            Classes::hkMonitorStreamStringMapStringMap(class) => class.signature(),
+            Classes::hkMoppBvTreeShapeBase(class) => class.signature(),
+            Classes::hkMotionState(class) => class.signature(),
+            Classes::hkMultipleVertexBuffer(class) => class.signature(),
+            Classes::hkMultipleVertexBufferElementInfo(class) => class.signature(),
+            Classes::hkMultipleVertexBufferLockedElement(class) => class.signature(),
+            Classes::hkMultipleVertexBufferVertexBufferInfo(class) => class.signature(),
+            Classes::hkMultiThreadCheck(class) => class.signature(),
+            Classes::hkp2dAngConstraintAtom(class) => class.signature(),
+            Classes::hkpAabbPhantom(class) => class.signature(),
+            Classes::hkPackedVector3(class) => class.signature(),
+            Classes::hkPackfileHeader(class) => class.signature(),
+            Classes::hkPackfileSectionHeader(class) => class.signature(),
+            Classes::hkpAction(class) => class.signature(),
+            Classes::hkpAgent1nSector(class) => class.signature(),
+            Classes::hkpAngConstraintAtom(class) => class.signature(),
+            Classes::hkpAngFrictionConstraintAtom(class) => class.signature(),
+            Classes::hkpAngLimitConstraintAtom(class) => class.signature(),
+            Classes::hkpAngMotorConstraintAtom(class) => class.signature(),
+            Classes::hkpAngularDashpotAction(class) => class.signature(),
+            Classes::hkpArrayAction(class) => class.signature(),
+            Classes::hkpBallAndSocketConstraintData(class) => class.signature(),
+            Classes::hkpBallAndSocketConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpBallGun(class) => class.signature(),
+            Classes::hkpBallSocketChainData(class) => class.signature(),
+            Classes::hkpBallSocketChainDataConstraintInfo(class) => class.signature(),
+            Classes::hkpBallSocketConstraintAtom(class) => class.signature(),
+            Classes::hkpBinaryAction(class) => class.signature(),
+            Classes::hkpBoxMotion(class) => class.signature(),
+            Classes::hkpBoxShape(class) => class.signature(),
+            Classes::hkpBreakableBody(class) => class.signature(),
+            Classes::hkpBreakableConstraintData(class) => class.signature(),
+            Classes::hkpBridgeAtoms(class) => class.signature(),
+            Classes::hkpBridgeConstraintAtom(class) => class.signature(),
+            Classes::hkpBroadPhaseHandle(class) => class.signature(),
+            Classes::hkpBvShape(class) => class.signature(),
+            Classes::hkpBvTreeShape(class) => class.signature(),
+            Classes::hkpCachingShapePhantom(class) => class.signature(),
+            Classes::hkpCallbackConstraintMotor(class) => class.signature(),
+            Classes::hkpCapsuleShape(class) => class.signature(),
+            Classes::hkpCdBody(class) => class.signature(),
+            Classes::hkpCenterOfMassChangerModifierConstraintAtom(class) => {
+                class.signature()
+            }
+            Classes::hkpCharacterControllerCinfo(class) => class.signature(),
+            Classes::hkpCharacterMotion(class) => class.signature(),
+            Classes::hkpCharacterProxyCinfo(class) => class.signature(),
+            Classes::hkpCharacterRigidBodyCinfo(class) => class.signature(),
+            Classes::hkpCogWheelConstraintAtom(class) => class.signature(),
+            Classes::hkpCogWheelConstraintData(class) => class.signature(),
+            Classes::hkpCogWheelConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpCollidable(class) => class.signature(),
+            Classes::hkpCollidableBoundingVolumeData(class) => class.signature(),
+            Classes::hkpCollidableCollidableFilter(class) => class.signature(),
+            Classes::hkpCollisionFilter(class) => class.signature(),
+            Classes::hkpCollisionFilterList(class) => class.signature(),
+            Classes::hkpCompressedMeshShape(class) => class.signature(),
+            Classes::hkpCompressedMeshShapeBigTriangle(class) => class.signature(),
+            Classes::hkpCompressedMeshShapeChunk(class) => class.signature(),
+            Classes::hkpCompressedMeshShapeConvexPiece(class) => class.signature(),
+            Classes::hkpCompressedSampledHeightFieldShape(class) => class.signature(),
+            Classes::hkpConeLimitConstraintAtom(class) => class.signature(),
+            Classes::hkpConstrainedSystemFilter(class) => class.signature(),
+            Classes::hkpConstraintAtom(class) => class.signature(),
+            Classes::hkpConstraintChainData(class) => class.signature(),
+            Classes::hkpConstraintChainInstance(class) => class.signature(),
+            Classes::hkpConstraintChainInstanceAction(class) => class.signature(),
+            Classes::hkpConstraintCollisionFilter(class) => class.signature(),
+            Classes::hkpConstraintData(class) => class.signature(),
+            Classes::hkpConstraintInstance(class) => class.signature(),
+            Classes::hkpConstraintInstanceSmallArraySerializeOverrideType(class) => {
+                class.signature()
+            }
+            Classes::hkpConstraintMotor(class) => class.signature(),
+            Classes::hkpConvexListFilter(class) => class.signature(),
+            Classes::hkpConvexListShape(class) => class.signature(),
+            Classes::hkpConvexPieceMeshShape(class) => class.signature(),
+            Classes::hkpConvexPieceStreamData(class) => class.signature(),
+            Classes::hkpConvexShape(class) => class.signature(),
+            Classes::hkpConvexTransformShape(class) => class.signature(),
+            Classes::hkpConvexTransformShapeBase(class) => class.signature(),
+            Classes::hkpConvexTranslateShape(class) => class.signature(),
+            Classes::hkpConvexVerticesConnectivity(class) => class.signature(),
+            Classes::hkpConvexVerticesShape(class) => class.signature(),
+            Classes::hkpConvexVerticesShapeFourVectors(class) => class.signature(),
+            Classes::hkpCylinderShape(class) => class.signature(),
+            Classes::hkpDashpotAction(class) => class.signature(),
+            Classes::hkpDefaultConvexListFilter(class) => class.signature(),
+            Classes::hkpDefaultWorldMemoryWatchDog(class) => class.signature(),
+            Classes::hkpDisableEntityCollisionFilter(class) => class.signature(),
+            Classes::hkpDisplayBindingData(class) => class.signature(),
+            Classes::hkpDisplayBindingDataPhysicsSystem(class) => class.signature(),
+            Classes::hkpDisplayBindingDataRigidBody(class) => class.signature(),
+            Classes::hkpEntity(class) => class.signature(),
+            Classes::hkpEntityExtendedListeners(class) => class.signature(),
+            Classes::hkpEntitySmallArraySerializeOverrideType(class) => class.signature(),
+            Classes::hkpEntitySpuCollisionCallback(class) => class.signature(),
+            Classes::hkpExtendedMeshShape(class) => class.signature(),
+            Classes::hkpExtendedMeshShapeShapesSubpart(class) => class.signature(),
+            Classes::hkpExtendedMeshShapeSubpart(class) => class.signature(),
+            Classes::hkpExtendedMeshShapeTrianglesSubpart(class) => class.signature(),
+            Classes::hkpFastMeshShape(class) => class.signature(),
+            Classes::hkpFirstPersonGun(class) => class.signature(),
+            Classes::hkpFixedRigidMotion(class) => class.signature(),
+            Classes::hkpGenericConstraintData(class) => class.signature(),
+            Classes::hkpGenericConstraintDataScheme(class) => class.signature(),
+            Classes::hkpGenericConstraintDataSchemeConstraintInfo(class) => {
+                class.signature()
+            }
+            Classes::hkpGravityGun(class) => class.signature(),
+            Classes::hkpGroupCollisionFilter(class) => class.signature(),
+            Classes::hkpGroupFilter(class) => class.signature(),
+            Classes::hkpHeightFieldShape(class) => class.signature(),
+            Classes::hkpHingeConstraintData(class) => class.signature(),
+            Classes::hkpHingeConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpHingeLimitsData(class) => class.signature(),
+            Classes::hkpHingeLimitsDataAtoms(class) => class.signature(),
+            Classes::hkpIgnoreModifierConstraintAtom(class) => class.signature(),
+            Classes::hkpKeyframedRigidMotion(class) => class.signature(),
+            Classes::hkpLimitedForceConstraintMotor(class) => class.signature(),
+            Classes::hkpLimitedHingeConstraintData(class) => class.signature(),
+            Classes::hkpLimitedHingeConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpLinConstraintAtom(class) => class.signature(),
+            Classes::hkpLinearParametricCurve(class) => class.signature(),
+            Classes::hkpLinFrictionConstraintAtom(class) => class.signature(),
+            Classes::hkpLinkedCollidable(class) => class.signature(),
+            Classes::hkpLinLimitConstraintAtom(class) => class.signature(),
+            Classes::hkpLinMotorConstraintAtom(class) => class.signature(),
+            Classes::hkpLinSoftConstraintAtom(class) => class.signature(),
+            Classes::hkpListShape(class) => class.signature(),
+            Classes::hkpListShapeChildInfo(class) => class.signature(),
+            Classes::hkpMalleableConstraintData(class) => class.signature(),
+            Classes::hkpMassChangerModifierConstraintAtom(class) => class.signature(),
+            Classes::hkpMassProperties(class) => class.signature(),
+            Classes::hkpMaterial(class) => class.signature(),
+            Classes::hkpMaxSizeMotion(class) => class.signature(),
+            Classes::hkpMeshMaterial(class) => class.signature(),
+            Classes::hkpMeshShape(class) => class.signature(),
+            Classes::hkpMeshShapeSubpart(class) => class.signature(),
+            Classes::hkpModifierConstraintAtom(class) => class.signature(),
+            Classes::hkpMoppBvTreeShape(class) => class.signature(),
+            Classes::hkpMoppCode(class) => class.signature(),
+            Classes::hkpMoppCodeCodeInfo(class) => class.signature(),
+            Classes::hkpMoppCodeReindexedTerminal(class) => class.signature(),
+            Classes::hkpMotion(class) => class.signature(),
+            Classes::hkpMotorAction(class) => class.signature(),
+            Classes::hkpMountedBallGun(class) => class.signature(),
+            Classes::hkpMouseSpringAction(class) => class.signature(),
+            Classes::hkpMovingSurfaceModifierConstraintAtom(class) => class.signature(),
+            Classes::hkpMultiRayShape(class) => class.signature(),
+            Classes::hkpMultiRayShapeRay(class) => class.signature(),
+            Classes::hkpMultiSphereShape(class) => class.signature(),
+            Classes::hkpMultithreadedVehicleManager(class) => class.signature(),
+            Classes::hkpNamedMeshMaterial(class) => class.signature(),
+            Classes::hkpNullCollisionFilter(class) => class.signature(),
+            Classes::hkPostFinishAttribute(class) => class.signature(),
+            Classes::hkpOverwritePivotConstraintAtom(class) => class.signature(),
+            Classes::hkpPairCollisionFilter(class) => class.signature(),
+            Classes::hkpPairCollisionFilterMapPairFilterKeyOverrideType(class) => {
+                class.signature()
+            }
+            Classes::hkpParametricCurve(class) => class.signature(),
+            Classes::hkpPhantom(class) => class.signature(),
+            Classes::hkpPhantomCallbackShape(class) => class.signature(),
+            Classes::hkpPhysicsData(class) => class.signature(),
+            Classes::hkpPhysicsSystem(class) => class.signature(),
+            Classes::hkpPhysicsSystemWithContacts(class) => class.signature(),
+            Classes::hkpPlaneShape(class) => class.signature(),
+            Classes::hkpPointToPathConstraintData(class) => class.signature(),
+            Classes::hkpPointToPlaneConstraintData(class) => class.signature(),
+            Classes::hkpPointToPlaneConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpPositionConstraintMotor(class) => class.signature(),
+            Classes::hkpPoweredChainData(class) => class.signature(),
+            Classes::hkpPoweredChainDataConstraintInfo(class) => class.signature(),
+            Classes::hkpPoweredChainMapper(class) => class.signature(),
+            Classes::hkpPoweredChainMapperLinkInfo(class) => class.signature(),
+            Classes::hkpPoweredChainMapperTarget(class) => class.signature(),
+            Classes::hkpPrismaticConstraintData(class) => class.signature(),
+            Classes::hkpPrismaticConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpProjectileGun(class) => class.signature(),
+            Classes::hkpProperty(class) => class.signature(),
+            Classes::hkpPropertyValue(class) => class.signature(),
+            Classes::hkpPulleyConstraintAtom(class) => class.signature(),
+            Classes::hkpPulleyConstraintData(class) => class.signature(),
+            Classes::hkpPulleyConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpRackAndPinionConstraintAtom(class) => class.signature(),
+            Classes::hkpRackAndPinionConstraintData(class) => class.signature(),
+            Classes::hkpRackAndPinionConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpRagdollConstraintData(class) => class.signature(),
+            Classes::hkpRagdollConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpRagdollLimitsData(class) => class.signature(),
+            Classes::hkpRagdollLimitsDataAtoms(class) => class.signature(),
+            Classes::hkpRagdollMotorConstraintAtom(class) => class.signature(),
+            Classes::hkpRayCollidableFilter(class) => class.signature(),
+            Classes::hkpRayShapeCollectionFilter(class) => class.signature(),
+            Classes::hkpRejectChassisListener(class) => class.signature(),
+            Classes::hkpRemoveTerminalsMoppModifier(class) => class.signature(),
+            Classes::hkpReorientAction(class) => class.signature(),
+            Classes::hkpRigidBody(class) => class.signature(),
+            Classes::hkpRotationalConstraintData(class) => class.signature(),
+            Classes::hkpRotationalConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpSampledHeightFieldShape(class) => class.signature(),
+            Classes::hkpSerializedAgentNnEntry(class) => class.signature(),
+            Classes::hkpSerializedDisplayMarker(class) => class.signature(),
+            Classes::hkpSerializedDisplayMarkerList(class) => class.signature(),
+            Classes::hkpSerializedDisplayRbTransforms(class) => class.signature(),
+            Classes::hkpSerializedDisplayRbTransformsDisplayTransformPair(class) => {
+                class.signature()
+            }
+            Classes::hkpSerializedSubTrack1nInfo(class) => class.signature(),
+            Classes::hkpSerializedTrack1nInfo(class) => class.signature(),
+            Classes::hkpSetLocalRotationsConstraintAtom(class) => class.signature(),
+            Classes::hkpSetLocalTransformsConstraintAtom(class) => class.signature(),
+            Classes::hkpSetLocalTranslationsConstraintAtom(class) => class.signature(),
+            Classes::hkpSetupStabilizationAtom(class) => class.signature(),
+            Classes::hkpShape(class) => class.signature(),
+            Classes::hkpShapeCollection(class) => class.signature(),
+            Classes::hkpShapeCollectionFilter(class) => class.signature(),
+            Classes::hkpShapeContainer(class) => class.signature(),
+            Classes::hkpShapeInfo(class) => class.signature(),
+            Classes::hkpShapeModifier(class) => class.signature(),
+            Classes::hkpShapePhantom(class) => class.signature(),
+            Classes::hkpSimpleContactConstraintAtom(class) => class.signature(),
+            Classes::hkpSimpleContactConstraintDataInfo(class) => class.signature(),
+            Classes::hkpSimpleMeshShape(class) => class.signature(),
+            Classes::hkpSimpleMeshShapeTriangle(class) => class.signature(),
+            Classes::hkpSimpleShapePhantom(class) => class.signature(),
+            Classes::hkpSimpleShapePhantomCollisionDetail(class) => class.signature(),
+            Classes::hkpSimulation(class) => class.signature(),
+            Classes::hkpSingleShapeContainer(class) => class.signature(),
+            Classes::hkpSoftContactModifierConstraintAtom(class) => class.signature(),
+            Classes::hkpSphereMotion(class) => class.signature(),
+            Classes::hkpSphereRepShape(class) => class.signature(),
+            Classes::hkpSphereShape(class) => class.signature(),
+            Classes::hkpSpringAction(class) => class.signature(),
+            Classes::hkpSpringDamperConstraintMotor(class) => class.signature(),
+            Classes::hkpStiffSpringChainData(class) => class.signature(),
+            Classes::hkpStiffSpringChainDataConstraintInfo(class) => class.signature(),
+            Classes::hkpStiffSpringConstraintAtom(class) => class.signature(),
+            Classes::hkpStiffSpringConstraintData(class) => class.signature(),
+            Classes::hkpStiffSpringConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpStorageExtendedMeshShape(class) => class.signature(),
+            Classes::hkpStorageExtendedMeshShapeMaterial(class) => class.signature(),
+            Classes::hkpStorageExtendedMeshShapeMeshSubpartStorage(class) => {
+                class.signature()
+            }
+            Classes::hkpStorageExtendedMeshShapeShapeSubpartStorage(class) => {
+                class.signature()
+            }
+            Classes::hkpStorageMeshShape(class) => class.signature(),
+            Classes::hkpStorageMeshShapeSubpartStorage(class) => class.signature(),
+            Classes::hkpStorageSampledHeightFieldShape(class) => class.signature(),
+            Classes::hkpThinBoxMotion(class) => class.signature(),
+            Classes::hkpTransformShape(class) => class.signature(),
+            Classes::hkpTriangleShape(class) => class.signature(),
+            Classes::hkpTriggerVolume(class) => class.signature(),
+            Classes::hkpTriggerVolumeEventInfo(class) => class.signature(),
+            Classes::hkpTriSampledHeightFieldBvTreeShape(class) => class.signature(),
+            Classes::hkpTriSampledHeightFieldCollection(class) => class.signature(),
+            Classes::hkpTwistLimitConstraintAtom(class) => class.signature(),
+            Classes::hkpTypedBroadPhaseHandle(class) => class.signature(),
+            Classes::hkpTyremarkPoint(class) => class.signature(),
+            Classes::hkpTyremarksInfo(class) => class.signature(),
+            Classes::hkpTyremarksWheel(class) => class.signature(),
+            Classes::hkpUnaryAction(class) => class.signature(),
+            Classes::hkpVehicleAerodynamics(class) => class.signature(),
+            Classes::hkpVehicleBrake(class) => class.signature(),
+            Classes::hkpVehicleCastBatchingManager(class) => class.signature(),
+            Classes::hkpVehicleData(class) => class.signature(),
+            Classes::hkpVehicleDataWheelComponentParams(class) => class.signature(),
+            Classes::hkpVehicleDefaultAerodynamics(class) => class.signature(),
+            Classes::hkpVehicleDefaultAnalogDriverInput(class) => class.signature(),
+            Classes::hkpVehicleDefaultBrake(class) => class.signature(),
+            Classes::hkpVehicleDefaultBrakeWheelBrakingProperties(class) => {
+                class.signature()
+            }
+            Classes::hkpVehicleDefaultEngine(class) => class.signature(),
+            Classes::hkpVehicleDefaultSteering(class) => class.signature(),
+            Classes::hkpVehicleDefaultSuspension(class) => class.signature(),
+            Classes::hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters(
+                class,
+            ) => class.signature(),
+            Classes::hkpVehicleDefaultTransmission(class) => class.signature(),
+            Classes::hkpVehicleDefaultVelocityDamper(class) => class.signature(),
+            Classes::hkpVehicleDriverInput(class) => class.signature(),
+            Classes::hkpVehicleDriverInputAnalogStatus(class) => class.signature(),
+            Classes::hkpVehicleDriverInputStatus(class) => class.signature(),
+            Classes::hkpVehicleEngine(class) => class.signature(),
+            Classes::hkpVehicleFrictionDescription(class) => class.signature(),
+            Classes::hkpVehicleFrictionDescriptionAxisDescription(class) => {
+                class.signature()
+            }
+            Classes::hkpVehicleFrictionStatus(class) => class.signature(),
+            Classes::hkpVehicleFrictionStatusAxisStatus(class) => class.signature(),
+            Classes::hkpVehicleInstance(class) => class.signature(),
+            Classes::hkpVehicleInstanceWheelInfo(class) => class.signature(),
+            Classes::hkpVehicleLinearCastBatchingManager(class) => class.signature(),
+            Classes::hkpVehicleLinearCastWheelCollide(class) => class.signature(),
+            Classes::hkpVehicleLinearCastWheelCollideWheelState(class) => {
+                class.signature()
+            }
+            Classes::hkpVehicleManager(class) => class.signature(),
+            Classes::hkpVehicleRayCastBatchingManager(class) => class.signature(),
+            Classes::hkpVehicleRayCastWheelCollide(class) => class.signature(),
+            Classes::hkpVehicleSteering(class) => class.signature(),
+            Classes::hkpVehicleSuspension(class) => class.signature(),
+            Classes::hkpVehicleSuspensionSuspensionWheelParameters(class) => {
+                class.signature()
+            }
+            Classes::hkpVehicleTransmission(class) => class.signature(),
+            Classes::hkpVehicleVelocityDamper(class) => class.signature(),
+            Classes::hkpVehicleWheelCollide(class) => class.signature(),
+            Classes::hkpVelocityConstraintMotor(class) => class.signature(),
+            Classes::hkpViscousSurfaceModifierConstraintAtom(class) => class.signature(),
+            Classes::hkpWeldingUtility(class) => class.signature(),
+            Classes::hkpWheelConstraintData(class) => class.signature(),
+            Classes::hkpWheelConstraintDataAtoms(class) => class.signature(),
+            Classes::hkpWorld(class) => class.signature(),
+            Classes::hkpWorldCinfo(class) => class.signature(),
+            Classes::hkpWorldObject(class) => class.signature(),
+            Classes::hkQTransform(class) => class.signature(),
+            Classes::hkRangeInt32Attribute(class) => class.signature(),
+            Classes::hkRangeRealAttribute(class) => class.signature(),
+            Classes::hkReferencedObject(class) => class.signature(),
+            Classes::hkReflectedFileAttribute(class) => class.signature(),
+            Classes::hkResourceBase(class) => class.signature(),
+            Classes::hkResourceContainer(class) => class.signature(),
+            Classes::hkResourceHandle(class) => class.signature(),
+            Classes::hkRootLevelContainer(class) => class.signature(),
+            Classes::hkRootLevelContainerNamedVariant(class) => class.signature(),
+            Classes::hkSemanticsAttribute(class) => class.signature(),
+            Classes::hkSimpleLocalFrame(class) => class.signature(),
+            Classes::hkSphere(class) => class.signature(),
+            Classes::hkSweptTransform(class) => class.signature(),
+            Classes::hkTraceStreamTitle(class) => class.signature(),
+            Classes::hkTrackerSerializableScanSnapshot(class) => class.signature(),
+            Classes::hkTrackerSerializableScanSnapshotAllocation(class) => {
+                class.signature()
+            }
+            Classes::hkTrackerSerializableScanSnapshotBlock(class) => class.signature(),
+            Classes::hkUiAttribute(class) => class.signature(),
+            Classes::hkVertexFormat(class) => class.signature(),
+            Classes::hkVertexFormatElement(class) => class.signature(),
+            Classes::hkWorldMemoryAvailableWatchDog(class) => class.signature(),
+            Classes::hkxAnimatedFloat(class) => class.signature(),
+            Classes::hkxAnimatedMatrix(class) => class.signature(),
+            Classes::hkxAnimatedQuaternion(class) => class.signature(),
+            Classes::hkxAnimatedVector(class) => class.signature(),
+            Classes::hkxAttribute(class) => class.signature(),
+            Classes::hkxAttributeGroup(class) => class.signature(),
+            Classes::hkxAttributeHolder(class) => class.signature(),
+            Classes::hkxCamera(class) => class.signature(),
+            Classes::hkxEdgeSelectionChannel(class) => class.signature(),
+            Classes::hkxEnum(class) => class.signature(),
+            Classes::hkxEnumItem(class) => class.signature(),
+            Classes::hkxEnvironment(class) => class.signature(),
+            Classes::hkxEnvironmentVariable(class) => class.signature(),
+            Classes::hkxIndexBuffer(class) => class.signature(),
+            Classes::hkxLight(class) => class.signature(),
+            Classes::hkxMaterial(class) => class.signature(),
+            Classes::hkxMaterialEffect(class) => class.signature(),
+            Classes::hkxMaterialProperty(class) => class.signature(),
+            Classes::hkxMaterialShader(class) => class.signature(),
+            Classes::hkxMaterialShaderSet(class) => class.signature(),
+            Classes::hkxMaterialTextureStage(class) => class.signature(),
+            Classes::hkxMesh(class) => class.signature(),
+            Classes::hkxMeshSection(class) => class.signature(),
+            Classes::hkxMeshUserChannelInfo(class) => class.signature(),
+            Classes::hkxNode(class) => class.signature(),
+            Classes::hkxNodeAnnotationData(class) => class.signature(),
+            Classes::hkxNodeSelectionSet(class) => class.signature(),
+            Classes::hkxScene(class) => class.signature(),
+            Classes::hkxSkinBinding(class) => class.signature(),
+            Classes::hkxSparselyAnimatedBool(class) => class.signature(),
+            Classes::hkxSparselyAnimatedEnum(class) => class.signature(),
+            Classes::hkxSparselyAnimatedInt(class) => class.signature(),
+            Classes::hkxSparselyAnimatedString(class) => class.signature(),
+            Classes::hkxTextureFile(class) => class.signature(),
+            Classes::hkxTextureInplace(class) => class.signature(),
+            Classes::hkxTriangleSelectionChannel(class) => class.signature(),
+            Classes::hkxVertexBuffer(class) => class.signature(),
+            Classes::hkxVertexBufferVertexData(class) => class.signature(),
+            Classes::hkxVertexDescription(class) => class.signature(),
+            Classes::hkxVertexDescriptionElementDecl(class) => class.signature(),
+            Classes::hkxVertexFloatDataChannel(class) => class.signature(),
+            Classes::hkxVertexIntDataChannel(class) => class.signature(),
+            Classes::hkxVertexSelectionChannel(class) => class.signature(),
+            Classes::hkxVertexVectorDataChannel(class) => class.signature(),
+        }
+    }
+    fn deps_indexes(&self) -> Vec<usize> {
+        match &self {
+            Classes::BGSGamebryoSequenceGenerator(class) => class.deps_indexes(),
+            Classes::BSBoneSwitchGenerator(class) => class.deps_indexes(),
+            Classes::BSBoneSwitchGeneratorBoneData(class) => class.deps_indexes(),
+            Classes::BSComputeAddBoneAnimModifier(class) => class.deps_indexes(),
+            Classes::BSCyclicBlendTransitionGenerator(class) => class.deps_indexes(),
+            Classes::BSDecomposeVectorModifier(class) => class.deps_indexes(),
+            Classes::BSDirectAtModifier(class) => class.deps_indexes(),
+            Classes::BSDistTriggerModifier(class) => class.deps_indexes(),
+            Classes::BSEventEveryNEventsModifier(class) => class.deps_indexes(),
+            Classes::BSEventOnDeactivateModifier(class) => class.deps_indexes(),
+            Classes::BSEventOnFalseToTrueModifier(class) => class.deps_indexes(),
+            Classes::BSGetTimeStepModifier(class) => class.deps_indexes(),
+            Classes::BSInterpValueModifier(class) => class.deps_indexes(),
+            Classes::BSIsActiveModifier(class) => class.deps_indexes(),
+            Classes::BSIStateManagerModifier(class) => class.deps_indexes(),
+            Classes::BSIStateManagerModifierBSiStateData(class) => class.deps_indexes(),
+            Classes::BSIStateManagerModifierBSIStateManagerStateListener(class) => {
+                class.deps_indexes()
+            }
+            Classes::BSiStateTaggingGenerator(class) => class.deps_indexes(),
+            Classes::BSLimbIKModifier(class) => class.deps_indexes(),
+            Classes::BSLookAtModifier(class) => class.deps_indexes(),
+            Classes::BSLookAtModifierBoneData(class) => class.deps_indexes(),
+            Classes::BSModifyOnceModifier(class) => class.deps_indexes(),
+            Classes::BSOffsetAnimationGenerator(class) => class.deps_indexes(),
+            Classes::BSPassByTargetTriggerModifier(class) => class.deps_indexes(),
+            Classes::BSRagdollContactListenerModifier(class) => class.deps_indexes(),
+            Classes::BSSpeedSamplerModifier(class) => class.deps_indexes(),
+            Classes::BSSynchronizedClipGenerator(class) => class.deps_indexes(),
+            Classes::BSTimerModifier(class) => class.deps_indexes(),
+            Classes::BSTweenerModifier(class) => class.deps_indexes(),
+            Classes::hkAabb(class) => class.deps_indexes(),
+            Classes::hkAabbHalf(class) => class.deps_indexes(),
+            Classes::hkAabbUint32(class) => class.deps_indexes(),
+            Classes::hkaAnimatedReferenceFrame(class) => class.deps_indexes(),
+            Classes::hkaAnimation(class) => class.deps_indexes(),
+            Classes::hkaAnimationBinding(class) => class.deps_indexes(),
+            Classes::hkaAnimationContainer(class) => class.deps_indexes(),
+            Classes::hkaAnimationPreviewColorContainer(class) => class.deps_indexes(),
+            Classes::hkaAnnotationTrack(class) => class.deps_indexes(),
+            Classes::hkaAnnotationTrackAnnotation(class) => class.deps_indexes(),
+            Classes::hkaBone(class) => class.deps_indexes(),
+            Classes::hkaBoneAttachment(class) => class.deps_indexes(),
+            Classes::hkaDefaultAnimatedReferenceFrame(class) => class.deps_indexes(),
+            Classes::hkaDeltaCompressedAnimation(class) => class.deps_indexes(),
+            Classes::hkaDeltaCompressedAnimationQuantizationFormat(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkaFootstepAnalysisInfo(class) => class.deps_indexes(),
+            Classes::hkaFootstepAnalysisInfoContainer(class) => class.deps_indexes(),
+            Classes::hkaInterleavedUncompressedAnimation(class) => class.deps_indexes(),
+            Classes::hkaKeyFrameHierarchyUtility(class) => class.deps_indexes(),
+            Classes::hkaKeyFrameHierarchyUtilityControlData(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkAlignSceneToNodeOptions(class) => class.deps_indexes(),
+            Classes::hkaMeshBinding(class) => class.deps_indexes(),
+            Classes::hkaMeshBindingMapping(class) => class.deps_indexes(),
+            Classes::hkaQuantizedAnimation(class) => class.deps_indexes(),
+            Classes::hkaQuantizedAnimationTrackCompressionParams(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkaRagdollInstance(class) => class.deps_indexes(),
+            Classes::hkArrayTypeAttribute(class) => class.deps_indexes(),
+            Classes::hkaSkeleton(class) => class.deps_indexes(),
+            Classes::hkaSkeletonLocalFrameOnBone(class) => class.deps_indexes(),
+            Classes::hkaSkeletonMapper(class) => class.deps_indexes(),
+            Classes::hkaSkeletonMapperData(class) => class.deps_indexes(),
+            Classes::hkaSkeletonMapperDataChainMapping(class) => class.deps_indexes(),
+            Classes::hkaSkeletonMapperDataSimpleMapping(class) => class.deps_indexes(),
+            Classes::hkaSplineCompressedAnimation(class) => class.deps_indexes(),
+            Classes::hkaSplineCompressedAnimationAnimationCompressionParams(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkaSplineCompressedAnimationTrackCompressionParams(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkaWaveletCompressedAnimation(class) => class.deps_indexes(),
+            Classes::hkaWaveletCompressedAnimationCompressionParams(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkaWaveletCompressedAnimationQuantizationFormat(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkBaseObject(class) => class.deps_indexes(),
+            Classes::hkbAttachmentModifier(class) => class.deps_indexes(),
+            Classes::hkbAttachmentSetup(class) => class.deps_indexes(),
+            Classes::hkbAttributeModifier(class) => class.deps_indexes(),
+            Classes::hkbAttributeModifierAssignment(class) => class.deps_indexes(),
+            Classes::hkbAuxiliaryNodeInfo(class) => class.deps_indexes(),
+            Classes::hkbBehaviorEventsInfo(class) => class.deps_indexes(),
+            Classes::hkbBehaviorGraph(class) => class.deps_indexes(),
+            Classes::hkbBehaviorGraphData(class) => class.deps_indexes(),
+            Classes::hkbBehaviorGraphInternalState(class) => class.deps_indexes(),
+            Classes::hkbBehaviorGraphInternalStateInfo(class) => class.deps_indexes(),
+            Classes::hkbBehaviorGraphStringData(class) => class.deps_indexes(),
+            Classes::hkbBehaviorInfo(class) => class.deps_indexes(),
+            Classes::hkbBehaviorInfoIdToNamePair(class) => class.deps_indexes(),
+            Classes::hkbBehaviorReferenceGenerator(class) => class.deps_indexes(),
+            Classes::hkbBindable(class) => class.deps_indexes(),
+            Classes::hkbBlendCurveUtils(class) => class.deps_indexes(),
+            Classes::hkbBlenderGenerator(class) => class.deps_indexes(),
+            Classes::hkbBlenderGeneratorChild(class) => class.deps_indexes(),
+            Classes::hkbBlenderGeneratorChildInternalState(class) => class.deps_indexes(),
+            Classes::hkbBlenderGeneratorInternalState(class) => class.deps_indexes(),
+            Classes::hkbBlendingTransitionEffect(class) => class.deps_indexes(),
+            Classes::hkbBlendingTransitionEffectInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbBoneIndexArray(class) => class.deps_indexes(),
+            Classes::hkbBoneWeightArray(class) => class.deps_indexes(),
+            Classes::hkbBoolVariableSequencedData(class) => class.deps_indexes(),
+            Classes::hkbBoolVariableSequencedDataSample(class) => class.deps_indexes(),
+            Classes::hkbCameraShakeEventPayload(class) => class.deps_indexes(),
+            Classes::hkbCharacter(class) => class.deps_indexes(),
+            Classes::hkbCharacterAddedInfo(class) => class.deps_indexes(),
+            Classes::hkbCharacterControlCommand(class) => class.deps_indexes(),
+            Classes::hkbCharacterControllerControlData(class) => class.deps_indexes(),
+            Classes::hkbCharacterControllerModifier(class) => class.deps_indexes(),
+            Classes::hkbCharacterControllerModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbCharacterData(class) => class.deps_indexes(),
+            Classes::hkbCharacterDataCharacterControllerInfo(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbCharacterInfo(class) => class.deps_indexes(),
+            Classes::hkbCharacterSetup(class) => class.deps_indexes(),
+            Classes::hkbCharacterSkinInfo(class) => class.deps_indexes(),
+            Classes::hkbCharacterSteppedInfo(class) => class.deps_indexes(),
+            Classes::hkbCharacterStringData(class) => class.deps_indexes(),
+            Classes::hkbClientCharacterState(class) => class.deps_indexes(),
+            Classes::hkbClipGenerator(class) => class.deps_indexes(),
+            Classes::hkbClipGeneratorEcho(class) => class.deps_indexes(),
+            Classes::hkbClipGeneratorInternalState(class) => class.deps_indexes(),
+            Classes::hkbClipTrigger(class) => class.deps_indexes(),
+            Classes::hkbClipTriggerArray(class) => class.deps_indexes(),
+            Classes::hkbCombineTransformsModifier(class) => class.deps_indexes(),
+            Classes::hkbCombineTransformsModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbCompiledExpressionSet(class) => class.deps_indexes(),
+            Classes::hkbCompiledExpressionSetToken(class) => class.deps_indexes(),
+            Classes::hkbComputeDirectionModifier(class) => class.deps_indexes(),
+            Classes::hkbComputeDirectionModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbComputeRotationFromAxisAngleModifier(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbComputeRotationFromAxisAngleModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbComputeRotationToTargetModifier(class) => class.deps_indexes(),
+            Classes::hkbComputeRotationToTargetModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbCondition(class) => class.deps_indexes(),
+            Classes::hkbContext(class) => class.deps_indexes(),
+            Classes::hkbDampingModifier(class) => class.deps_indexes(),
+            Classes::hkbDampingModifierInternalState(class) => class.deps_indexes(),
+            Classes::hkbDefaultMessageLog(class) => class.deps_indexes(),
+            Classes::hkbDelayedModifier(class) => class.deps_indexes(),
+            Classes::hkbDelayedModifierInternalState(class) => class.deps_indexes(),
+            Classes::hkbDetectCloseToGroundModifier(class) => class.deps_indexes(),
+            Classes::hkbDetectCloseToGroundModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbEvaluateExpressionModifier(class) => class.deps_indexes(),
+            Classes::hkbEvaluateExpressionModifierInternalExpressionData(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbEvaluateExpressionModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbEvaluateHandleModifier(class) => class.deps_indexes(),
+            Classes::hkbEvent(class) => class.deps_indexes(),
+            Classes::hkbEventBase(class) => class.deps_indexes(),
+            Classes::hkbEventDrivenModifier(class) => class.deps_indexes(),
+            Classes::hkbEventDrivenModifierInternalState(class) => class.deps_indexes(),
+            Classes::hkbEventInfo(class) => class.deps_indexes(),
+            Classes::hkbEventPayload(class) => class.deps_indexes(),
+            Classes::hkbEventPayloadList(class) => class.deps_indexes(),
+            Classes::hkbEventProperty(class) => class.deps_indexes(),
+            Classes::hkbEventRaisedInfo(class) => class.deps_indexes(),
+            Classes::hkbEventRangeData(class) => class.deps_indexes(),
+            Classes::hkbEventRangeDataArray(class) => class.deps_indexes(),
+            Classes::hkbEventSequencedData(class) => class.deps_indexes(),
+            Classes::hkbEventSequencedDataSequencedEvent(class) => class.deps_indexes(),
+            Classes::hkbEventsFromRangeModifier(class) => class.deps_indexes(),
+            Classes::hkbEventsFromRangeModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbExpressionCondition(class) => class.deps_indexes(),
+            Classes::hkbExpressionData(class) => class.deps_indexes(),
+            Classes::hkbExpressionDataArray(class) => class.deps_indexes(),
+            Classes::hkbExtractRagdollPoseModifier(class) => class.deps_indexes(),
+            Classes::hkbFootIkControlData(class) => class.deps_indexes(),
+            Classes::hkbFootIkControlsModifier(class) => class.deps_indexes(),
+            Classes::hkbFootIkControlsModifierLeg(class) => class.deps_indexes(),
+            Classes::hkbFootIkDriverInfo(class) => class.deps_indexes(),
+            Classes::hkbFootIkDriverInfoLeg(class) => class.deps_indexes(),
+            Classes::hkbFootIkGains(class) => class.deps_indexes(),
+            Classes::hkbFootIkModifier(class) => class.deps_indexes(),
+            Classes::hkbFootIkModifierInternalLegData(class) => class.deps_indexes(),
+            Classes::hkbFootIkModifierLeg(class) => class.deps_indexes(),
+            Classes::hkbGenerator(class) => class.deps_indexes(),
+            Classes::hkbGeneratorOutputListener(class) => class.deps_indexes(),
+            Classes::hkbGeneratorSyncInfo(class) => class.deps_indexes(),
+            Classes::hkbGeneratorSyncInfoSyncPoint(class) => class.deps_indexes(),
+            Classes::hkbGeneratorTransitionEffect(class) => class.deps_indexes(),
+            Classes::hkbGeneratorTransitionEffectInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbGetHandleOnBoneModifier(class) => class.deps_indexes(),
+            Classes::hkbGetUpModifier(class) => class.deps_indexes(),
+            Classes::hkbGetUpModifierInternalState(class) => class.deps_indexes(),
+            Classes::hkbGetWorldFromModelModifier(class) => class.deps_indexes(),
+            Classes::hkbGetWorldFromModelModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbHandIkControlData(class) => class.deps_indexes(),
+            Classes::hkbHandIkControlsModifier(class) => class.deps_indexes(),
+            Classes::hkbHandIkControlsModifierHand(class) => class.deps_indexes(),
+            Classes::hkbHandIkDriverInfo(class) => class.deps_indexes(),
+            Classes::hkbHandIkDriverInfoHand(class) => class.deps_indexes(),
+            Classes::hkbHandIkModifier(class) => class.deps_indexes(),
+            Classes::hkbHandIkModifierHand(class) => class.deps_indexes(),
+            Classes::hkbHandle(class) => class.deps_indexes(),
+            Classes::hkbIntEventPayload(class) => class.deps_indexes(),
+            Classes::hkbIntVariableSequencedData(class) => class.deps_indexes(),
+            Classes::hkbIntVariableSequencedDataSample(class) => class.deps_indexes(),
+            Classes::hkBitField(class) => class.deps_indexes(),
+            Classes::hkbKeyframeBonesModifier(class) => class.deps_indexes(),
+            Classes::hkbKeyframeBonesModifierKeyframeInfo(class) => class.deps_indexes(),
+            Classes::hkbLinkedSymbolInfo(class) => class.deps_indexes(),
+            Classes::hkbLookAtModifier(class) => class.deps_indexes(),
+            Classes::hkbLookAtModifierInternalState(class) => class.deps_indexes(),
+            Classes::hkbManualSelectorGenerator(class) => class.deps_indexes(),
+            Classes::hkbManualSelectorGeneratorInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbMessageLog(class) => class.deps_indexes(),
+            Classes::hkbMirroredSkeletonInfo(class) => class.deps_indexes(),
+            Classes::hkbMirrorModifier(class) => class.deps_indexes(),
+            Classes::hkbModifier(class) => class.deps_indexes(),
+            Classes::hkbModifierGenerator(class) => class.deps_indexes(),
+            Classes::hkbModifierList(class) => class.deps_indexes(),
+            Classes::hkbModifierWrapper(class) => class.deps_indexes(),
+            Classes::hkbMoveCharacterModifier(class) => class.deps_indexes(),
+            Classes::hkbMoveCharacterModifierInternalState(class) => class.deps_indexes(),
+            Classes::hkbNamedEventPayload(class) => class.deps_indexes(),
+            Classes::hkbNamedIntEventPayload(class) => class.deps_indexes(),
+            Classes::hkbNamedRealEventPayload(class) => class.deps_indexes(),
+            Classes::hkbNamedStringEventPayload(class) => class.deps_indexes(),
+            Classes::hkbNode(class) => class.deps_indexes(),
+            Classes::hkbNodeInternalStateInfo(class) => class.deps_indexes(),
+            Classes::hkbParticleSystemEventPayload(class) => class.deps_indexes(),
+            Classes::hkbPoseMatchingGenerator(class) => class.deps_indexes(),
+            Classes::hkbPoseMatchingGeneratorInternalState(class) => class.deps_indexes(),
+            Classes::hkbPoweredRagdollControlData(class) => class.deps_indexes(),
+            Classes::hkbPoweredRagdollControlsModifier(class) => class.deps_indexes(),
+            Classes::hkbProjectData(class) => class.deps_indexes(),
+            Classes::hkbProjectStringData(class) => class.deps_indexes(),
+            Classes::hkbProxyModifier(class) => class.deps_indexes(),
+            Classes::hkbProxyModifierProxyInfo(class) => class.deps_indexes(),
+            Classes::hkbRaiseEventCommand(class) => class.deps_indexes(),
+            Classes::hkbRealEventPayload(class) => class.deps_indexes(),
+            Classes::hkbRealVariableSequencedData(class) => class.deps_indexes(),
+            Classes::hkbRealVariableSequencedDataSample(class) => class.deps_indexes(),
+            Classes::hkbReferencePoseGenerator(class) => class.deps_indexes(),
+            Classes::hkbRegisteredGenerator(class) => class.deps_indexes(),
+            Classes::hkbRigidBodyRagdollControlData(class) => class.deps_indexes(),
+            Classes::hkbRigidBodyRagdollControlsModifier(class) => class.deps_indexes(),
+            Classes::hkbRoleAttribute(class) => class.deps_indexes(),
+            Classes::hkbRotateCharacterModifier(class) => class.deps_indexes(),
+            Classes::hkbRotateCharacterModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbSenseHandleModifier(class) => class.deps_indexes(),
+            Classes::hkbSenseHandleModifierRange(class) => class.deps_indexes(),
+            Classes::hkbSequence(class) => class.deps_indexes(),
+            Classes::hkbSequencedData(class) => class.deps_indexes(),
+            Classes::hkbSequenceInternalState(class) => class.deps_indexes(),
+            Classes::hkbSequenceStringData(class) => class.deps_indexes(),
+            Classes::hkbSetBehaviorCommand(class) => class.deps_indexes(),
+            Classes::hkbSetLocalTimeOfClipGeneratorCommand(class) => class.deps_indexes(),
+            Classes::hkbSetNodePropertyCommand(class) => class.deps_indexes(),
+            Classes::hkbSetWordVariableCommand(class) => class.deps_indexes(),
+            Classes::hkbSetWorldFromModelModifier(class) => class.deps_indexes(),
+            Classes::hkbSimulationControlCommand(class) => class.deps_indexes(),
+            Classes::hkbSimulationStateInfo(class) => class.deps_indexes(),
+            Classes::hkbStateChooser(class) => class.deps_indexes(),
+            Classes::hkbStateListener(class) => class.deps_indexes(),
+            Classes::hkbStateMachine(class) => class.deps_indexes(),
+            Classes::hkbStateMachineActiveTransitionInfo(class) => class.deps_indexes(),
+            Classes::hkbStateMachineDelayedTransitionInfo(class) => class.deps_indexes(),
+            Classes::hkbStateMachineEventPropertyArray(class) => class.deps_indexes(),
+            Classes::hkbStateMachineInternalState(class) => class.deps_indexes(),
+            Classes::hkbStateMachineNestedStateMachineData(class) => class.deps_indexes(),
+            Classes::hkbStateMachineProspectiveTransitionInfo(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbStateMachineStateInfo(class) => class.deps_indexes(),
+            Classes::hkbStateMachineTimeInterval(class) => class.deps_indexes(),
+            Classes::hkbStateMachineTransitionInfo(class) => class.deps_indexes(),
+            Classes::hkbStateMachineTransitionInfoArray(class) => class.deps_indexes(),
+            Classes::hkbStateMachineTransitionInfoReference(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbStringCondition(class) => class.deps_indexes(),
+            Classes::hkbStringEventPayload(class) => class.deps_indexes(),
+            Classes::hkbTestStateChooser(class) => class.deps_indexes(),
+            Classes::hkbTimerModifier(class) => class.deps_indexes(),
+            Classes::hkbTimerModifierInternalState(class) => class.deps_indexes(),
+            Classes::hkbTransformVectorModifier(class) => class.deps_indexes(),
+            Classes::hkbTransformVectorModifierInternalState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkbTransitionEffect(class) => class.deps_indexes(),
+            Classes::hkbTwistModifier(class) => class.deps_indexes(),
+            Classes::hkbVariableBindingSet(class) => class.deps_indexes(),
+            Classes::hkbVariableBindingSetBinding(class) => class.deps_indexes(),
+            Classes::hkbVariableInfo(class) => class.deps_indexes(),
+            Classes::hkbVariableValue(class) => class.deps_indexes(),
+            Classes::hkbVariableValueSet(class) => class.deps_indexes(),
+            Classes::hkbWorldEnums(class) => class.deps_indexes(),
+            Classes::hkbWorldFromModelModeData(class) => class.deps_indexes(),
+            Classes::hkClass(class) => class.deps_indexes(),
+            Classes::hkClassEnum(class) => class.deps_indexes(),
+            Classes::hkClassEnumItem(class) => class.deps_indexes(),
+            Classes::hkClassMember(class) => class.deps_indexes(),
+            Classes::hkColor(class) => class.deps_indexes(),
+            Classes::hkContactPoint(class) => class.deps_indexes(),
+            Classes::hkContactPointMaterial(class) => class.deps_indexes(),
+            Classes::hkCustomAttributes(class) => class.deps_indexes(),
+            Classes::hkCustomAttributesAttribute(class) => class.deps_indexes(),
+            Classes::hkDataObjectTypeAttribute(class) => class.deps_indexes(),
+            Classes::hkDescriptionAttribute(class) => class.deps_indexes(),
+            Classes::hkDocumentationAttribute(class) => class.deps_indexes(),
+            Classes::hkGeometry(class) => class.deps_indexes(),
+            Classes::hkGeometryTriangle(class) => class.deps_indexes(),
+            Classes::hkGizmoAttribute(class) => class.deps_indexes(),
+            Classes::hkHalf8(class) => class.deps_indexes(),
+            Classes::hkIndexedTransformSet(class) => class.deps_indexes(),
+            Classes::hkLinkAttribute(class) => class.deps_indexes(),
+            Classes::hkLocalFrame(class) => class.deps_indexes(),
+            Classes::hkLocalFrameGroup(class) => class.deps_indexes(),
+            Classes::hkMemoryMeshBody(class) => class.deps_indexes(),
+            Classes::hkMemoryMeshMaterial(class) => class.deps_indexes(),
+            Classes::hkMemoryMeshShape(class) => class.deps_indexes(),
+            Classes::hkMemoryMeshTexture(class) => class.deps_indexes(),
+            Classes::hkMemoryMeshVertexBuffer(class) => class.deps_indexes(),
+            Classes::hkMemoryResourceContainer(class) => class.deps_indexes(),
+            Classes::hkMemoryResourceHandle(class) => class.deps_indexes(),
+            Classes::hkMemoryResourceHandleExternalLink(class) => class.deps_indexes(),
+            Classes::hkMemoryTrackerAttribute(class) => class.deps_indexes(),
+            Classes::hkMeshBody(class) => class.deps_indexes(),
+            Classes::hkMeshBoneIndexMapping(class) => class.deps_indexes(),
+            Classes::hkMeshMaterial(class) => class.deps_indexes(),
+            Classes::hkMeshSection(class) => class.deps_indexes(),
+            Classes::hkMeshSectionCinfo(class) => class.deps_indexes(),
+            Classes::hkMeshShape(class) => class.deps_indexes(),
+            Classes::hkMeshTexture(class) => class.deps_indexes(),
+            Classes::hkMeshVertexBuffer(class) => class.deps_indexes(),
+            Classes::hkModelerNodeTypeAttribute(class) => class.deps_indexes(),
+            Classes::hkMonitorStreamColorTable(class) => class.deps_indexes(),
+            Classes::hkMonitorStreamColorTableColorPair(class) => class.deps_indexes(),
+            Classes::hkMonitorStreamFrameInfo(class) => class.deps_indexes(),
+            Classes::hkMonitorStreamStringMap(class) => class.deps_indexes(),
+            Classes::hkMonitorStreamStringMapStringMap(class) => class.deps_indexes(),
+            Classes::hkMoppBvTreeShapeBase(class) => class.deps_indexes(),
+            Classes::hkMotionState(class) => class.deps_indexes(),
+            Classes::hkMultipleVertexBuffer(class) => class.deps_indexes(),
+            Classes::hkMultipleVertexBufferElementInfo(class) => class.deps_indexes(),
+            Classes::hkMultipleVertexBufferLockedElement(class) => class.deps_indexes(),
+            Classes::hkMultipleVertexBufferVertexBufferInfo(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkMultiThreadCheck(class) => class.deps_indexes(),
+            Classes::hkp2dAngConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpAabbPhantom(class) => class.deps_indexes(),
+            Classes::hkPackedVector3(class) => class.deps_indexes(),
+            Classes::hkPackfileHeader(class) => class.deps_indexes(),
+            Classes::hkPackfileSectionHeader(class) => class.deps_indexes(),
+            Classes::hkpAction(class) => class.deps_indexes(),
+            Classes::hkpAgent1nSector(class) => class.deps_indexes(),
+            Classes::hkpAngConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpAngFrictionConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpAngLimitConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpAngMotorConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpAngularDashpotAction(class) => class.deps_indexes(),
+            Classes::hkpArrayAction(class) => class.deps_indexes(),
+            Classes::hkpBallAndSocketConstraintData(class) => class.deps_indexes(),
+            Classes::hkpBallAndSocketConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpBallGun(class) => class.deps_indexes(),
+            Classes::hkpBallSocketChainData(class) => class.deps_indexes(),
+            Classes::hkpBallSocketChainDataConstraintInfo(class) => class.deps_indexes(),
+            Classes::hkpBallSocketConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpBinaryAction(class) => class.deps_indexes(),
+            Classes::hkpBoxMotion(class) => class.deps_indexes(),
+            Classes::hkpBoxShape(class) => class.deps_indexes(),
+            Classes::hkpBreakableBody(class) => class.deps_indexes(),
+            Classes::hkpBreakableConstraintData(class) => class.deps_indexes(),
+            Classes::hkpBridgeAtoms(class) => class.deps_indexes(),
+            Classes::hkpBridgeConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpBroadPhaseHandle(class) => class.deps_indexes(),
+            Classes::hkpBvShape(class) => class.deps_indexes(),
+            Classes::hkpBvTreeShape(class) => class.deps_indexes(),
+            Classes::hkpCachingShapePhantom(class) => class.deps_indexes(),
+            Classes::hkpCallbackConstraintMotor(class) => class.deps_indexes(),
+            Classes::hkpCapsuleShape(class) => class.deps_indexes(),
+            Classes::hkpCdBody(class) => class.deps_indexes(),
+            Classes::hkpCenterOfMassChangerModifierConstraintAtom(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpCharacterControllerCinfo(class) => class.deps_indexes(),
+            Classes::hkpCharacterMotion(class) => class.deps_indexes(),
+            Classes::hkpCharacterProxyCinfo(class) => class.deps_indexes(),
+            Classes::hkpCharacterRigidBodyCinfo(class) => class.deps_indexes(),
+            Classes::hkpCogWheelConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpCogWheelConstraintData(class) => class.deps_indexes(),
+            Classes::hkpCogWheelConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpCollidable(class) => class.deps_indexes(),
+            Classes::hkpCollidableBoundingVolumeData(class) => class.deps_indexes(),
+            Classes::hkpCollidableCollidableFilter(class) => class.deps_indexes(),
+            Classes::hkpCollisionFilter(class) => class.deps_indexes(),
+            Classes::hkpCollisionFilterList(class) => class.deps_indexes(),
+            Classes::hkpCompressedMeshShape(class) => class.deps_indexes(),
+            Classes::hkpCompressedMeshShapeBigTriangle(class) => class.deps_indexes(),
+            Classes::hkpCompressedMeshShapeChunk(class) => class.deps_indexes(),
+            Classes::hkpCompressedMeshShapeConvexPiece(class) => class.deps_indexes(),
+            Classes::hkpCompressedSampledHeightFieldShape(class) => class.deps_indexes(),
+            Classes::hkpConeLimitConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpConstrainedSystemFilter(class) => class.deps_indexes(),
+            Classes::hkpConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpConstraintChainData(class) => class.deps_indexes(),
+            Classes::hkpConstraintChainInstance(class) => class.deps_indexes(),
+            Classes::hkpConstraintChainInstanceAction(class) => class.deps_indexes(),
+            Classes::hkpConstraintCollisionFilter(class) => class.deps_indexes(),
+            Classes::hkpConstraintData(class) => class.deps_indexes(),
+            Classes::hkpConstraintInstance(class) => class.deps_indexes(),
+            Classes::hkpConstraintInstanceSmallArraySerializeOverrideType(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpConstraintMotor(class) => class.deps_indexes(),
+            Classes::hkpConvexListFilter(class) => class.deps_indexes(),
+            Classes::hkpConvexListShape(class) => class.deps_indexes(),
+            Classes::hkpConvexPieceMeshShape(class) => class.deps_indexes(),
+            Classes::hkpConvexPieceStreamData(class) => class.deps_indexes(),
+            Classes::hkpConvexShape(class) => class.deps_indexes(),
+            Classes::hkpConvexTransformShape(class) => class.deps_indexes(),
+            Classes::hkpConvexTransformShapeBase(class) => class.deps_indexes(),
+            Classes::hkpConvexTranslateShape(class) => class.deps_indexes(),
+            Classes::hkpConvexVerticesConnectivity(class) => class.deps_indexes(),
+            Classes::hkpConvexVerticesShape(class) => class.deps_indexes(),
+            Classes::hkpConvexVerticesShapeFourVectors(class) => class.deps_indexes(),
+            Classes::hkpCylinderShape(class) => class.deps_indexes(),
+            Classes::hkpDashpotAction(class) => class.deps_indexes(),
+            Classes::hkpDefaultConvexListFilter(class) => class.deps_indexes(),
+            Classes::hkpDefaultWorldMemoryWatchDog(class) => class.deps_indexes(),
+            Classes::hkpDisableEntityCollisionFilter(class) => class.deps_indexes(),
+            Classes::hkpDisplayBindingData(class) => class.deps_indexes(),
+            Classes::hkpDisplayBindingDataPhysicsSystem(class) => class.deps_indexes(),
+            Classes::hkpDisplayBindingDataRigidBody(class) => class.deps_indexes(),
+            Classes::hkpEntity(class) => class.deps_indexes(),
+            Classes::hkpEntityExtendedListeners(class) => class.deps_indexes(),
+            Classes::hkpEntitySmallArraySerializeOverrideType(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpEntitySpuCollisionCallback(class) => class.deps_indexes(),
+            Classes::hkpExtendedMeshShape(class) => class.deps_indexes(),
+            Classes::hkpExtendedMeshShapeShapesSubpart(class) => class.deps_indexes(),
+            Classes::hkpExtendedMeshShapeSubpart(class) => class.deps_indexes(),
+            Classes::hkpExtendedMeshShapeTrianglesSubpart(class) => class.deps_indexes(),
+            Classes::hkpFastMeshShape(class) => class.deps_indexes(),
+            Classes::hkpFirstPersonGun(class) => class.deps_indexes(),
+            Classes::hkpFixedRigidMotion(class) => class.deps_indexes(),
+            Classes::hkpGenericConstraintData(class) => class.deps_indexes(),
+            Classes::hkpGenericConstraintDataScheme(class) => class.deps_indexes(),
+            Classes::hkpGenericConstraintDataSchemeConstraintInfo(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpGravityGun(class) => class.deps_indexes(),
+            Classes::hkpGroupCollisionFilter(class) => class.deps_indexes(),
+            Classes::hkpGroupFilter(class) => class.deps_indexes(),
+            Classes::hkpHeightFieldShape(class) => class.deps_indexes(),
+            Classes::hkpHingeConstraintData(class) => class.deps_indexes(),
+            Classes::hkpHingeConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpHingeLimitsData(class) => class.deps_indexes(),
+            Classes::hkpHingeLimitsDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpIgnoreModifierConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpKeyframedRigidMotion(class) => class.deps_indexes(),
+            Classes::hkpLimitedForceConstraintMotor(class) => class.deps_indexes(),
+            Classes::hkpLimitedHingeConstraintData(class) => class.deps_indexes(),
+            Classes::hkpLimitedHingeConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpLinConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpLinearParametricCurve(class) => class.deps_indexes(),
+            Classes::hkpLinFrictionConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpLinkedCollidable(class) => class.deps_indexes(),
+            Classes::hkpLinLimitConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpLinMotorConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpLinSoftConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpListShape(class) => class.deps_indexes(),
+            Classes::hkpListShapeChildInfo(class) => class.deps_indexes(),
+            Classes::hkpMalleableConstraintData(class) => class.deps_indexes(),
+            Classes::hkpMassChangerModifierConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpMassProperties(class) => class.deps_indexes(),
+            Classes::hkpMaterial(class) => class.deps_indexes(),
+            Classes::hkpMaxSizeMotion(class) => class.deps_indexes(),
+            Classes::hkpMeshMaterial(class) => class.deps_indexes(),
+            Classes::hkpMeshShape(class) => class.deps_indexes(),
+            Classes::hkpMeshShapeSubpart(class) => class.deps_indexes(),
+            Classes::hkpModifierConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpMoppBvTreeShape(class) => class.deps_indexes(),
+            Classes::hkpMoppCode(class) => class.deps_indexes(),
+            Classes::hkpMoppCodeCodeInfo(class) => class.deps_indexes(),
+            Classes::hkpMoppCodeReindexedTerminal(class) => class.deps_indexes(),
+            Classes::hkpMotion(class) => class.deps_indexes(),
+            Classes::hkpMotorAction(class) => class.deps_indexes(),
+            Classes::hkpMountedBallGun(class) => class.deps_indexes(),
+            Classes::hkpMouseSpringAction(class) => class.deps_indexes(),
+            Classes::hkpMovingSurfaceModifierConstraintAtom(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpMultiRayShape(class) => class.deps_indexes(),
+            Classes::hkpMultiRayShapeRay(class) => class.deps_indexes(),
+            Classes::hkpMultiSphereShape(class) => class.deps_indexes(),
+            Classes::hkpMultithreadedVehicleManager(class) => class.deps_indexes(),
+            Classes::hkpNamedMeshMaterial(class) => class.deps_indexes(),
+            Classes::hkpNullCollisionFilter(class) => class.deps_indexes(),
+            Classes::hkPostFinishAttribute(class) => class.deps_indexes(),
+            Classes::hkpOverwritePivotConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpPairCollisionFilter(class) => class.deps_indexes(),
+            Classes::hkpPairCollisionFilterMapPairFilterKeyOverrideType(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpParametricCurve(class) => class.deps_indexes(),
+            Classes::hkpPhantom(class) => class.deps_indexes(),
+            Classes::hkpPhantomCallbackShape(class) => class.deps_indexes(),
+            Classes::hkpPhysicsData(class) => class.deps_indexes(),
+            Classes::hkpPhysicsSystem(class) => class.deps_indexes(),
+            Classes::hkpPhysicsSystemWithContacts(class) => class.deps_indexes(),
+            Classes::hkpPlaneShape(class) => class.deps_indexes(),
+            Classes::hkpPointToPathConstraintData(class) => class.deps_indexes(),
+            Classes::hkpPointToPlaneConstraintData(class) => class.deps_indexes(),
+            Classes::hkpPointToPlaneConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpPositionConstraintMotor(class) => class.deps_indexes(),
+            Classes::hkpPoweredChainData(class) => class.deps_indexes(),
+            Classes::hkpPoweredChainDataConstraintInfo(class) => class.deps_indexes(),
+            Classes::hkpPoweredChainMapper(class) => class.deps_indexes(),
+            Classes::hkpPoweredChainMapperLinkInfo(class) => class.deps_indexes(),
+            Classes::hkpPoweredChainMapperTarget(class) => class.deps_indexes(),
+            Classes::hkpPrismaticConstraintData(class) => class.deps_indexes(),
+            Classes::hkpPrismaticConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpProjectileGun(class) => class.deps_indexes(),
+            Classes::hkpProperty(class) => class.deps_indexes(),
+            Classes::hkpPropertyValue(class) => class.deps_indexes(),
+            Classes::hkpPulleyConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpPulleyConstraintData(class) => class.deps_indexes(),
+            Classes::hkpPulleyConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpRackAndPinionConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpRackAndPinionConstraintData(class) => class.deps_indexes(),
+            Classes::hkpRackAndPinionConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpRagdollConstraintData(class) => class.deps_indexes(),
+            Classes::hkpRagdollConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpRagdollLimitsData(class) => class.deps_indexes(),
+            Classes::hkpRagdollLimitsDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpRagdollMotorConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpRayCollidableFilter(class) => class.deps_indexes(),
+            Classes::hkpRayShapeCollectionFilter(class) => class.deps_indexes(),
+            Classes::hkpRejectChassisListener(class) => class.deps_indexes(),
+            Classes::hkpRemoveTerminalsMoppModifier(class) => class.deps_indexes(),
+            Classes::hkpReorientAction(class) => class.deps_indexes(),
+            Classes::hkpRigidBody(class) => class.deps_indexes(),
+            Classes::hkpRotationalConstraintData(class) => class.deps_indexes(),
+            Classes::hkpRotationalConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpSampledHeightFieldShape(class) => class.deps_indexes(),
+            Classes::hkpSerializedAgentNnEntry(class) => class.deps_indexes(),
+            Classes::hkpSerializedDisplayMarker(class) => class.deps_indexes(),
+            Classes::hkpSerializedDisplayMarkerList(class) => class.deps_indexes(),
+            Classes::hkpSerializedDisplayRbTransforms(class) => class.deps_indexes(),
+            Classes::hkpSerializedDisplayRbTransformsDisplayTransformPair(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpSerializedSubTrack1nInfo(class) => class.deps_indexes(),
+            Classes::hkpSerializedTrack1nInfo(class) => class.deps_indexes(),
+            Classes::hkpSetLocalRotationsConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpSetLocalTransformsConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpSetLocalTranslationsConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpSetupStabilizationAtom(class) => class.deps_indexes(),
+            Classes::hkpShape(class) => class.deps_indexes(),
+            Classes::hkpShapeCollection(class) => class.deps_indexes(),
+            Classes::hkpShapeCollectionFilter(class) => class.deps_indexes(),
+            Classes::hkpShapeContainer(class) => class.deps_indexes(),
+            Classes::hkpShapeInfo(class) => class.deps_indexes(),
+            Classes::hkpShapeModifier(class) => class.deps_indexes(),
+            Classes::hkpShapePhantom(class) => class.deps_indexes(),
+            Classes::hkpSimpleContactConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpSimpleContactConstraintDataInfo(class) => class.deps_indexes(),
+            Classes::hkpSimpleMeshShape(class) => class.deps_indexes(),
+            Classes::hkpSimpleMeshShapeTriangle(class) => class.deps_indexes(),
+            Classes::hkpSimpleShapePhantom(class) => class.deps_indexes(),
+            Classes::hkpSimpleShapePhantomCollisionDetail(class) => class.deps_indexes(),
+            Classes::hkpSimulation(class) => class.deps_indexes(),
+            Classes::hkpSingleShapeContainer(class) => class.deps_indexes(),
+            Classes::hkpSoftContactModifierConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpSphereMotion(class) => class.deps_indexes(),
+            Classes::hkpSphereRepShape(class) => class.deps_indexes(),
+            Classes::hkpSphereShape(class) => class.deps_indexes(),
+            Classes::hkpSpringAction(class) => class.deps_indexes(),
+            Classes::hkpSpringDamperConstraintMotor(class) => class.deps_indexes(),
+            Classes::hkpStiffSpringChainData(class) => class.deps_indexes(),
+            Classes::hkpStiffSpringChainDataConstraintInfo(class) => class.deps_indexes(),
+            Classes::hkpStiffSpringConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpStiffSpringConstraintData(class) => class.deps_indexes(),
+            Classes::hkpStiffSpringConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpStorageExtendedMeshShape(class) => class.deps_indexes(),
+            Classes::hkpStorageExtendedMeshShapeMaterial(class) => class.deps_indexes(),
+            Classes::hkpStorageExtendedMeshShapeMeshSubpartStorage(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpStorageExtendedMeshShapeShapeSubpartStorage(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpStorageMeshShape(class) => class.deps_indexes(),
+            Classes::hkpStorageMeshShapeSubpartStorage(class) => class.deps_indexes(),
+            Classes::hkpStorageSampledHeightFieldShape(class) => class.deps_indexes(),
+            Classes::hkpThinBoxMotion(class) => class.deps_indexes(),
+            Classes::hkpTransformShape(class) => class.deps_indexes(),
+            Classes::hkpTriangleShape(class) => class.deps_indexes(),
+            Classes::hkpTriggerVolume(class) => class.deps_indexes(),
+            Classes::hkpTriggerVolumeEventInfo(class) => class.deps_indexes(),
+            Classes::hkpTriSampledHeightFieldBvTreeShape(class) => class.deps_indexes(),
+            Classes::hkpTriSampledHeightFieldCollection(class) => class.deps_indexes(),
+            Classes::hkpTwistLimitConstraintAtom(class) => class.deps_indexes(),
+            Classes::hkpTypedBroadPhaseHandle(class) => class.deps_indexes(),
+            Classes::hkpTyremarkPoint(class) => class.deps_indexes(),
+            Classes::hkpTyremarksInfo(class) => class.deps_indexes(),
+            Classes::hkpTyremarksWheel(class) => class.deps_indexes(),
+            Classes::hkpUnaryAction(class) => class.deps_indexes(),
+            Classes::hkpVehicleAerodynamics(class) => class.deps_indexes(),
+            Classes::hkpVehicleBrake(class) => class.deps_indexes(),
+            Classes::hkpVehicleCastBatchingManager(class) => class.deps_indexes(),
+            Classes::hkpVehicleData(class) => class.deps_indexes(),
+            Classes::hkpVehicleDataWheelComponentParams(class) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultAerodynamics(class) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultAnalogDriverInput(class) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultBrake(class) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultBrakeWheelBrakingProperties(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpVehicleDefaultEngine(class) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultSteering(class) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultSuspension(class) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters(
+                class,
+            ) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultTransmission(class) => class.deps_indexes(),
+            Classes::hkpVehicleDefaultVelocityDamper(class) => class.deps_indexes(),
+            Classes::hkpVehicleDriverInput(class) => class.deps_indexes(),
+            Classes::hkpVehicleDriverInputAnalogStatus(class) => class.deps_indexes(),
+            Classes::hkpVehicleDriverInputStatus(class) => class.deps_indexes(),
+            Classes::hkpVehicleEngine(class) => class.deps_indexes(),
+            Classes::hkpVehicleFrictionDescription(class) => class.deps_indexes(),
+            Classes::hkpVehicleFrictionDescriptionAxisDescription(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpVehicleFrictionStatus(class) => class.deps_indexes(),
+            Classes::hkpVehicleFrictionStatusAxisStatus(class) => class.deps_indexes(),
+            Classes::hkpVehicleInstance(class) => class.deps_indexes(),
+            Classes::hkpVehicleInstanceWheelInfo(class) => class.deps_indexes(),
+            Classes::hkpVehicleLinearCastBatchingManager(class) => class.deps_indexes(),
+            Classes::hkpVehicleLinearCastWheelCollide(class) => class.deps_indexes(),
+            Classes::hkpVehicleLinearCastWheelCollideWheelState(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpVehicleManager(class) => class.deps_indexes(),
+            Classes::hkpVehicleRayCastBatchingManager(class) => class.deps_indexes(),
+            Classes::hkpVehicleRayCastWheelCollide(class) => class.deps_indexes(),
+            Classes::hkpVehicleSteering(class) => class.deps_indexes(),
+            Classes::hkpVehicleSuspension(class) => class.deps_indexes(),
+            Classes::hkpVehicleSuspensionSuspensionWheelParameters(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpVehicleTransmission(class) => class.deps_indexes(),
+            Classes::hkpVehicleVelocityDamper(class) => class.deps_indexes(),
+            Classes::hkpVehicleWheelCollide(class) => class.deps_indexes(),
+            Classes::hkpVelocityConstraintMotor(class) => class.deps_indexes(),
+            Classes::hkpViscousSurfaceModifierConstraintAtom(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkpWeldingUtility(class) => class.deps_indexes(),
+            Classes::hkpWheelConstraintData(class) => class.deps_indexes(),
+            Classes::hkpWheelConstraintDataAtoms(class) => class.deps_indexes(),
+            Classes::hkpWorld(class) => class.deps_indexes(),
+            Classes::hkpWorldCinfo(class) => class.deps_indexes(),
+            Classes::hkpWorldObject(class) => class.deps_indexes(),
+            Classes::hkQTransform(class) => class.deps_indexes(),
+            Classes::hkRangeInt32Attribute(class) => class.deps_indexes(),
+            Classes::hkRangeRealAttribute(class) => class.deps_indexes(),
+            Classes::hkReferencedObject(class) => class.deps_indexes(),
+            Classes::hkReflectedFileAttribute(class) => class.deps_indexes(),
+            Classes::hkResourceBase(class) => class.deps_indexes(),
+            Classes::hkResourceContainer(class) => class.deps_indexes(),
+            Classes::hkResourceHandle(class) => class.deps_indexes(),
+            Classes::hkRootLevelContainer(class) => class.deps_indexes(),
+            Classes::hkRootLevelContainerNamedVariant(class) => class.deps_indexes(),
+            Classes::hkSemanticsAttribute(class) => class.deps_indexes(),
+            Classes::hkSimpleLocalFrame(class) => class.deps_indexes(),
+            Classes::hkSphere(class) => class.deps_indexes(),
+            Classes::hkSweptTransform(class) => class.deps_indexes(),
+            Classes::hkTraceStreamTitle(class) => class.deps_indexes(),
+            Classes::hkTrackerSerializableScanSnapshot(class) => class.deps_indexes(),
+            Classes::hkTrackerSerializableScanSnapshotAllocation(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkTrackerSerializableScanSnapshotBlock(class) => {
+                class.deps_indexes()
+            }
+            Classes::hkUiAttribute(class) => class.deps_indexes(),
+            Classes::hkVertexFormat(class) => class.deps_indexes(),
+            Classes::hkVertexFormatElement(class) => class.deps_indexes(),
+            Classes::hkWorldMemoryAvailableWatchDog(class) => class.deps_indexes(),
+            Classes::hkxAnimatedFloat(class) => class.deps_indexes(),
+            Classes::hkxAnimatedMatrix(class) => class.deps_indexes(),
+            Classes::hkxAnimatedQuaternion(class) => class.deps_indexes(),
+            Classes::hkxAnimatedVector(class) => class.deps_indexes(),
+            Classes::hkxAttribute(class) => class.deps_indexes(),
+            Classes::hkxAttributeGroup(class) => class.deps_indexes(),
+            Classes::hkxAttributeHolder(class) => class.deps_indexes(),
+            Classes::hkxCamera(class) => class.deps_indexes(),
+            Classes::hkxEdgeSelectionChannel(class) => class.deps_indexes(),
+            Classes::hkxEnum(class) => class.deps_indexes(),
+            Classes::hkxEnumItem(class) => class.deps_indexes(),
+            Classes::hkxEnvironment(class) => class.deps_indexes(),
+            Classes::hkxEnvironmentVariable(class) => class.deps_indexes(),
+            Classes::hkxIndexBuffer(class) => class.deps_indexes(),
+            Classes::hkxLight(class) => class.deps_indexes(),
+            Classes::hkxMaterial(class) => class.deps_indexes(),
+            Classes::hkxMaterialEffect(class) => class.deps_indexes(),
+            Classes::hkxMaterialProperty(class) => class.deps_indexes(),
+            Classes::hkxMaterialShader(class) => class.deps_indexes(),
+            Classes::hkxMaterialShaderSet(class) => class.deps_indexes(),
+            Classes::hkxMaterialTextureStage(class) => class.deps_indexes(),
+            Classes::hkxMesh(class) => class.deps_indexes(),
+            Classes::hkxMeshSection(class) => class.deps_indexes(),
+            Classes::hkxMeshUserChannelInfo(class) => class.deps_indexes(),
+            Classes::hkxNode(class) => class.deps_indexes(),
+            Classes::hkxNodeAnnotationData(class) => class.deps_indexes(),
+            Classes::hkxNodeSelectionSet(class) => class.deps_indexes(),
+            Classes::hkxScene(class) => class.deps_indexes(),
+            Classes::hkxSkinBinding(class) => class.deps_indexes(),
+            Classes::hkxSparselyAnimatedBool(class) => class.deps_indexes(),
+            Classes::hkxSparselyAnimatedEnum(class) => class.deps_indexes(),
+            Classes::hkxSparselyAnimatedInt(class) => class.deps_indexes(),
+            Classes::hkxSparselyAnimatedString(class) => class.deps_indexes(),
+            Classes::hkxTextureFile(class) => class.deps_indexes(),
+            Classes::hkxTextureInplace(class) => class.deps_indexes(),
+            Classes::hkxTriangleSelectionChannel(class) => class.deps_indexes(),
+            Classes::hkxVertexBuffer(class) => class.deps_indexes(),
+            Classes::hkxVertexBufferVertexData(class) => class.deps_indexes(),
+            Classes::hkxVertexDescription(class) => class.deps_indexes(),
+            Classes::hkxVertexDescriptionElementDecl(class) => class.deps_indexes(),
+            Classes::hkxVertexFloatDataChannel(class) => class.deps_indexes(),
+            Classes::hkxVertexIntDataChannel(class) => class.deps_indexes(),
+            Classes::hkxVertexSelectionChannel(class) => class.deps_indexes(),
+            Classes::hkxVertexVectorDataChannel(class) => class.deps_indexes(),
+        }
+    }
+}
+impl<'a> _serde::Serialize for Classes<'a> {
+    fn serialize<S: _serde::ser::Serializer>(
+        &self,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error> {
+        match self {
+            Classes::BGSGamebryoSequenceGenerator(class) => class.serialize(serializer),
+            Classes::BSBoneSwitchGenerator(class) => class.serialize(serializer),
+            Classes::BSBoneSwitchGeneratorBoneData(class) => class.serialize(serializer),
+            Classes::BSComputeAddBoneAnimModifier(class) => class.serialize(serializer),
+            Classes::BSCyclicBlendTransitionGenerator(class) => {
+                class.serialize(serializer)
+            }
+            Classes::BSDecomposeVectorModifier(class) => class.serialize(serializer),
+            Classes::BSDirectAtModifier(class) => class.serialize(serializer),
+            Classes::BSDistTriggerModifier(class) => class.serialize(serializer),
+            Classes::BSEventEveryNEventsModifier(class) => class.serialize(serializer),
+            Classes::BSEventOnDeactivateModifier(class) => class.serialize(serializer),
+            Classes::BSEventOnFalseToTrueModifier(class) => class.serialize(serializer),
+            Classes::BSGetTimeStepModifier(class) => class.serialize(serializer),
+            Classes::BSInterpValueModifier(class) => class.serialize(serializer),
+            Classes::BSIsActiveModifier(class) => class.serialize(serializer),
+            Classes::BSIStateManagerModifier(class) => class.serialize(serializer),
+            Classes::BSIStateManagerModifierBSiStateData(class) => {
+                class.serialize(serializer)
+            }
+            Classes::BSIStateManagerModifierBSIStateManagerStateListener(class) => {
+                class.serialize(serializer)
+            }
+            Classes::BSiStateTaggingGenerator(class) => class.serialize(serializer),
+            Classes::BSLimbIKModifier(class) => class.serialize(serializer),
+            Classes::BSLookAtModifier(class) => class.serialize(serializer),
+            Classes::BSLookAtModifierBoneData(class) => class.serialize(serializer),
+            Classes::BSModifyOnceModifier(class) => class.serialize(serializer),
+            Classes::BSOffsetAnimationGenerator(class) => class.serialize(serializer),
+            Classes::BSPassByTargetTriggerModifier(class) => class.serialize(serializer),
+            Classes::BSRagdollContactListenerModifier(class) => {
+                class.serialize(serializer)
+            }
+            Classes::BSSpeedSamplerModifier(class) => class.serialize(serializer),
+            Classes::BSSynchronizedClipGenerator(class) => class.serialize(serializer),
+            Classes::BSTimerModifier(class) => class.serialize(serializer),
+            Classes::BSTweenerModifier(class) => class.serialize(serializer),
+            Classes::hkAabb(class) => class.serialize(serializer),
+            Classes::hkAabbHalf(class) => class.serialize(serializer),
+            Classes::hkAabbUint32(class) => class.serialize(serializer),
+            Classes::hkaAnimatedReferenceFrame(class) => class.serialize(serializer),
+            Classes::hkaAnimation(class) => class.serialize(serializer),
+            Classes::hkaAnimationBinding(class) => class.serialize(serializer),
+            Classes::hkaAnimationContainer(class) => class.serialize(serializer),
+            Classes::hkaAnimationPreviewColorContainer(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaAnnotationTrack(class) => class.serialize(serializer),
+            Classes::hkaAnnotationTrackAnnotation(class) => class.serialize(serializer),
+            Classes::hkaBone(class) => class.serialize(serializer),
+            Classes::hkaBoneAttachment(class) => class.serialize(serializer),
+            Classes::hkaDefaultAnimatedReferenceFrame(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaDeltaCompressedAnimation(class) => class.serialize(serializer),
+            Classes::hkaDeltaCompressedAnimationQuantizationFormat(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaFootstepAnalysisInfo(class) => class.serialize(serializer),
+            Classes::hkaFootstepAnalysisInfoContainer(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaInterleavedUncompressedAnimation(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaKeyFrameHierarchyUtility(class) => class.serialize(serializer),
+            Classes::hkaKeyFrameHierarchyUtilityControlData(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkAlignSceneToNodeOptions(class) => class.serialize(serializer),
+            Classes::hkaMeshBinding(class) => class.serialize(serializer),
+            Classes::hkaMeshBindingMapping(class) => class.serialize(serializer),
+            Classes::hkaQuantizedAnimation(class) => class.serialize(serializer),
+            Classes::hkaQuantizedAnimationTrackCompressionParams(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaRagdollInstance(class) => class.serialize(serializer),
+            Classes::hkArrayTypeAttribute(class) => class.serialize(serializer),
+            Classes::hkaSkeleton(class) => class.serialize(serializer),
+            Classes::hkaSkeletonLocalFrameOnBone(class) => class.serialize(serializer),
+            Classes::hkaSkeletonMapper(class) => class.serialize(serializer),
+            Classes::hkaSkeletonMapperData(class) => class.serialize(serializer),
+            Classes::hkaSkeletonMapperDataChainMapping(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaSkeletonMapperDataSimpleMapping(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaSplineCompressedAnimation(class) => class.serialize(serializer),
+            Classes::hkaSplineCompressedAnimationAnimationCompressionParams(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaSplineCompressedAnimationTrackCompressionParams(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaWaveletCompressedAnimation(class) => class.serialize(serializer),
+            Classes::hkaWaveletCompressedAnimationCompressionParams(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkaWaveletCompressedAnimationQuantizationFormat(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkBaseObject(class) => class.serialize(serializer),
+            Classes::hkbAttachmentModifier(class) => class.serialize(serializer),
+            Classes::hkbAttachmentSetup(class) => class.serialize(serializer),
+            Classes::hkbAttributeModifier(class) => class.serialize(serializer),
+            Classes::hkbAttributeModifierAssignment(class) => class.serialize(serializer),
+            Classes::hkbAuxiliaryNodeInfo(class) => class.serialize(serializer),
+            Classes::hkbBehaviorEventsInfo(class) => class.serialize(serializer),
+            Classes::hkbBehaviorGraph(class) => class.serialize(serializer),
+            Classes::hkbBehaviorGraphData(class) => class.serialize(serializer),
+            Classes::hkbBehaviorGraphInternalState(class) => class.serialize(serializer),
+            Classes::hkbBehaviorGraphInternalStateInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbBehaviorGraphStringData(class) => class.serialize(serializer),
+            Classes::hkbBehaviorInfo(class) => class.serialize(serializer),
+            Classes::hkbBehaviorInfoIdToNamePair(class) => class.serialize(serializer),
+            Classes::hkbBehaviorReferenceGenerator(class) => class.serialize(serializer),
+            Classes::hkbBindable(class) => class.serialize(serializer),
+            Classes::hkbBlendCurveUtils(class) => class.serialize(serializer),
+            Classes::hkbBlenderGenerator(class) => class.serialize(serializer),
+            Classes::hkbBlenderGeneratorChild(class) => class.serialize(serializer),
+            Classes::hkbBlenderGeneratorChildInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbBlenderGeneratorInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbBlendingTransitionEffect(class) => class.serialize(serializer),
+            Classes::hkbBlendingTransitionEffectInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbBoneIndexArray(class) => class.serialize(serializer),
+            Classes::hkbBoneWeightArray(class) => class.serialize(serializer),
+            Classes::hkbBoolVariableSequencedData(class) => class.serialize(serializer),
+            Classes::hkbBoolVariableSequencedDataSample(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbCameraShakeEventPayload(class) => class.serialize(serializer),
+            Classes::hkbCharacter(class) => class.serialize(serializer),
+            Classes::hkbCharacterAddedInfo(class) => class.serialize(serializer),
+            Classes::hkbCharacterControlCommand(class) => class.serialize(serializer),
+            Classes::hkbCharacterControllerControlData(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbCharacterControllerModifier(class) => class.serialize(serializer),
+            Classes::hkbCharacterControllerModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbCharacterData(class) => class.serialize(serializer),
+            Classes::hkbCharacterDataCharacterControllerInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbCharacterInfo(class) => class.serialize(serializer),
+            Classes::hkbCharacterSetup(class) => class.serialize(serializer),
+            Classes::hkbCharacterSkinInfo(class) => class.serialize(serializer),
+            Classes::hkbCharacterSteppedInfo(class) => class.serialize(serializer),
+            Classes::hkbCharacterStringData(class) => class.serialize(serializer),
+            Classes::hkbClientCharacterState(class) => class.serialize(serializer),
+            Classes::hkbClipGenerator(class) => class.serialize(serializer),
+            Classes::hkbClipGeneratorEcho(class) => class.serialize(serializer),
+            Classes::hkbClipGeneratorInternalState(class) => class.serialize(serializer),
+            Classes::hkbClipTrigger(class) => class.serialize(serializer),
+            Classes::hkbClipTriggerArray(class) => class.serialize(serializer),
+            Classes::hkbCombineTransformsModifier(class) => class.serialize(serializer),
+            Classes::hkbCombineTransformsModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbCompiledExpressionSet(class) => class.serialize(serializer),
+            Classes::hkbCompiledExpressionSetToken(class) => class.serialize(serializer),
+            Classes::hkbComputeDirectionModifier(class) => class.serialize(serializer),
+            Classes::hkbComputeDirectionModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbComputeRotationFromAxisAngleModifier(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbComputeRotationFromAxisAngleModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbComputeRotationToTargetModifier(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbComputeRotationToTargetModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbCondition(class) => class.serialize(serializer),
+            Classes::hkbContext(class) => class.serialize(serializer),
+            Classes::hkbDampingModifier(class) => class.serialize(serializer),
+            Classes::hkbDampingModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbDefaultMessageLog(class) => class.serialize(serializer),
+            Classes::hkbDelayedModifier(class) => class.serialize(serializer),
+            Classes::hkbDelayedModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbDetectCloseToGroundModifier(class) => class.serialize(serializer),
+            Classes::hkbDetectCloseToGroundModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbEvaluateExpressionModifier(class) => class.serialize(serializer),
+            Classes::hkbEvaluateExpressionModifierInternalExpressionData(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbEvaluateExpressionModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbEvaluateHandleModifier(class) => class.serialize(serializer),
+            Classes::hkbEvent(class) => class.serialize(serializer),
+            Classes::hkbEventBase(class) => class.serialize(serializer),
+            Classes::hkbEventDrivenModifier(class) => class.serialize(serializer),
+            Classes::hkbEventDrivenModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbEventInfo(class) => class.serialize(serializer),
+            Classes::hkbEventPayload(class) => class.serialize(serializer),
+            Classes::hkbEventPayloadList(class) => class.serialize(serializer),
+            Classes::hkbEventProperty(class) => class.serialize(serializer),
+            Classes::hkbEventRaisedInfo(class) => class.serialize(serializer),
+            Classes::hkbEventRangeData(class) => class.serialize(serializer),
+            Classes::hkbEventRangeDataArray(class) => class.serialize(serializer),
+            Classes::hkbEventSequencedData(class) => class.serialize(serializer),
+            Classes::hkbEventSequencedDataSequencedEvent(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbEventsFromRangeModifier(class) => class.serialize(serializer),
+            Classes::hkbEventsFromRangeModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbExpressionCondition(class) => class.serialize(serializer),
+            Classes::hkbExpressionData(class) => class.serialize(serializer),
+            Classes::hkbExpressionDataArray(class) => class.serialize(serializer),
+            Classes::hkbExtractRagdollPoseModifier(class) => class.serialize(serializer),
+            Classes::hkbFootIkControlData(class) => class.serialize(serializer),
+            Classes::hkbFootIkControlsModifier(class) => class.serialize(serializer),
+            Classes::hkbFootIkControlsModifierLeg(class) => class.serialize(serializer),
+            Classes::hkbFootIkDriverInfo(class) => class.serialize(serializer),
+            Classes::hkbFootIkDriverInfoLeg(class) => class.serialize(serializer),
+            Classes::hkbFootIkGains(class) => class.serialize(serializer),
+            Classes::hkbFootIkModifier(class) => class.serialize(serializer),
+            Classes::hkbFootIkModifierInternalLegData(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbFootIkModifierLeg(class) => class.serialize(serializer),
+            Classes::hkbGenerator(class) => class.serialize(serializer),
+            Classes::hkbGeneratorOutputListener(class) => class.serialize(serializer),
+            Classes::hkbGeneratorSyncInfo(class) => class.serialize(serializer),
+            Classes::hkbGeneratorSyncInfoSyncPoint(class) => class.serialize(serializer),
+            Classes::hkbGeneratorTransitionEffect(class) => class.serialize(serializer),
+            Classes::hkbGeneratorTransitionEffectInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbGetHandleOnBoneModifier(class) => class.serialize(serializer),
+            Classes::hkbGetUpModifier(class) => class.serialize(serializer),
+            Classes::hkbGetUpModifierInternalState(class) => class.serialize(serializer),
+            Classes::hkbGetWorldFromModelModifier(class) => class.serialize(serializer),
+            Classes::hkbGetWorldFromModelModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbHandIkControlData(class) => class.serialize(serializer),
+            Classes::hkbHandIkControlsModifier(class) => class.serialize(serializer),
+            Classes::hkbHandIkControlsModifierHand(class) => class.serialize(serializer),
+            Classes::hkbHandIkDriverInfo(class) => class.serialize(serializer),
+            Classes::hkbHandIkDriverInfoHand(class) => class.serialize(serializer),
+            Classes::hkbHandIkModifier(class) => class.serialize(serializer),
+            Classes::hkbHandIkModifierHand(class) => class.serialize(serializer),
+            Classes::hkbHandle(class) => class.serialize(serializer),
+            Classes::hkbIntEventPayload(class) => class.serialize(serializer),
+            Classes::hkbIntVariableSequencedData(class) => class.serialize(serializer),
+            Classes::hkbIntVariableSequencedDataSample(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkBitField(class) => class.serialize(serializer),
+            Classes::hkbKeyframeBonesModifier(class) => class.serialize(serializer),
+            Classes::hkbKeyframeBonesModifierKeyframeInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbLinkedSymbolInfo(class) => class.serialize(serializer),
+            Classes::hkbLookAtModifier(class) => class.serialize(serializer),
+            Classes::hkbLookAtModifierInternalState(class) => class.serialize(serializer),
+            Classes::hkbManualSelectorGenerator(class) => class.serialize(serializer),
+            Classes::hkbManualSelectorGeneratorInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbMessageLog(class) => class.serialize(serializer),
+            Classes::hkbMirroredSkeletonInfo(class) => class.serialize(serializer),
+            Classes::hkbMirrorModifier(class) => class.serialize(serializer),
+            Classes::hkbModifier(class) => class.serialize(serializer),
+            Classes::hkbModifierGenerator(class) => class.serialize(serializer),
+            Classes::hkbModifierList(class) => class.serialize(serializer),
+            Classes::hkbModifierWrapper(class) => class.serialize(serializer),
+            Classes::hkbMoveCharacterModifier(class) => class.serialize(serializer),
+            Classes::hkbMoveCharacterModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbNamedEventPayload(class) => class.serialize(serializer),
+            Classes::hkbNamedIntEventPayload(class) => class.serialize(serializer),
+            Classes::hkbNamedRealEventPayload(class) => class.serialize(serializer),
+            Classes::hkbNamedStringEventPayload(class) => class.serialize(serializer),
+            Classes::hkbNode(class) => class.serialize(serializer),
+            Classes::hkbNodeInternalStateInfo(class) => class.serialize(serializer),
+            Classes::hkbParticleSystemEventPayload(class) => class.serialize(serializer),
+            Classes::hkbPoseMatchingGenerator(class) => class.serialize(serializer),
+            Classes::hkbPoseMatchingGeneratorInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbPoweredRagdollControlData(class) => class.serialize(serializer),
+            Classes::hkbPoweredRagdollControlsModifier(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbProjectData(class) => class.serialize(serializer),
+            Classes::hkbProjectStringData(class) => class.serialize(serializer),
+            Classes::hkbProxyModifier(class) => class.serialize(serializer),
+            Classes::hkbProxyModifierProxyInfo(class) => class.serialize(serializer),
+            Classes::hkbRaiseEventCommand(class) => class.serialize(serializer),
+            Classes::hkbRealEventPayload(class) => class.serialize(serializer),
+            Classes::hkbRealVariableSequencedData(class) => class.serialize(serializer),
+            Classes::hkbRealVariableSequencedDataSample(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbReferencePoseGenerator(class) => class.serialize(serializer),
+            Classes::hkbRegisteredGenerator(class) => class.serialize(serializer),
+            Classes::hkbRigidBodyRagdollControlData(class) => class.serialize(serializer),
+            Classes::hkbRigidBodyRagdollControlsModifier(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbRoleAttribute(class) => class.serialize(serializer),
+            Classes::hkbRotateCharacterModifier(class) => class.serialize(serializer),
+            Classes::hkbRotateCharacterModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbSenseHandleModifier(class) => class.serialize(serializer),
+            Classes::hkbSenseHandleModifierRange(class) => class.serialize(serializer),
+            Classes::hkbSequence(class) => class.serialize(serializer),
+            Classes::hkbSequencedData(class) => class.serialize(serializer),
+            Classes::hkbSequenceInternalState(class) => class.serialize(serializer),
+            Classes::hkbSequenceStringData(class) => class.serialize(serializer),
+            Classes::hkbSetBehaviorCommand(class) => class.serialize(serializer),
+            Classes::hkbSetLocalTimeOfClipGeneratorCommand(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbSetNodePropertyCommand(class) => class.serialize(serializer),
+            Classes::hkbSetWordVariableCommand(class) => class.serialize(serializer),
+            Classes::hkbSetWorldFromModelModifier(class) => class.serialize(serializer),
+            Classes::hkbSimulationControlCommand(class) => class.serialize(serializer),
+            Classes::hkbSimulationStateInfo(class) => class.serialize(serializer),
+            Classes::hkbStateChooser(class) => class.serialize(serializer),
+            Classes::hkbStateListener(class) => class.serialize(serializer),
+            Classes::hkbStateMachine(class) => class.serialize(serializer),
+            Classes::hkbStateMachineActiveTransitionInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbStateMachineDelayedTransitionInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbStateMachineEventPropertyArray(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbStateMachineInternalState(class) => class.serialize(serializer),
+            Classes::hkbStateMachineNestedStateMachineData(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbStateMachineProspectiveTransitionInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbStateMachineStateInfo(class) => class.serialize(serializer),
+            Classes::hkbStateMachineTimeInterval(class) => class.serialize(serializer),
+            Classes::hkbStateMachineTransitionInfo(class) => class.serialize(serializer),
+            Classes::hkbStateMachineTransitionInfoArray(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbStateMachineTransitionInfoReference(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbStringCondition(class) => class.serialize(serializer),
+            Classes::hkbStringEventPayload(class) => class.serialize(serializer),
+            Classes::hkbTestStateChooser(class) => class.serialize(serializer),
+            Classes::hkbTimerModifier(class) => class.serialize(serializer),
+            Classes::hkbTimerModifierInternalState(class) => class.serialize(serializer),
+            Classes::hkbTransformVectorModifier(class) => class.serialize(serializer),
+            Classes::hkbTransformVectorModifierInternalState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkbTransitionEffect(class) => class.serialize(serializer),
+            Classes::hkbTwistModifier(class) => class.serialize(serializer),
+            Classes::hkbVariableBindingSet(class) => class.serialize(serializer),
+            Classes::hkbVariableBindingSetBinding(class) => class.serialize(serializer),
+            Classes::hkbVariableInfo(class) => class.serialize(serializer),
+            Classes::hkbVariableValue(class) => class.serialize(serializer),
+            Classes::hkbVariableValueSet(class) => class.serialize(serializer),
+            Classes::hkbWorldEnums(class) => class.serialize(serializer),
+            Classes::hkbWorldFromModelModeData(class) => class.serialize(serializer),
+            Classes::hkClass(class) => class.serialize(serializer),
+            Classes::hkClassEnum(class) => class.serialize(serializer),
+            Classes::hkClassEnumItem(class) => class.serialize(serializer),
+            Classes::hkClassMember(class) => class.serialize(serializer),
+            Classes::hkColor(class) => class.serialize(serializer),
+            Classes::hkContactPoint(class) => class.serialize(serializer),
+            Classes::hkContactPointMaterial(class) => class.serialize(serializer),
+            Classes::hkCustomAttributes(class) => class.serialize(serializer),
+            Classes::hkCustomAttributesAttribute(class) => class.serialize(serializer),
+            Classes::hkDataObjectTypeAttribute(class) => class.serialize(serializer),
+            Classes::hkDescriptionAttribute(class) => class.serialize(serializer),
+            Classes::hkDocumentationAttribute(class) => class.serialize(serializer),
+            Classes::hkGeometry(class) => class.serialize(serializer),
+            Classes::hkGeometryTriangle(class) => class.serialize(serializer),
+            Classes::hkGizmoAttribute(class) => class.serialize(serializer),
+            Classes::hkHalf8(class) => class.serialize(serializer),
+            Classes::hkIndexedTransformSet(class) => class.serialize(serializer),
+            Classes::hkLinkAttribute(class) => class.serialize(serializer),
+            Classes::hkLocalFrame(class) => class.serialize(serializer),
+            Classes::hkLocalFrameGroup(class) => class.serialize(serializer),
+            Classes::hkMemoryMeshBody(class) => class.serialize(serializer),
+            Classes::hkMemoryMeshMaterial(class) => class.serialize(serializer),
+            Classes::hkMemoryMeshShape(class) => class.serialize(serializer),
+            Classes::hkMemoryMeshTexture(class) => class.serialize(serializer),
+            Classes::hkMemoryMeshVertexBuffer(class) => class.serialize(serializer),
+            Classes::hkMemoryResourceContainer(class) => class.serialize(serializer),
+            Classes::hkMemoryResourceHandle(class) => class.serialize(serializer),
+            Classes::hkMemoryResourceHandleExternalLink(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkMemoryTrackerAttribute(class) => class.serialize(serializer),
+            Classes::hkMeshBody(class) => class.serialize(serializer),
+            Classes::hkMeshBoneIndexMapping(class) => class.serialize(serializer),
+            Classes::hkMeshMaterial(class) => class.serialize(serializer),
+            Classes::hkMeshSection(class) => class.serialize(serializer),
+            Classes::hkMeshSectionCinfo(class) => class.serialize(serializer),
+            Classes::hkMeshShape(class) => class.serialize(serializer),
+            Classes::hkMeshTexture(class) => class.serialize(serializer),
+            Classes::hkMeshVertexBuffer(class) => class.serialize(serializer),
+            Classes::hkModelerNodeTypeAttribute(class) => class.serialize(serializer),
+            Classes::hkMonitorStreamColorTable(class) => class.serialize(serializer),
+            Classes::hkMonitorStreamColorTableColorPair(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkMonitorStreamFrameInfo(class) => class.serialize(serializer),
+            Classes::hkMonitorStreamStringMap(class) => class.serialize(serializer),
+            Classes::hkMonitorStreamStringMapStringMap(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkMoppBvTreeShapeBase(class) => class.serialize(serializer),
+            Classes::hkMotionState(class) => class.serialize(serializer),
+            Classes::hkMultipleVertexBuffer(class) => class.serialize(serializer),
+            Classes::hkMultipleVertexBufferElementInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkMultipleVertexBufferLockedElement(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkMultipleVertexBufferVertexBufferInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkMultiThreadCheck(class) => class.serialize(serializer),
+            Classes::hkp2dAngConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpAabbPhantom(class) => class.serialize(serializer),
+            Classes::hkPackedVector3(class) => class.serialize(serializer),
+            Classes::hkPackfileHeader(class) => class.serialize(serializer),
+            Classes::hkPackfileSectionHeader(class) => class.serialize(serializer),
+            Classes::hkpAction(class) => class.serialize(serializer),
+            Classes::hkpAgent1nSector(class) => class.serialize(serializer),
+            Classes::hkpAngConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpAngFrictionConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpAngLimitConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpAngMotorConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpAngularDashpotAction(class) => class.serialize(serializer),
+            Classes::hkpArrayAction(class) => class.serialize(serializer),
+            Classes::hkpBallAndSocketConstraintData(class) => class.serialize(serializer),
+            Classes::hkpBallAndSocketConstraintDataAtoms(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpBallGun(class) => class.serialize(serializer),
+            Classes::hkpBallSocketChainData(class) => class.serialize(serializer),
+            Classes::hkpBallSocketChainDataConstraintInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpBallSocketConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpBinaryAction(class) => class.serialize(serializer),
+            Classes::hkpBoxMotion(class) => class.serialize(serializer),
+            Classes::hkpBoxShape(class) => class.serialize(serializer),
+            Classes::hkpBreakableBody(class) => class.serialize(serializer),
+            Classes::hkpBreakableConstraintData(class) => class.serialize(serializer),
+            Classes::hkpBridgeAtoms(class) => class.serialize(serializer),
+            Classes::hkpBridgeConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpBroadPhaseHandle(class) => class.serialize(serializer),
+            Classes::hkpBvShape(class) => class.serialize(serializer),
+            Classes::hkpBvTreeShape(class) => class.serialize(serializer),
+            Classes::hkpCachingShapePhantom(class) => class.serialize(serializer),
+            Classes::hkpCallbackConstraintMotor(class) => class.serialize(serializer),
+            Classes::hkpCapsuleShape(class) => class.serialize(serializer),
+            Classes::hkpCdBody(class) => class.serialize(serializer),
+            Classes::hkpCenterOfMassChangerModifierConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpCharacterControllerCinfo(class) => class.serialize(serializer),
+            Classes::hkpCharacterMotion(class) => class.serialize(serializer),
+            Classes::hkpCharacterProxyCinfo(class) => class.serialize(serializer),
+            Classes::hkpCharacterRigidBodyCinfo(class) => class.serialize(serializer),
+            Classes::hkpCogWheelConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpCogWheelConstraintData(class) => class.serialize(serializer),
+            Classes::hkpCogWheelConstraintDataAtoms(class) => class.serialize(serializer),
+            Classes::hkpCollidable(class) => class.serialize(serializer),
+            Classes::hkpCollidableBoundingVolumeData(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpCollidableCollidableFilter(class) => class.serialize(serializer),
+            Classes::hkpCollisionFilter(class) => class.serialize(serializer),
+            Classes::hkpCollisionFilterList(class) => class.serialize(serializer),
+            Classes::hkpCompressedMeshShape(class) => class.serialize(serializer),
+            Classes::hkpCompressedMeshShapeBigTriangle(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpCompressedMeshShapeChunk(class) => class.serialize(serializer),
+            Classes::hkpCompressedMeshShapeConvexPiece(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpCompressedSampledHeightFieldShape(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpConeLimitConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpConstrainedSystemFilter(class) => class.serialize(serializer),
+            Classes::hkpConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpConstraintChainData(class) => class.serialize(serializer),
+            Classes::hkpConstraintChainInstance(class) => class.serialize(serializer),
+            Classes::hkpConstraintChainInstanceAction(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpConstraintCollisionFilter(class) => class.serialize(serializer),
+            Classes::hkpConstraintData(class) => class.serialize(serializer),
+            Classes::hkpConstraintInstance(class) => class.serialize(serializer),
+            Classes::hkpConstraintInstanceSmallArraySerializeOverrideType(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpConstraintMotor(class) => class.serialize(serializer),
+            Classes::hkpConvexListFilter(class) => class.serialize(serializer),
+            Classes::hkpConvexListShape(class) => class.serialize(serializer),
+            Classes::hkpConvexPieceMeshShape(class) => class.serialize(serializer),
+            Classes::hkpConvexPieceStreamData(class) => class.serialize(serializer),
+            Classes::hkpConvexShape(class) => class.serialize(serializer),
+            Classes::hkpConvexTransformShape(class) => class.serialize(serializer),
+            Classes::hkpConvexTransformShapeBase(class) => class.serialize(serializer),
+            Classes::hkpConvexTranslateShape(class) => class.serialize(serializer),
+            Classes::hkpConvexVerticesConnectivity(class) => class.serialize(serializer),
+            Classes::hkpConvexVerticesShape(class) => class.serialize(serializer),
+            Classes::hkpConvexVerticesShapeFourVectors(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpCylinderShape(class) => class.serialize(serializer),
+            Classes::hkpDashpotAction(class) => class.serialize(serializer),
+            Classes::hkpDefaultConvexListFilter(class) => class.serialize(serializer),
+            Classes::hkpDefaultWorldMemoryWatchDog(class) => class.serialize(serializer),
+            Classes::hkpDisableEntityCollisionFilter(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpDisplayBindingData(class) => class.serialize(serializer),
+            Classes::hkpDisplayBindingDataPhysicsSystem(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpDisplayBindingDataRigidBody(class) => class.serialize(serializer),
+            Classes::hkpEntity(class) => class.serialize(serializer),
+            Classes::hkpEntityExtendedListeners(class) => class.serialize(serializer),
+            Classes::hkpEntitySmallArraySerializeOverrideType(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpEntitySpuCollisionCallback(class) => class.serialize(serializer),
+            Classes::hkpExtendedMeshShape(class) => class.serialize(serializer),
+            Classes::hkpExtendedMeshShapeShapesSubpart(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpExtendedMeshShapeSubpart(class) => class.serialize(serializer),
+            Classes::hkpExtendedMeshShapeTrianglesSubpart(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpFastMeshShape(class) => class.serialize(serializer),
+            Classes::hkpFirstPersonGun(class) => class.serialize(serializer),
+            Classes::hkpFixedRigidMotion(class) => class.serialize(serializer),
+            Classes::hkpGenericConstraintData(class) => class.serialize(serializer),
+            Classes::hkpGenericConstraintDataScheme(class) => class.serialize(serializer),
+            Classes::hkpGenericConstraintDataSchemeConstraintInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpGravityGun(class) => class.serialize(serializer),
+            Classes::hkpGroupCollisionFilter(class) => class.serialize(serializer),
+            Classes::hkpGroupFilter(class) => class.serialize(serializer),
+            Classes::hkpHeightFieldShape(class) => class.serialize(serializer),
+            Classes::hkpHingeConstraintData(class) => class.serialize(serializer),
+            Classes::hkpHingeConstraintDataAtoms(class) => class.serialize(serializer),
+            Classes::hkpHingeLimitsData(class) => class.serialize(serializer),
+            Classes::hkpHingeLimitsDataAtoms(class) => class.serialize(serializer),
+            Classes::hkpIgnoreModifierConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpKeyframedRigidMotion(class) => class.serialize(serializer),
+            Classes::hkpLimitedForceConstraintMotor(class) => class.serialize(serializer),
+            Classes::hkpLimitedHingeConstraintData(class) => class.serialize(serializer),
+            Classes::hkpLimitedHingeConstraintDataAtoms(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpLinConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpLinearParametricCurve(class) => class.serialize(serializer),
+            Classes::hkpLinFrictionConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpLinkedCollidable(class) => class.serialize(serializer),
+            Classes::hkpLinLimitConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpLinMotorConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpLinSoftConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpListShape(class) => class.serialize(serializer),
+            Classes::hkpListShapeChildInfo(class) => class.serialize(serializer),
+            Classes::hkpMalleableConstraintData(class) => class.serialize(serializer),
+            Classes::hkpMassChangerModifierConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpMassProperties(class) => class.serialize(serializer),
+            Classes::hkpMaterial(class) => class.serialize(serializer),
+            Classes::hkpMaxSizeMotion(class) => class.serialize(serializer),
+            Classes::hkpMeshMaterial(class) => class.serialize(serializer),
+            Classes::hkpMeshShape(class) => class.serialize(serializer),
+            Classes::hkpMeshShapeSubpart(class) => class.serialize(serializer),
+            Classes::hkpModifierConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpMoppBvTreeShape(class) => class.serialize(serializer),
+            Classes::hkpMoppCode(class) => class.serialize(serializer),
+            Classes::hkpMoppCodeCodeInfo(class) => class.serialize(serializer),
+            Classes::hkpMoppCodeReindexedTerminal(class) => class.serialize(serializer),
+            Classes::hkpMotion(class) => class.serialize(serializer),
+            Classes::hkpMotorAction(class) => class.serialize(serializer),
+            Classes::hkpMountedBallGun(class) => class.serialize(serializer),
+            Classes::hkpMouseSpringAction(class) => class.serialize(serializer),
+            Classes::hkpMovingSurfaceModifierConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpMultiRayShape(class) => class.serialize(serializer),
+            Classes::hkpMultiRayShapeRay(class) => class.serialize(serializer),
+            Classes::hkpMultiSphereShape(class) => class.serialize(serializer),
+            Classes::hkpMultithreadedVehicleManager(class) => class.serialize(serializer),
+            Classes::hkpNamedMeshMaterial(class) => class.serialize(serializer),
+            Classes::hkpNullCollisionFilter(class) => class.serialize(serializer),
+            Classes::hkPostFinishAttribute(class) => class.serialize(serializer),
+            Classes::hkpOverwritePivotConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpPairCollisionFilter(class) => class.serialize(serializer),
+            Classes::hkpPairCollisionFilterMapPairFilterKeyOverrideType(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpParametricCurve(class) => class.serialize(serializer),
+            Classes::hkpPhantom(class) => class.serialize(serializer),
+            Classes::hkpPhantomCallbackShape(class) => class.serialize(serializer),
+            Classes::hkpPhysicsData(class) => class.serialize(serializer),
+            Classes::hkpPhysicsSystem(class) => class.serialize(serializer),
+            Classes::hkpPhysicsSystemWithContacts(class) => class.serialize(serializer),
+            Classes::hkpPlaneShape(class) => class.serialize(serializer),
+            Classes::hkpPointToPathConstraintData(class) => class.serialize(serializer),
+            Classes::hkpPointToPlaneConstraintData(class) => class.serialize(serializer),
+            Classes::hkpPointToPlaneConstraintDataAtoms(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpPositionConstraintMotor(class) => class.serialize(serializer),
+            Classes::hkpPoweredChainData(class) => class.serialize(serializer),
+            Classes::hkpPoweredChainDataConstraintInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpPoweredChainMapper(class) => class.serialize(serializer),
+            Classes::hkpPoweredChainMapperLinkInfo(class) => class.serialize(serializer),
+            Classes::hkpPoweredChainMapperTarget(class) => class.serialize(serializer),
+            Classes::hkpPrismaticConstraintData(class) => class.serialize(serializer),
+            Classes::hkpPrismaticConstraintDataAtoms(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpProjectileGun(class) => class.serialize(serializer),
+            Classes::hkpProperty(class) => class.serialize(serializer),
+            Classes::hkpPropertyValue(class) => class.serialize(serializer),
+            Classes::hkpPulleyConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpPulleyConstraintData(class) => class.serialize(serializer),
+            Classes::hkpPulleyConstraintDataAtoms(class) => class.serialize(serializer),
+            Classes::hkpRackAndPinionConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpRackAndPinionConstraintData(class) => class.serialize(serializer),
+            Classes::hkpRackAndPinionConstraintDataAtoms(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpRagdollConstraintData(class) => class.serialize(serializer),
+            Classes::hkpRagdollConstraintDataAtoms(class) => class.serialize(serializer),
+            Classes::hkpRagdollLimitsData(class) => class.serialize(serializer),
+            Classes::hkpRagdollLimitsDataAtoms(class) => class.serialize(serializer),
+            Classes::hkpRagdollMotorConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpRayCollidableFilter(class) => class.serialize(serializer),
+            Classes::hkpRayShapeCollectionFilter(class) => class.serialize(serializer),
+            Classes::hkpRejectChassisListener(class) => class.serialize(serializer),
+            Classes::hkpRemoveTerminalsMoppModifier(class) => class.serialize(serializer),
+            Classes::hkpReorientAction(class) => class.serialize(serializer),
+            Classes::hkpRigidBody(class) => class.serialize(serializer),
+            Classes::hkpRotationalConstraintData(class) => class.serialize(serializer),
+            Classes::hkpRotationalConstraintDataAtoms(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSampledHeightFieldShape(class) => class.serialize(serializer),
+            Classes::hkpSerializedAgentNnEntry(class) => class.serialize(serializer),
+            Classes::hkpSerializedDisplayMarker(class) => class.serialize(serializer),
+            Classes::hkpSerializedDisplayMarkerList(class) => class.serialize(serializer),
+            Classes::hkpSerializedDisplayRbTransforms(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSerializedDisplayRbTransformsDisplayTransformPair(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSerializedSubTrack1nInfo(class) => class.serialize(serializer),
+            Classes::hkpSerializedTrack1nInfo(class) => class.serialize(serializer),
+            Classes::hkpSetLocalRotationsConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSetLocalTransformsConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSetLocalTranslationsConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSetupStabilizationAtom(class) => class.serialize(serializer),
+            Classes::hkpShape(class) => class.serialize(serializer),
+            Classes::hkpShapeCollection(class) => class.serialize(serializer),
+            Classes::hkpShapeCollectionFilter(class) => class.serialize(serializer),
+            Classes::hkpShapeContainer(class) => class.serialize(serializer),
+            Classes::hkpShapeInfo(class) => class.serialize(serializer),
+            Classes::hkpShapeModifier(class) => class.serialize(serializer),
+            Classes::hkpShapePhantom(class) => class.serialize(serializer),
+            Classes::hkpSimpleContactConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpSimpleContactConstraintDataInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSimpleMeshShape(class) => class.serialize(serializer),
+            Classes::hkpSimpleMeshShapeTriangle(class) => class.serialize(serializer),
+            Classes::hkpSimpleShapePhantom(class) => class.serialize(serializer),
+            Classes::hkpSimpleShapePhantomCollisionDetail(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSimulation(class) => class.serialize(serializer),
+            Classes::hkpSingleShapeContainer(class) => class.serialize(serializer),
+            Classes::hkpSoftContactModifierConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpSphereMotion(class) => class.serialize(serializer),
+            Classes::hkpSphereRepShape(class) => class.serialize(serializer),
+            Classes::hkpSphereShape(class) => class.serialize(serializer),
+            Classes::hkpSpringAction(class) => class.serialize(serializer),
+            Classes::hkpSpringDamperConstraintMotor(class) => class.serialize(serializer),
+            Classes::hkpStiffSpringChainData(class) => class.serialize(serializer),
+            Classes::hkpStiffSpringChainDataConstraintInfo(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpStiffSpringConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpStiffSpringConstraintData(class) => class.serialize(serializer),
+            Classes::hkpStiffSpringConstraintDataAtoms(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpStorageExtendedMeshShape(class) => class.serialize(serializer),
+            Classes::hkpStorageExtendedMeshShapeMaterial(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpStorageExtendedMeshShapeMeshSubpartStorage(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpStorageExtendedMeshShapeShapeSubpartStorage(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpStorageMeshShape(class) => class.serialize(serializer),
+            Classes::hkpStorageMeshShapeSubpartStorage(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpStorageSampledHeightFieldShape(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpThinBoxMotion(class) => class.serialize(serializer),
+            Classes::hkpTransformShape(class) => class.serialize(serializer),
+            Classes::hkpTriangleShape(class) => class.serialize(serializer),
+            Classes::hkpTriggerVolume(class) => class.serialize(serializer),
+            Classes::hkpTriggerVolumeEventInfo(class) => class.serialize(serializer),
+            Classes::hkpTriSampledHeightFieldBvTreeShape(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpTriSampledHeightFieldCollection(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpTwistLimitConstraintAtom(class) => class.serialize(serializer),
+            Classes::hkpTypedBroadPhaseHandle(class) => class.serialize(serializer),
+            Classes::hkpTyremarkPoint(class) => class.serialize(serializer),
+            Classes::hkpTyremarksInfo(class) => class.serialize(serializer),
+            Classes::hkpTyremarksWheel(class) => class.serialize(serializer),
+            Classes::hkpUnaryAction(class) => class.serialize(serializer),
+            Classes::hkpVehicleAerodynamics(class) => class.serialize(serializer),
+            Classes::hkpVehicleBrake(class) => class.serialize(serializer),
+            Classes::hkpVehicleCastBatchingManager(class) => class.serialize(serializer),
+            Classes::hkpVehicleData(class) => class.serialize(serializer),
+            Classes::hkpVehicleDataWheelComponentParams(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleDefaultAerodynamics(class) => class.serialize(serializer),
+            Classes::hkpVehicleDefaultAnalogDriverInput(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleDefaultBrake(class) => class.serialize(serializer),
+            Classes::hkpVehicleDefaultBrakeWheelBrakingProperties(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleDefaultEngine(class) => class.serialize(serializer),
+            Classes::hkpVehicleDefaultSteering(class) => class.serialize(serializer),
+            Classes::hkpVehicleDefaultSuspension(class) => class.serialize(serializer),
+            Classes::hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters(
+                class,
+            ) => class.serialize(serializer),
+            Classes::hkpVehicleDefaultTransmission(class) => class.serialize(serializer),
+            Classes::hkpVehicleDefaultVelocityDamper(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleDriverInput(class) => class.serialize(serializer),
+            Classes::hkpVehicleDriverInputAnalogStatus(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleDriverInputStatus(class) => class.serialize(serializer),
+            Classes::hkpVehicleEngine(class) => class.serialize(serializer),
+            Classes::hkpVehicleFrictionDescription(class) => class.serialize(serializer),
+            Classes::hkpVehicleFrictionDescriptionAxisDescription(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleFrictionStatus(class) => class.serialize(serializer),
+            Classes::hkpVehicleFrictionStatusAxisStatus(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleInstance(class) => class.serialize(serializer),
+            Classes::hkpVehicleInstanceWheelInfo(class) => class.serialize(serializer),
+            Classes::hkpVehicleLinearCastBatchingManager(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleLinearCastWheelCollide(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleLinearCastWheelCollideWheelState(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleManager(class) => class.serialize(serializer),
+            Classes::hkpVehicleRayCastBatchingManager(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleRayCastWheelCollide(class) => class.serialize(serializer),
+            Classes::hkpVehicleSteering(class) => class.serialize(serializer),
+            Classes::hkpVehicleSuspension(class) => class.serialize(serializer),
+            Classes::hkpVehicleSuspensionSuspensionWheelParameters(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpVehicleTransmission(class) => class.serialize(serializer),
+            Classes::hkpVehicleVelocityDamper(class) => class.serialize(serializer),
+            Classes::hkpVehicleWheelCollide(class) => class.serialize(serializer),
+            Classes::hkpVelocityConstraintMotor(class) => class.serialize(serializer),
+            Classes::hkpViscousSurfaceModifierConstraintAtom(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkpWeldingUtility(class) => class.serialize(serializer),
+            Classes::hkpWheelConstraintData(class) => class.serialize(serializer),
+            Classes::hkpWheelConstraintDataAtoms(class) => class.serialize(serializer),
+            Classes::hkpWorld(class) => class.serialize(serializer),
+            Classes::hkpWorldCinfo(class) => class.serialize(serializer),
+            Classes::hkpWorldObject(class) => class.serialize(serializer),
+            Classes::hkQTransform(class) => class.serialize(serializer),
+            Classes::hkRangeInt32Attribute(class) => class.serialize(serializer),
+            Classes::hkRangeRealAttribute(class) => class.serialize(serializer),
+            Classes::hkReferencedObject(class) => class.serialize(serializer),
+            Classes::hkReflectedFileAttribute(class) => class.serialize(serializer),
+            Classes::hkResourceBase(class) => class.serialize(serializer),
+            Classes::hkResourceContainer(class) => class.serialize(serializer),
+            Classes::hkResourceHandle(class) => class.serialize(serializer),
+            Classes::hkRootLevelContainer(class) => class.serialize(serializer),
+            Classes::hkRootLevelContainerNamedVariant(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkSemanticsAttribute(class) => class.serialize(serializer),
+            Classes::hkSimpleLocalFrame(class) => class.serialize(serializer),
+            Classes::hkSphere(class) => class.serialize(serializer),
+            Classes::hkSweptTransform(class) => class.serialize(serializer),
+            Classes::hkTraceStreamTitle(class) => class.serialize(serializer),
+            Classes::hkTrackerSerializableScanSnapshot(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkTrackerSerializableScanSnapshotAllocation(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkTrackerSerializableScanSnapshotBlock(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkUiAttribute(class) => class.serialize(serializer),
+            Classes::hkVertexFormat(class) => class.serialize(serializer),
+            Classes::hkVertexFormatElement(class) => class.serialize(serializer),
+            Classes::hkWorldMemoryAvailableWatchDog(class) => class.serialize(serializer),
+            Classes::hkxAnimatedFloat(class) => class.serialize(serializer),
+            Classes::hkxAnimatedMatrix(class) => class.serialize(serializer),
+            Classes::hkxAnimatedQuaternion(class) => class.serialize(serializer),
+            Classes::hkxAnimatedVector(class) => class.serialize(serializer),
+            Classes::hkxAttribute(class) => class.serialize(serializer),
+            Classes::hkxAttributeGroup(class) => class.serialize(serializer),
+            Classes::hkxAttributeHolder(class) => class.serialize(serializer),
+            Classes::hkxCamera(class) => class.serialize(serializer),
+            Classes::hkxEdgeSelectionChannel(class) => class.serialize(serializer),
+            Classes::hkxEnum(class) => class.serialize(serializer),
+            Classes::hkxEnumItem(class) => class.serialize(serializer),
+            Classes::hkxEnvironment(class) => class.serialize(serializer),
+            Classes::hkxEnvironmentVariable(class) => class.serialize(serializer),
+            Classes::hkxIndexBuffer(class) => class.serialize(serializer),
+            Classes::hkxLight(class) => class.serialize(serializer),
+            Classes::hkxMaterial(class) => class.serialize(serializer),
+            Classes::hkxMaterialEffect(class) => class.serialize(serializer),
+            Classes::hkxMaterialProperty(class) => class.serialize(serializer),
+            Classes::hkxMaterialShader(class) => class.serialize(serializer),
+            Classes::hkxMaterialShaderSet(class) => class.serialize(serializer),
+            Classes::hkxMaterialTextureStage(class) => class.serialize(serializer),
+            Classes::hkxMesh(class) => class.serialize(serializer),
+            Classes::hkxMeshSection(class) => class.serialize(serializer),
+            Classes::hkxMeshUserChannelInfo(class) => class.serialize(serializer),
+            Classes::hkxNode(class) => class.serialize(serializer),
+            Classes::hkxNodeAnnotationData(class) => class.serialize(serializer),
+            Classes::hkxNodeSelectionSet(class) => class.serialize(serializer),
+            Classes::hkxScene(class) => class.serialize(serializer),
+            Classes::hkxSkinBinding(class) => class.serialize(serializer),
+            Classes::hkxSparselyAnimatedBool(class) => class.serialize(serializer),
+            Classes::hkxSparselyAnimatedEnum(class) => class.serialize(serializer),
+            Classes::hkxSparselyAnimatedInt(class) => class.serialize(serializer),
+            Classes::hkxSparselyAnimatedString(class) => class.serialize(serializer),
+            Classes::hkxTextureFile(class) => class.serialize(serializer),
+            Classes::hkxTextureInplace(class) => class.serialize(serializer),
+            Classes::hkxTriangleSelectionChannel(class) => class.serialize(serializer),
+            Classes::hkxVertexBuffer(class) => class.serialize(serializer),
+            Classes::hkxVertexBufferVertexData(class) => class.serialize(serializer),
+            Classes::hkxVertexDescription(class) => class.serialize(serializer),
+            Classes::hkxVertexDescriptionElementDecl(class) => {
+                class.serialize(serializer)
+            }
+            Classes::hkxVertexFloatDataChannel(class) => class.serialize(serializer),
+            Classes::hkxVertexIntDataChannel(class) => class.serialize(serializer),
+            Classes::hkxVertexSelectionChannel(class) => class.serialize(serializer),
+            Classes::hkxVertexVectorDataChannel(class) => class.serialize(serializer),
+        }
+    }
+}
+impl<'a, 'de: 'a> _serde::Deserialize<'de> for Classes<'a> {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: _serde::Deserializer<'de>,
+    {
+        struct ClassesVisitor<'a> {
+            marker: core::marker::PhantomData<Classes<'a>>,
+        }
+        impl<'a, 'de: 'a> _serde::de::Visitor<'de> for ClassesVisitor<'a> {
+            type Value = Classes<'a>;
+            fn expecting(
+                &self,
+                formatter: &mut core::fmt::Formatter,
+            ) -> core::fmt::Result {
+                formatter.write_str("a valid class enum")
+            }
+            fn visit_class_index<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+            where
+                A: _serde::de::ClassIndexAccess<'de>,
+            {
+                /// Generates a debug stack-safe deserialization dispatch.
+                ///
+                /// # Why this exists
+                ///
+                /// `Classes` is a very large enum (currently ~1120 bytes). In debug builds
+                /// (`opt-level = 0`), LLVM may reserve a separate stack slot for every `match`
+                /// arm when constructing `Classes`, producing an enormous stack frame and
+                /// causing stack overflows even for trivial inputs.
+                ///
+                /// One possible solution would be to box every enum variant, but that would
+                /// introduce heap allocations into the hot deserialization path. We intentionally
+                /// keep `Classes` as a value type to avoid that runtime cost. (The
+                /// `d_merge_serde-hkx` fork instead boxes the variants.)
+                ///
+                /// Instead, this macro generates a small helper function marked
+                /// `#[inline(never)]` in debug builds and dispatches through that function.
+                /// The extra call prevents LLVM from inflating the caller's stack frame while
+                /// preserving the release build's performance characteristics.
+                ///
+                /// Release builds are unaffected.
+                macro_rules! deserialize_dev_stack_safe {
+                    ($fn_name:ident, $variant:ident, $map:expr) => {
+                        { #[cfg_attr(debug_assertions, inline(never))] fn $fn_name < 'de,
+                        A > (map : & mut A,) -> Result < Classes < 'de >, A::Error >
+                        where A : _serde::de::ClassIndexAccess < 'de >, { Ok(Classes::
+                        $variant (map.next_value:: < $variant > () ?)) } $fn_name ($map)
+                        }
+                    };
+                }
+                let class_name = map.next_key()?;
+                match class_name {
+                    "BGSGamebryoSequenceGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_BGSGamebryoSequenceGenerator,
+                            BGSGamebryoSequenceGenerator, & mut map
+                        )
+                    }
+                    "BSBoneSwitchGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSBoneSwitchGenerator, BSBoneSwitchGenerator, & mut map
+                        )
+                    }
+                    "BSBoneSwitchGeneratorBoneData" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSBoneSwitchGeneratorBoneData,
+                            BSBoneSwitchGeneratorBoneData, & mut map
+                        )
+                    }
+                    "BSComputeAddBoneAnimModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSComputeAddBoneAnimModifier,
+                            BSComputeAddBoneAnimModifier, & mut map
+                        )
+                    }
+                    "BSCyclicBlendTransitionGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSCyclicBlendTransitionGenerator,
+                            BSCyclicBlendTransitionGenerator, & mut map
+                        )
+                    }
+                    "BSDecomposeVectorModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSDecomposeVectorModifier, BSDecomposeVectorModifier, &
+                            mut map
+                        )
+                    }
+                    "BSDirectAtModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSDirectAtModifier, BSDirectAtModifier, & mut map
+                        )
+                    }
+                    "BSDistTriggerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSDistTriggerModifier, BSDistTriggerModifier, & mut map
+                        )
+                    }
+                    "BSEventEveryNEventsModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSEventEveryNEventsModifier, BSEventEveryNEventsModifier,
+                            & mut map
+                        )
+                    }
+                    "BSEventOnDeactivateModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSEventOnDeactivateModifier, BSEventOnDeactivateModifier,
+                            & mut map
+                        )
+                    }
+                    "BSEventOnFalseToTrueModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSEventOnFalseToTrueModifier,
+                            BSEventOnFalseToTrueModifier, & mut map
+                        )
+                    }
+                    "BSGetTimeStepModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSGetTimeStepModifier, BSGetTimeStepModifier, & mut map
+                        )
+                    }
+                    "BSInterpValueModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSInterpValueModifier, BSInterpValueModifier, & mut map
+                        )
+                    }
+                    "BSIsActiveModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSIsActiveModifier, BSIsActiveModifier, & mut map
+                        )
+                    }
+                    "BSIStateManagerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSIStateManagerModifier, BSIStateManagerModifier, & mut
+                            map
+                        )
+                    }
+                    "BSIStateManagerModifierBSiStateData" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSIStateManagerModifierBSiStateData,
+                            BSIStateManagerModifierBSiStateData, & mut map
+                        )
+                    }
+                    "BSIStateManagerModifierBSIStateManagerStateListener" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSIStateManagerModifierBSIStateManagerStateListener,
+                            BSIStateManagerModifierBSIStateManagerStateListener, & mut
+                            map
+                        )
+                    }
+                    "BSiStateTaggingGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSiStateTaggingGenerator, BSiStateTaggingGenerator, & mut
+                            map
+                        )
+                    }
+                    "BSLimbIKModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSLimbIKModifier, BSLimbIKModifier, & mut map
+                        )
+                    }
+                    "BSLookAtModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSLookAtModifier, BSLookAtModifier, & mut map
+                        )
+                    }
+                    "BSLookAtModifierBoneData" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSLookAtModifierBoneData, BSLookAtModifierBoneData, & mut
+                            map
+                        )
+                    }
+                    "BSModifyOnceModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSModifyOnceModifier, BSModifyOnceModifier, & mut map
+                        )
+                    }
+                    "BSOffsetAnimationGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSOffsetAnimationGenerator, BSOffsetAnimationGenerator, &
+                            mut map
+                        )
+                    }
+                    "BSPassByTargetTriggerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSPassByTargetTriggerModifier,
+                            BSPassByTargetTriggerModifier, & mut map
+                        )
+                    }
+                    "BSRagdollContactListenerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSRagdollContactListenerModifier,
+                            BSRagdollContactListenerModifier, & mut map
+                        )
+                    }
+                    "BSSpeedSamplerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSSpeedSamplerModifier, BSSpeedSamplerModifier, & mut map
+                        )
+                    }
+                    "BSSynchronizedClipGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSSynchronizedClipGenerator, BSSynchronizedClipGenerator,
+                            & mut map
+                        )
+                    }
+                    "BSTimerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSTimerModifier, BSTimerModifier, & mut map
+                        )
+                    }
+                    "BSTweenerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_BSTweenerModifier, BSTweenerModifier, & mut map
+                        )
+                    }
+                    "hkAabb" => deserialize_dev_stack_safe!(de_hkAabb, hkAabb, & mut map),
+                    "hkAabbHalf" => {
+                        deserialize_dev_stack_safe!(de_hkAabbHalf, hkAabbHalf, & mut map)
+                    }
+                    "hkAabbUint32" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkAabbUint32, hkAabbUint32, & mut map
+                        )
+                    }
+                    "hkaAnimatedReferenceFrame" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaAnimatedReferenceFrame, hkaAnimatedReferenceFrame, &
+                            mut map
+                        )
+                    }
+                    "hkaAnimation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaAnimation, hkaAnimation, & mut map
+                        )
+                    }
+                    "hkaAnimationBinding" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaAnimationBinding, hkaAnimationBinding, & mut map
+                        )
+                    }
+                    "hkaAnimationContainer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaAnimationContainer, hkaAnimationContainer, & mut map
+                        )
+                    }
+                    "hkaAnimationPreviewColorContainer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaAnimationPreviewColorContainer,
+                            hkaAnimationPreviewColorContainer, & mut map
+                        )
+                    }
+                    "hkaAnnotationTrack" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaAnnotationTrack, hkaAnnotationTrack, & mut map
+                        )
+                    }
+                    "hkaAnnotationTrackAnnotation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaAnnotationTrackAnnotation,
+                            hkaAnnotationTrackAnnotation, & mut map
+                        )
+                    }
+                    "hkaBone" => {
+                        deserialize_dev_stack_safe!(de_hkaBone, hkaBone, & mut map)
+                    }
+                    "hkaBoneAttachment" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaBoneAttachment, hkaBoneAttachment, & mut map
+                        )
+                    }
+                    "hkaDefaultAnimatedReferenceFrame" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaDefaultAnimatedReferenceFrame,
+                            hkaDefaultAnimatedReferenceFrame, & mut map
+                        )
+                    }
+                    "hkaDeltaCompressedAnimation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaDeltaCompressedAnimation, hkaDeltaCompressedAnimation,
+                            & mut map
+                        )
+                    }
+                    "hkaDeltaCompressedAnimationQuantizationFormat" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaDeltaCompressedAnimationQuantizationFormat,
+                            hkaDeltaCompressedAnimationQuantizationFormat, & mut map
+                        )
+                    }
+                    "hkaFootstepAnalysisInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaFootstepAnalysisInfo, hkaFootstepAnalysisInfo, & mut
+                            map
+                        )
+                    }
+                    "hkaFootstepAnalysisInfoContainer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaFootstepAnalysisInfoContainer,
+                            hkaFootstepAnalysisInfoContainer, & mut map
+                        )
+                    }
+                    "hkaInterleavedUncompressedAnimation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaInterleavedUncompressedAnimation,
+                            hkaInterleavedUncompressedAnimation, & mut map
+                        )
+                    }
+                    "hkaKeyFrameHierarchyUtility" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaKeyFrameHierarchyUtility, hkaKeyFrameHierarchyUtility,
+                            & mut map
+                        )
+                    }
+                    "hkaKeyFrameHierarchyUtilityControlData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaKeyFrameHierarchyUtilityControlData,
+                            hkaKeyFrameHierarchyUtilityControlData, & mut map
+                        )
+                    }
+                    "hkAlignSceneToNodeOptions" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkAlignSceneToNodeOptions, hkAlignSceneToNodeOptions, &
+                            mut map
+                        )
+                    }
+                    "hkaMeshBinding" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaMeshBinding, hkaMeshBinding, & mut map
+                        )
+                    }
+                    "hkaMeshBindingMapping" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaMeshBindingMapping, hkaMeshBindingMapping, & mut map
+                        )
+                    }
+                    "hkaQuantizedAnimation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaQuantizedAnimation, hkaQuantizedAnimation, & mut map
+                        )
+                    }
+                    "hkaQuantizedAnimationTrackCompressionParams" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaQuantizedAnimationTrackCompressionParams,
+                            hkaQuantizedAnimationTrackCompressionParams, & mut map
+                        )
+                    }
+                    "hkaRagdollInstance" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaRagdollInstance, hkaRagdollInstance, & mut map
+                        )
+                    }
+                    "hkArrayTypeAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkArrayTypeAttribute, hkArrayTypeAttribute, & mut map
+                        )
+                    }
+                    "hkaSkeleton" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSkeleton, hkaSkeleton, & mut map
+                        )
+                    }
+                    "hkaSkeletonLocalFrameOnBone" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSkeletonLocalFrameOnBone, hkaSkeletonLocalFrameOnBone,
+                            & mut map
+                        )
+                    }
+                    "hkaSkeletonMapper" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSkeletonMapper, hkaSkeletonMapper, & mut map
+                        )
+                    }
+                    "hkaSkeletonMapperData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSkeletonMapperData, hkaSkeletonMapperData, & mut map
+                        )
+                    }
+                    "hkaSkeletonMapperDataChainMapping" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSkeletonMapperDataChainMapping,
+                            hkaSkeletonMapperDataChainMapping, & mut map
+                        )
+                    }
+                    "hkaSkeletonMapperDataSimpleMapping" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSkeletonMapperDataSimpleMapping,
+                            hkaSkeletonMapperDataSimpleMapping, & mut map
+                        )
+                    }
+                    "hkaSplineCompressedAnimation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSplineCompressedAnimation,
+                            hkaSplineCompressedAnimation, & mut map
+                        )
+                    }
+                    "hkaSplineCompressedAnimationAnimationCompressionParams" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSplineCompressedAnimationAnimationCompressionParams,
+                            hkaSplineCompressedAnimationAnimationCompressionParams, & mut
+                            map
+                        )
+                    }
+                    "hkaSplineCompressedAnimationTrackCompressionParams" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaSplineCompressedAnimationTrackCompressionParams,
+                            hkaSplineCompressedAnimationTrackCompressionParams, & mut map
+                        )
+                    }
+                    "hkaWaveletCompressedAnimation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaWaveletCompressedAnimation,
+                            hkaWaveletCompressedAnimation, & mut map
+                        )
+                    }
+                    "hkaWaveletCompressedAnimationCompressionParams" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaWaveletCompressedAnimationCompressionParams,
+                            hkaWaveletCompressedAnimationCompressionParams, & mut map
+                        )
+                    }
+                    "hkaWaveletCompressedAnimationQuantizationFormat" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkaWaveletCompressedAnimationQuantizationFormat,
+                            hkaWaveletCompressedAnimationQuantizationFormat, & mut map
+                        )
+                    }
+                    "hkBaseObject" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkBaseObject, hkBaseObject, & mut map
+                        )
+                    }
+                    "hkbAttachmentModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbAttachmentModifier, hkbAttachmentModifier, & mut map
+                        )
+                    }
+                    "hkbAttachmentSetup" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbAttachmentSetup, hkbAttachmentSetup, & mut map
+                        )
+                    }
+                    "hkbAttributeModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbAttributeModifier, hkbAttributeModifier, & mut map
+                        )
+                    }
+                    "hkbAttributeModifierAssignment" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbAttributeModifierAssignment,
+                            hkbAttributeModifierAssignment, & mut map
+                        )
+                    }
+                    "hkbAuxiliaryNodeInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbAuxiliaryNodeInfo, hkbAuxiliaryNodeInfo, & mut map
+                        )
+                    }
+                    "hkbBehaviorEventsInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorEventsInfo, hkbBehaviorEventsInfo, & mut map
+                        )
+                    }
+                    "hkbBehaviorGraph" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorGraph, hkbBehaviorGraph, & mut map
+                        )
+                    }
+                    "hkbBehaviorGraphData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorGraphData, hkbBehaviorGraphData, & mut map
+                        )
+                    }
+                    "hkbBehaviorGraphInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorGraphInternalState,
+                            hkbBehaviorGraphInternalState, & mut map
+                        )
+                    }
+                    "hkbBehaviorGraphInternalStateInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorGraphInternalStateInfo,
+                            hkbBehaviorGraphInternalStateInfo, & mut map
+                        )
+                    }
+                    "hkbBehaviorGraphStringData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorGraphStringData, hkbBehaviorGraphStringData, &
+                            mut map
+                        )
+                    }
+                    "hkbBehaviorInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorInfo, hkbBehaviorInfo, & mut map
+                        )
+                    }
+                    "hkbBehaviorInfoIdToNamePair" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorInfoIdToNamePair, hkbBehaviorInfoIdToNamePair,
+                            & mut map
+                        )
+                    }
+                    "hkbBehaviorReferenceGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBehaviorReferenceGenerator,
+                            hkbBehaviorReferenceGenerator, & mut map
+                        )
+                    }
+                    "hkbBindable" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBindable, hkbBindable, & mut map
+                        )
+                    }
+                    "hkbBlendCurveUtils" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBlendCurveUtils, hkbBlendCurveUtils, & mut map
+                        )
+                    }
+                    "hkbBlenderGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBlenderGenerator, hkbBlenderGenerator, & mut map
+                        )
+                    }
+                    "hkbBlenderGeneratorChild" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBlenderGeneratorChild, hkbBlenderGeneratorChild, & mut
+                            map
+                        )
+                    }
+                    "hkbBlenderGeneratorChildInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBlenderGeneratorChildInternalState,
+                            hkbBlenderGeneratorChildInternalState, & mut map
+                        )
+                    }
+                    "hkbBlenderGeneratorInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBlenderGeneratorInternalState,
+                            hkbBlenderGeneratorInternalState, & mut map
+                        )
+                    }
+                    "hkbBlendingTransitionEffect" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBlendingTransitionEffect, hkbBlendingTransitionEffect,
+                            & mut map
+                        )
+                    }
+                    "hkbBlendingTransitionEffectInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBlendingTransitionEffectInternalState,
+                            hkbBlendingTransitionEffectInternalState, & mut map
+                        )
+                    }
+                    "hkbBoneIndexArray" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBoneIndexArray, hkbBoneIndexArray, & mut map
+                        )
+                    }
+                    "hkbBoneWeightArray" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBoneWeightArray, hkbBoneWeightArray, & mut map
+                        )
+                    }
+                    "hkbBoolVariableSequencedData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBoolVariableSequencedData,
+                            hkbBoolVariableSequencedData, & mut map
+                        )
+                    }
+                    "hkbBoolVariableSequencedDataSample" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbBoolVariableSequencedDataSample,
+                            hkbBoolVariableSequencedDataSample, & mut map
+                        )
+                    }
+                    "hkbCameraShakeEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCameraShakeEventPayload, hkbCameraShakeEventPayload, &
+                            mut map
+                        )
+                    }
+                    "hkbCharacter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacter, hkbCharacter, & mut map
+                        )
+                    }
+                    "hkbCharacterAddedInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterAddedInfo, hkbCharacterAddedInfo, & mut map
+                        )
+                    }
+                    "hkbCharacterControlCommand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterControlCommand, hkbCharacterControlCommand, &
+                            mut map
+                        )
+                    }
+                    "hkbCharacterControllerControlData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterControllerControlData,
+                            hkbCharacterControllerControlData, & mut map
+                        )
+                    }
+                    "hkbCharacterControllerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterControllerModifier,
+                            hkbCharacterControllerModifier, & mut map
+                        )
+                    }
+                    "hkbCharacterControllerModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterControllerModifierInternalState,
+                            hkbCharacterControllerModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbCharacterData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterData, hkbCharacterData, & mut map
+                        )
+                    }
+                    "hkbCharacterDataCharacterControllerInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterDataCharacterControllerInfo,
+                            hkbCharacterDataCharacterControllerInfo, & mut map
+                        )
+                    }
+                    "hkbCharacterInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterInfo, hkbCharacterInfo, & mut map
+                        )
+                    }
+                    "hkbCharacterSetup" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterSetup, hkbCharacterSetup, & mut map
+                        )
+                    }
+                    "hkbCharacterSkinInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterSkinInfo, hkbCharacterSkinInfo, & mut map
+                        )
+                    }
+                    "hkbCharacterSteppedInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterSteppedInfo, hkbCharacterSteppedInfo, & mut
+                            map
+                        )
+                    }
+                    "hkbCharacterStringData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCharacterStringData, hkbCharacterStringData, & mut map
+                        )
+                    }
+                    "hkbClientCharacterState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbClientCharacterState, hkbClientCharacterState, & mut
+                            map
+                        )
+                    }
+                    "hkbClipGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbClipGenerator, hkbClipGenerator, & mut map
+                        )
+                    }
+                    "hkbClipGeneratorEcho" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbClipGeneratorEcho, hkbClipGeneratorEcho, & mut map
+                        )
+                    }
+                    "hkbClipGeneratorInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbClipGeneratorInternalState,
+                            hkbClipGeneratorInternalState, & mut map
+                        )
+                    }
+                    "hkbClipTrigger" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbClipTrigger, hkbClipTrigger, & mut map
+                        )
+                    }
+                    "hkbClipTriggerArray" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbClipTriggerArray, hkbClipTriggerArray, & mut map
+                        )
+                    }
+                    "hkbCombineTransformsModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCombineTransformsModifier,
+                            hkbCombineTransformsModifier, & mut map
+                        )
+                    }
+                    "hkbCombineTransformsModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCombineTransformsModifierInternalState,
+                            hkbCombineTransformsModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbCompiledExpressionSet" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCompiledExpressionSet, hkbCompiledExpressionSet, & mut
+                            map
+                        )
+                    }
+                    "hkbCompiledExpressionSetToken" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCompiledExpressionSetToken,
+                            hkbCompiledExpressionSetToken, & mut map
+                        )
+                    }
+                    "hkbComputeDirectionModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbComputeDirectionModifier, hkbComputeDirectionModifier,
+                            & mut map
+                        )
+                    }
+                    "hkbComputeDirectionModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbComputeDirectionModifierInternalState,
+                            hkbComputeDirectionModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbComputeRotationFromAxisAngleModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbComputeRotationFromAxisAngleModifier,
+                            hkbComputeRotationFromAxisAngleModifier, & mut map
+                        )
+                    }
+                    "hkbComputeRotationFromAxisAngleModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbComputeRotationFromAxisAngleModifierInternalState,
+                            hkbComputeRotationFromAxisAngleModifierInternalState, & mut
+                            map
+                        )
+                    }
+                    "hkbComputeRotationToTargetModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbComputeRotationToTargetModifier,
+                            hkbComputeRotationToTargetModifier, & mut map
+                        )
+                    }
+                    "hkbComputeRotationToTargetModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbComputeRotationToTargetModifierInternalState,
+                            hkbComputeRotationToTargetModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbCondition" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbCondition, hkbCondition, & mut map
+                        )
+                    }
+                    "hkbContext" => {
+                        deserialize_dev_stack_safe!(de_hkbContext, hkbContext, & mut map)
+                    }
+                    "hkbDampingModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbDampingModifier, hkbDampingModifier, & mut map
+                        )
+                    }
+                    "hkbDampingModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbDampingModifierInternalState,
+                            hkbDampingModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbDefaultMessageLog" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbDefaultMessageLog, hkbDefaultMessageLog, & mut map
+                        )
+                    }
+                    "hkbDelayedModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbDelayedModifier, hkbDelayedModifier, & mut map
+                        )
+                    }
+                    "hkbDelayedModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbDelayedModifierInternalState,
+                            hkbDelayedModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbDetectCloseToGroundModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbDetectCloseToGroundModifier,
+                            hkbDetectCloseToGroundModifier, & mut map
+                        )
+                    }
+                    "hkbDetectCloseToGroundModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbDetectCloseToGroundModifierInternalState,
+                            hkbDetectCloseToGroundModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbEvaluateExpressionModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEvaluateExpressionModifier,
+                            hkbEvaluateExpressionModifier, & mut map
+                        )
+                    }
+                    "hkbEvaluateExpressionModifierInternalExpressionData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEvaluateExpressionModifierInternalExpressionData,
+                            hkbEvaluateExpressionModifierInternalExpressionData, & mut
+                            map
+                        )
+                    }
+                    "hkbEvaluateExpressionModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEvaluateExpressionModifierInternalState,
+                            hkbEvaluateExpressionModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbEvaluateHandleModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEvaluateHandleModifier, hkbEvaluateHandleModifier, &
+                            mut map
+                        )
+                    }
+                    "hkbEvent" => {
+                        deserialize_dev_stack_safe!(de_hkbEvent, hkbEvent, & mut map)
+                    }
+                    "hkbEventBase" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventBase, hkbEventBase, & mut map
+                        )
+                    }
+                    "hkbEventDrivenModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventDrivenModifier, hkbEventDrivenModifier, & mut map
+                        )
+                    }
+                    "hkbEventDrivenModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventDrivenModifierInternalState,
+                            hkbEventDrivenModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbEventInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventInfo, hkbEventInfo, & mut map
+                        )
+                    }
+                    "hkbEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventPayload, hkbEventPayload, & mut map
+                        )
+                    }
+                    "hkbEventPayloadList" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventPayloadList, hkbEventPayloadList, & mut map
+                        )
+                    }
+                    "hkbEventProperty" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventProperty, hkbEventProperty, & mut map
+                        )
+                    }
+                    "hkbEventRaisedInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventRaisedInfo, hkbEventRaisedInfo, & mut map
+                        )
+                    }
+                    "hkbEventRangeData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventRangeData, hkbEventRangeData, & mut map
+                        )
+                    }
+                    "hkbEventRangeDataArray" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventRangeDataArray, hkbEventRangeDataArray, & mut map
+                        )
+                    }
+                    "hkbEventSequencedData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventSequencedData, hkbEventSequencedData, & mut map
+                        )
+                    }
+                    "hkbEventSequencedDataSequencedEvent" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventSequencedDataSequencedEvent,
+                            hkbEventSequencedDataSequencedEvent, & mut map
+                        )
+                    }
+                    "hkbEventsFromRangeModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventsFromRangeModifier, hkbEventsFromRangeModifier, &
+                            mut map
+                        )
+                    }
+                    "hkbEventsFromRangeModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbEventsFromRangeModifierInternalState,
+                            hkbEventsFromRangeModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbExpressionCondition" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbExpressionCondition, hkbExpressionCondition, & mut map
+                        )
+                    }
+                    "hkbExpressionData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbExpressionData, hkbExpressionData, & mut map
+                        )
+                    }
+                    "hkbExpressionDataArray" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbExpressionDataArray, hkbExpressionDataArray, & mut map
+                        )
+                    }
+                    "hkbExtractRagdollPoseModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbExtractRagdollPoseModifier,
+                            hkbExtractRagdollPoseModifier, & mut map
+                        )
+                    }
+                    "hkbFootIkControlData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkControlData, hkbFootIkControlData, & mut map
+                        )
+                    }
+                    "hkbFootIkControlsModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkControlsModifier, hkbFootIkControlsModifier, &
+                            mut map
+                        )
+                    }
+                    "hkbFootIkControlsModifierLeg" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkControlsModifierLeg,
+                            hkbFootIkControlsModifierLeg, & mut map
+                        )
+                    }
+                    "hkbFootIkDriverInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkDriverInfo, hkbFootIkDriverInfo, & mut map
+                        )
+                    }
+                    "hkbFootIkDriverInfoLeg" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkDriverInfoLeg, hkbFootIkDriverInfoLeg, & mut map
+                        )
+                    }
+                    "hkbFootIkGains" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkGains, hkbFootIkGains, & mut map
+                        )
+                    }
+                    "hkbFootIkModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkModifier, hkbFootIkModifier, & mut map
+                        )
+                    }
+                    "hkbFootIkModifierInternalLegData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkModifierInternalLegData,
+                            hkbFootIkModifierInternalLegData, & mut map
+                        )
+                    }
+                    "hkbFootIkModifierLeg" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbFootIkModifierLeg, hkbFootIkModifierLeg, & mut map
+                        )
+                    }
+                    "hkbGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGenerator, hkbGenerator, & mut map
+                        )
+                    }
+                    "hkbGeneratorOutputListener" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGeneratorOutputListener, hkbGeneratorOutputListener, &
+                            mut map
+                        )
+                    }
+                    "hkbGeneratorSyncInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGeneratorSyncInfo, hkbGeneratorSyncInfo, & mut map
+                        )
+                    }
+                    "hkbGeneratorSyncInfoSyncPoint" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGeneratorSyncInfoSyncPoint,
+                            hkbGeneratorSyncInfoSyncPoint, & mut map
+                        )
+                    }
+                    "hkbGeneratorTransitionEffect" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGeneratorTransitionEffect,
+                            hkbGeneratorTransitionEffect, & mut map
+                        )
+                    }
+                    "hkbGeneratorTransitionEffectInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGeneratorTransitionEffectInternalState,
+                            hkbGeneratorTransitionEffectInternalState, & mut map
+                        )
+                    }
+                    "hkbGetHandleOnBoneModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGetHandleOnBoneModifier, hkbGetHandleOnBoneModifier, &
+                            mut map
+                        )
+                    }
+                    "hkbGetUpModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGetUpModifier, hkbGetUpModifier, & mut map
+                        )
+                    }
+                    "hkbGetUpModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGetUpModifierInternalState,
+                            hkbGetUpModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbGetWorldFromModelModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGetWorldFromModelModifier,
+                            hkbGetWorldFromModelModifier, & mut map
+                        )
+                    }
+                    "hkbGetWorldFromModelModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbGetWorldFromModelModifierInternalState,
+                            hkbGetWorldFromModelModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbHandIkControlData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbHandIkControlData, hkbHandIkControlData, & mut map
+                        )
+                    }
+                    "hkbHandIkControlsModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbHandIkControlsModifier, hkbHandIkControlsModifier, &
+                            mut map
+                        )
+                    }
+                    "hkbHandIkControlsModifierHand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbHandIkControlsModifierHand,
+                            hkbHandIkControlsModifierHand, & mut map
+                        )
+                    }
+                    "hkbHandIkDriverInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbHandIkDriverInfo, hkbHandIkDriverInfo, & mut map
+                        )
+                    }
+                    "hkbHandIkDriverInfoHand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbHandIkDriverInfoHand, hkbHandIkDriverInfoHand, & mut
+                            map
+                        )
+                    }
+                    "hkbHandIkModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbHandIkModifier, hkbHandIkModifier, & mut map
+                        )
+                    }
+                    "hkbHandIkModifierHand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbHandIkModifierHand, hkbHandIkModifierHand, & mut map
+                        )
+                    }
+                    "hkbHandle" => {
+                        deserialize_dev_stack_safe!(de_hkbHandle, hkbHandle, & mut map)
+                    }
+                    "hkbIntEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbIntEventPayload, hkbIntEventPayload, & mut map
+                        )
+                    }
+                    "hkbIntVariableSequencedData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbIntVariableSequencedData, hkbIntVariableSequencedData,
+                            & mut map
+                        )
+                    }
+                    "hkbIntVariableSequencedDataSample" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbIntVariableSequencedDataSample,
+                            hkbIntVariableSequencedDataSample, & mut map
+                        )
+                    }
+                    "hkBitField" => {
+                        deserialize_dev_stack_safe!(de_hkBitField, hkBitField, & mut map)
+                    }
+                    "hkbKeyframeBonesModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbKeyframeBonesModifier, hkbKeyframeBonesModifier, & mut
+                            map
+                        )
+                    }
+                    "hkbKeyframeBonesModifierKeyframeInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbKeyframeBonesModifierKeyframeInfo,
+                            hkbKeyframeBonesModifierKeyframeInfo, & mut map
+                        )
+                    }
+                    "hkbLinkedSymbolInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbLinkedSymbolInfo, hkbLinkedSymbolInfo, & mut map
+                        )
+                    }
+                    "hkbLookAtModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbLookAtModifier, hkbLookAtModifier, & mut map
+                        )
+                    }
+                    "hkbLookAtModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbLookAtModifierInternalState,
+                            hkbLookAtModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbManualSelectorGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbManualSelectorGenerator, hkbManualSelectorGenerator, &
+                            mut map
+                        )
+                    }
+                    "hkbManualSelectorGeneratorInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbManualSelectorGeneratorInternalState,
+                            hkbManualSelectorGeneratorInternalState, & mut map
+                        )
+                    }
+                    "hkbMessageLog" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbMessageLog, hkbMessageLog, & mut map
+                        )
+                    }
+                    "hkbMirroredSkeletonInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbMirroredSkeletonInfo, hkbMirroredSkeletonInfo, & mut
+                            map
+                        )
+                    }
+                    "hkbMirrorModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbMirrorModifier, hkbMirrorModifier, & mut map
+                        )
+                    }
+                    "hkbModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbModifier, hkbModifier, & mut map
+                        )
+                    }
+                    "hkbModifierGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbModifierGenerator, hkbModifierGenerator, & mut map
+                        )
+                    }
+                    "hkbModifierList" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbModifierList, hkbModifierList, & mut map
+                        )
+                    }
+                    "hkbModifierWrapper" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbModifierWrapper, hkbModifierWrapper, & mut map
+                        )
+                    }
+                    "hkbMoveCharacterModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbMoveCharacterModifier, hkbMoveCharacterModifier, & mut
+                            map
+                        )
+                    }
+                    "hkbMoveCharacterModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbMoveCharacterModifierInternalState,
+                            hkbMoveCharacterModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbNamedEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbNamedEventPayload, hkbNamedEventPayload, & mut map
+                        )
+                    }
+                    "hkbNamedIntEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbNamedIntEventPayload, hkbNamedIntEventPayload, & mut
+                            map
+                        )
+                    }
+                    "hkbNamedRealEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbNamedRealEventPayload, hkbNamedRealEventPayload, & mut
+                            map
+                        )
+                    }
+                    "hkbNamedStringEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbNamedStringEventPayload, hkbNamedStringEventPayload, &
+                            mut map
+                        )
+                    }
+                    "hkbNode" => {
+                        deserialize_dev_stack_safe!(de_hkbNode, hkbNode, & mut map)
+                    }
+                    "hkbNodeInternalStateInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbNodeInternalStateInfo, hkbNodeInternalStateInfo, & mut
+                            map
+                        )
+                    }
+                    "hkbParticleSystemEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbParticleSystemEventPayload,
+                            hkbParticleSystemEventPayload, & mut map
+                        )
+                    }
+                    "hkbPoseMatchingGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbPoseMatchingGenerator, hkbPoseMatchingGenerator, & mut
+                            map
+                        )
+                    }
+                    "hkbPoseMatchingGeneratorInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbPoseMatchingGeneratorInternalState,
+                            hkbPoseMatchingGeneratorInternalState, & mut map
+                        )
+                    }
+                    "hkbPoweredRagdollControlData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbPoweredRagdollControlData,
+                            hkbPoweredRagdollControlData, & mut map
+                        )
+                    }
+                    "hkbPoweredRagdollControlsModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbPoweredRagdollControlsModifier,
+                            hkbPoweredRagdollControlsModifier, & mut map
+                        )
+                    }
+                    "hkbProjectData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbProjectData, hkbProjectData, & mut map
+                        )
+                    }
+                    "hkbProjectStringData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbProjectStringData, hkbProjectStringData, & mut map
+                        )
+                    }
+                    "hkbProxyModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbProxyModifier, hkbProxyModifier, & mut map
+                        )
+                    }
+                    "hkbProxyModifierProxyInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbProxyModifierProxyInfo, hkbProxyModifierProxyInfo, &
+                            mut map
+                        )
+                    }
+                    "hkbRaiseEventCommand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRaiseEventCommand, hkbRaiseEventCommand, & mut map
+                        )
+                    }
+                    "hkbRealEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRealEventPayload, hkbRealEventPayload, & mut map
+                        )
+                    }
+                    "hkbRealVariableSequencedData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRealVariableSequencedData,
+                            hkbRealVariableSequencedData, & mut map
+                        )
+                    }
+                    "hkbRealVariableSequencedDataSample" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRealVariableSequencedDataSample,
+                            hkbRealVariableSequencedDataSample, & mut map
+                        )
+                    }
+                    "hkbReferencePoseGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbReferencePoseGenerator, hkbReferencePoseGenerator, &
+                            mut map
+                        )
+                    }
+                    "hkbRegisteredGenerator" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRegisteredGenerator, hkbRegisteredGenerator, & mut map
+                        )
+                    }
+                    "hkbRigidBodyRagdollControlData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRigidBodyRagdollControlData,
+                            hkbRigidBodyRagdollControlData, & mut map
+                        )
+                    }
+                    "hkbRigidBodyRagdollControlsModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRigidBodyRagdollControlsModifier,
+                            hkbRigidBodyRagdollControlsModifier, & mut map
+                        )
+                    }
+                    "hkbRoleAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRoleAttribute, hkbRoleAttribute, & mut map
+                        )
+                    }
+                    "hkbRotateCharacterModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRotateCharacterModifier, hkbRotateCharacterModifier, &
+                            mut map
+                        )
+                    }
+                    "hkbRotateCharacterModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbRotateCharacterModifierInternalState,
+                            hkbRotateCharacterModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbSenseHandleModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSenseHandleModifier, hkbSenseHandleModifier, & mut map
+                        )
+                    }
+                    "hkbSenseHandleModifierRange" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSenseHandleModifierRange, hkbSenseHandleModifierRange,
+                            & mut map
+                        )
+                    }
+                    "hkbSequence" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSequence, hkbSequence, & mut map
+                        )
+                    }
+                    "hkbSequencedData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSequencedData, hkbSequencedData, & mut map
+                        )
+                    }
+                    "hkbSequenceInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSequenceInternalState, hkbSequenceInternalState, & mut
+                            map
+                        )
+                    }
+                    "hkbSequenceStringData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSequenceStringData, hkbSequenceStringData, & mut map
+                        )
+                    }
+                    "hkbSetBehaviorCommand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSetBehaviorCommand, hkbSetBehaviorCommand, & mut map
+                        )
+                    }
+                    "hkbSetLocalTimeOfClipGeneratorCommand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSetLocalTimeOfClipGeneratorCommand,
+                            hkbSetLocalTimeOfClipGeneratorCommand, & mut map
+                        )
+                    }
+                    "hkbSetNodePropertyCommand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSetNodePropertyCommand, hkbSetNodePropertyCommand, &
+                            mut map
+                        )
+                    }
+                    "hkbSetWordVariableCommand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSetWordVariableCommand, hkbSetWordVariableCommand, &
+                            mut map
+                        )
+                    }
+                    "hkbSetWorldFromModelModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSetWorldFromModelModifier,
+                            hkbSetWorldFromModelModifier, & mut map
+                        )
+                    }
+                    "hkbSimulationControlCommand" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSimulationControlCommand, hkbSimulationControlCommand,
+                            & mut map
+                        )
+                    }
+                    "hkbSimulationStateInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbSimulationStateInfo, hkbSimulationStateInfo, & mut map
+                        )
+                    }
+                    "hkbStateChooser" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateChooser, hkbStateChooser, & mut map
+                        )
+                    }
+                    "hkbStateListener" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateListener, hkbStateListener, & mut map
+                        )
+                    }
+                    "hkbStateMachine" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachine, hkbStateMachine, & mut map
+                        )
+                    }
+                    "hkbStateMachineActiveTransitionInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineActiveTransitionInfo,
+                            hkbStateMachineActiveTransitionInfo, & mut map
+                        )
+                    }
+                    "hkbStateMachineDelayedTransitionInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineDelayedTransitionInfo,
+                            hkbStateMachineDelayedTransitionInfo, & mut map
+                        )
+                    }
+                    "hkbStateMachineEventPropertyArray" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineEventPropertyArray,
+                            hkbStateMachineEventPropertyArray, & mut map
+                        )
+                    }
+                    "hkbStateMachineInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineInternalState,
+                            hkbStateMachineInternalState, & mut map
+                        )
+                    }
+                    "hkbStateMachineNestedStateMachineData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineNestedStateMachineData,
+                            hkbStateMachineNestedStateMachineData, & mut map
+                        )
+                    }
+                    "hkbStateMachineProspectiveTransitionInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineProspectiveTransitionInfo,
+                            hkbStateMachineProspectiveTransitionInfo, & mut map
+                        )
+                    }
+                    "hkbStateMachineStateInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineStateInfo, hkbStateMachineStateInfo, & mut
+                            map
+                        )
+                    }
+                    "hkbStateMachineTimeInterval" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineTimeInterval, hkbStateMachineTimeInterval,
+                            & mut map
+                        )
+                    }
+                    "hkbStateMachineTransitionInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineTransitionInfo,
+                            hkbStateMachineTransitionInfo, & mut map
+                        )
+                    }
+                    "hkbStateMachineTransitionInfoArray" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineTransitionInfoArray,
+                            hkbStateMachineTransitionInfoArray, & mut map
+                        )
+                    }
+                    "hkbStateMachineTransitionInfoReference" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStateMachineTransitionInfoReference,
+                            hkbStateMachineTransitionInfoReference, & mut map
+                        )
+                    }
+                    "hkbStringCondition" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStringCondition, hkbStringCondition, & mut map
+                        )
+                    }
+                    "hkbStringEventPayload" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbStringEventPayload, hkbStringEventPayload, & mut map
+                        )
+                    }
+                    "hkbTestStateChooser" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbTestStateChooser, hkbTestStateChooser, & mut map
+                        )
+                    }
+                    "hkbTimerModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbTimerModifier, hkbTimerModifier, & mut map
+                        )
+                    }
+                    "hkbTimerModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbTimerModifierInternalState,
+                            hkbTimerModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbTransformVectorModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbTransformVectorModifier, hkbTransformVectorModifier, &
+                            mut map
+                        )
+                    }
+                    "hkbTransformVectorModifierInternalState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbTransformVectorModifierInternalState,
+                            hkbTransformVectorModifierInternalState, & mut map
+                        )
+                    }
+                    "hkbTransitionEffect" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbTransitionEffect, hkbTransitionEffect, & mut map
+                        )
+                    }
+                    "hkbTwistModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbTwistModifier, hkbTwistModifier, & mut map
+                        )
+                    }
+                    "hkbVariableBindingSet" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbVariableBindingSet, hkbVariableBindingSet, & mut map
+                        )
+                    }
+                    "hkbVariableBindingSetBinding" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbVariableBindingSetBinding,
+                            hkbVariableBindingSetBinding, & mut map
+                        )
+                    }
+                    "hkbVariableInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbVariableInfo, hkbVariableInfo, & mut map
+                        )
+                    }
+                    "hkbVariableValue" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbVariableValue, hkbVariableValue, & mut map
+                        )
+                    }
+                    "hkbVariableValueSet" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbVariableValueSet, hkbVariableValueSet, & mut map
+                        )
+                    }
+                    "hkbWorldEnums" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbWorldEnums, hkbWorldEnums, & mut map
+                        )
+                    }
+                    "hkbWorldFromModelModeData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkbWorldFromModelModeData, hkbWorldFromModelModeData, &
+                            mut map
+                        )
+                    }
+                    "hkClass" => {
+                        deserialize_dev_stack_safe!(de_hkClass, hkClass, & mut map)
+                    }
+                    "hkClassEnum" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkClassEnum, hkClassEnum, & mut map
+                        )
+                    }
+                    "hkClassEnumItem" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkClassEnumItem, hkClassEnumItem, & mut map
+                        )
+                    }
+                    "hkClassMember" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkClassMember, hkClassMember, & mut map
+                        )
+                    }
+                    "hkColor" => {
+                        deserialize_dev_stack_safe!(de_hkColor, hkColor, & mut map)
+                    }
+                    "hkContactPoint" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkContactPoint, hkContactPoint, & mut map
+                        )
+                    }
+                    "hkContactPointMaterial" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkContactPointMaterial, hkContactPointMaterial, & mut map
+                        )
+                    }
+                    "hkCustomAttributes" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkCustomAttributes, hkCustomAttributes, & mut map
+                        )
+                    }
+                    "hkCustomAttributesAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkCustomAttributesAttribute, hkCustomAttributesAttribute,
+                            & mut map
+                        )
+                    }
+                    "hkDataObjectTypeAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkDataObjectTypeAttribute, hkDataObjectTypeAttribute, &
+                            mut map
+                        )
+                    }
+                    "hkDescriptionAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkDescriptionAttribute, hkDescriptionAttribute, & mut map
+                        )
+                    }
+                    "hkDocumentationAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkDocumentationAttribute, hkDocumentationAttribute, & mut
+                            map
+                        )
+                    }
+                    "hkGeometry" => {
+                        deserialize_dev_stack_safe!(de_hkGeometry, hkGeometry, & mut map)
+                    }
+                    "hkGeometryTriangle" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkGeometryTriangle, hkGeometryTriangle, & mut map
+                        )
+                    }
+                    "hkGizmoAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkGizmoAttribute, hkGizmoAttribute, & mut map
+                        )
+                    }
+                    "hkHalf8" => {
+                        deserialize_dev_stack_safe!(de_hkHalf8, hkHalf8, & mut map)
+                    }
+                    "hkIndexedTransformSet" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkIndexedTransformSet, hkIndexedTransformSet, & mut map
+                        )
+                    }
+                    "hkLinkAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkLinkAttribute, hkLinkAttribute, & mut map
+                        )
+                    }
+                    "hkLocalFrame" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkLocalFrame, hkLocalFrame, & mut map
+                        )
+                    }
+                    "hkLocalFrameGroup" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkLocalFrameGroup, hkLocalFrameGroup, & mut map
+                        )
+                    }
+                    "hkMemoryMeshBody" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryMeshBody, hkMemoryMeshBody, & mut map
+                        )
+                    }
+                    "hkMemoryMeshMaterial" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryMeshMaterial, hkMemoryMeshMaterial, & mut map
+                        )
+                    }
+                    "hkMemoryMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryMeshShape, hkMemoryMeshShape, & mut map
+                        )
+                    }
+                    "hkMemoryMeshTexture" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryMeshTexture, hkMemoryMeshTexture, & mut map
+                        )
+                    }
+                    "hkMemoryMeshVertexBuffer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryMeshVertexBuffer, hkMemoryMeshVertexBuffer, & mut
+                            map
+                        )
+                    }
+                    "hkMemoryResourceContainer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryResourceContainer, hkMemoryResourceContainer, &
+                            mut map
+                        )
+                    }
+                    "hkMemoryResourceHandle" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryResourceHandle, hkMemoryResourceHandle, & mut map
+                        )
+                    }
+                    "hkMemoryResourceHandleExternalLink" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryResourceHandleExternalLink,
+                            hkMemoryResourceHandleExternalLink, & mut map
+                        )
+                    }
+                    "hkMemoryTrackerAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMemoryTrackerAttribute, hkMemoryTrackerAttribute, & mut
+                            map
+                        )
+                    }
+                    "hkMeshBody" => {
+                        deserialize_dev_stack_safe!(de_hkMeshBody, hkMeshBody, & mut map)
+                    }
+                    "hkMeshBoneIndexMapping" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMeshBoneIndexMapping, hkMeshBoneIndexMapping, & mut map
+                        )
+                    }
+                    "hkMeshMaterial" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMeshMaterial, hkMeshMaterial, & mut map
+                        )
+                    }
+                    "hkMeshSection" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMeshSection, hkMeshSection, & mut map
+                        )
+                    }
+                    "hkMeshSectionCinfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMeshSectionCinfo, hkMeshSectionCinfo, & mut map
+                        )
+                    }
+                    "hkMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMeshShape, hkMeshShape, & mut map
+                        )
+                    }
+                    "hkMeshTexture" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMeshTexture, hkMeshTexture, & mut map
+                        )
+                    }
+                    "hkMeshVertexBuffer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMeshVertexBuffer, hkMeshVertexBuffer, & mut map
+                        )
+                    }
+                    "hkModelerNodeTypeAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkModelerNodeTypeAttribute, hkModelerNodeTypeAttribute, &
+                            mut map
+                        )
+                    }
+                    "hkMonitorStreamColorTable" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMonitorStreamColorTable, hkMonitorStreamColorTable, &
+                            mut map
+                        )
+                    }
+                    "hkMonitorStreamColorTableColorPair" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMonitorStreamColorTableColorPair,
+                            hkMonitorStreamColorTableColorPair, & mut map
+                        )
+                    }
+                    "hkMonitorStreamFrameInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMonitorStreamFrameInfo, hkMonitorStreamFrameInfo, & mut
+                            map
+                        )
+                    }
+                    "hkMonitorStreamStringMap" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMonitorStreamStringMap, hkMonitorStreamStringMap, & mut
+                            map
+                        )
+                    }
+                    "hkMonitorStreamStringMapStringMap" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMonitorStreamStringMapStringMap,
+                            hkMonitorStreamStringMapStringMap, & mut map
+                        )
+                    }
+                    "hkMoppBvTreeShapeBase" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMoppBvTreeShapeBase, hkMoppBvTreeShapeBase, & mut map
+                        )
+                    }
+                    "hkMotionState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMotionState, hkMotionState, & mut map
+                        )
+                    }
+                    "hkMultipleVertexBuffer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMultipleVertexBuffer, hkMultipleVertexBuffer, & mut map
+                        )
+                    }
+                    "hkMultipleVertexBufferElementInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMultipleVertexBufferElementInfo,
+                            hkMultipleVertexBufferElementInfo, & mut map
+                        )
+                    }
+                    "hkMultipleVertexBufferLockedElement" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMultipleVertexBufferLockedElement,
+                            hkMultipleVertexBufferLockedElement, & mut map
+                        )
+                    }
+                    "hkMultipleVertexBufferVertexBufferInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMultipleVertexBufferVertexBufferInfo,
+                            hkMultipleVertexBufferVertexBufferInfo, & mut map
+                        )
+                    }
+                    "hkMultiThreadCheck" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkMultiThreadCheck, hkMultiThreadCheck, & mut map
+                        )
+                    }
+                    "hkp2dAngConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkp2dAngConstraintAtom, hkp2dAngConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpAabbPhantom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpAabbPhantom, hkpAabbPhantom, & mut map
+                        )
+                    }
+                    "hkPackedVector3" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkPackedVector3, hkPackedVector3, & mut map
+                        )
+                    }
+                    "hkPackfileHeader" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkPackfileHeader, hkPackfileHeader, & mut map
+                        )
+                    }
+                    "hkPackfileSectionHeader" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkPackfileSectionHeader, hkPackfileSectionHeader, & mut
+                            map
+                        )
+                    }
+                    "hkpAction" => {
+                        deserialize_dev_stack_safe!(de_hkpAction, hkpAction, & mut map)
+                    }
+                    "hkpAgent1nSector" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpAgent1nSector, hkpAgent1nSector, & mut map
+                        )
+                    }
+                    "hkpAngConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpAngConstraintAtom, hkpAngConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpAngFrictionConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpAngFrictionConstraintAtom,
+                            hkpAngFrictionConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpAngLimitConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpAngLimitConstraintAtom, hkpAngLimitConstraintAtom, &
+                            mut map
+                        )
+                    }
+                    "hkpAngMotorConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpAngMotorConstraintAtom, hkpAngMotorConstraintAtom, &
+                            mut map
+                        )
+                    }
+                    "hkpAngularDashpotAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpAngularDashpotAction, hkpAngularDashpotAction, & mut
+                            map
+                        )
+                    }
+                    "hkpArrayAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpArrayAction, hkpArrayAction, & mut map
+                        )
+                    }
+                    "hkpBallAndSocketConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBallAndSocketConstraintData,
+                            hkpBallAndSocketConstraintData, & mut map
+                        )
+                    }
+                    "hkpBallAndSocketConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBallAndSocketConstraintDataAtoms,
+                            hkpBallAndSocketConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpBallGun" => {
+                        deserialize_dev_stack_safe!(de_hkpBallGun, hkpBallGun, & mut map)
+                    }
+                    "hkpBallSocketChainData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBallSocketChainData, hkpBallSocketChainData, & mut map
+                        )
+                    }
+                    "hkpBallSocketChainDataConstraintInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBallSocketChainDataConstraintInfo,
+                            hkpBallSocketChainDataConstraintInfo, & mut map
+                        )
+                    }
+                    "hkpBallSocketConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBallSocketConstraintAtom, hkpBallSocketConstraintAtom,
+                            & mut map
+                        )
+                    }
+                    "hkpBinaryAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBinaryAction, hkpBinaryAction, & mut map
+                        )
+                    }
+                    "hkpBoxMotion" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBoxMotion, hkpBoxMotion, & mut map
+                        )
+                    }
+                    "hkpBoxShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBoxShape, hkpBoxShape, & mut map
+                        )
+                    }
+                    "hkpBreakableBody" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBreakableBody, hkpBreakableBody, & mut map
+                        )
+                    }
+                    "hkpBreakableConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBreakableConstraintData, hkpBreakableConstraintData, &
+                            mut map
+                        )
+                    }
+                    "hkpBridgeAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBridgeAtoms, hkpBridgeAtoms, & mut map
+                        )
+                    }
+                    "hkpBridgeConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBridgeConstraintAtom, hkpBridgeConstraintAtom, & mut
+                            map
+                        )
+                    }
+                    "hkpBroadPhaseHandle" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBroadPhaseHandle, hkpBroadPhaseHandle, & mut map
+                        )
+                    }
+                    "hkpBvShape" => {
+                        deserialize_dev_stack_safe!(de_hkpBvShape, hkpBvShape, & mut map)
+                    }
+                    "hkpBvTreeShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpBvTreeShape, hkpBvTreeShape, & mut map
+                        )
+                    }
+                    "hkpCachingShapePhantom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCachingShapePhantom, hkpCachingShapePhantom, & mut map
+                        )
+                    }
+                    "hkpCallbackConstraintMotor" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCallbackConstraintMotor, hkpCallbackConstraintMotor, &
+                            mut map
+                        )
+                    }
+                    "hkpCapsuleShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCapsuleShape, hkpCapsuleShape, & mut map
+                        )
+                    }
+                    "hkpCdBody" => {
+                        deserialize_dev_stack_safe!(de_hkpCdBody, hkpCdBody, & mut map)
+                    }
+                    "hkpCenterOfMassChangerModifierConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCenterOfMassChangerModifierConstraintAtom,
+                            hkpCenterOfMassChangerModifierConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpCharacterControllerCinfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCharacterControllerCinfo, hkpCharacterControllerCinfo,
+                            & mut map
+                        )
+                    }
+                    "hkpCharacterMotion" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCharacterMotion, hkpCharacterMotion, & mut map
+                        )
+                    }
+                    "hkpCharacterProxyCinfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCharacterProxyCinfo, hkpCharacterProxyCinfo, & mut map
+                        )
+                    }
+                    "hkpCharacterRigidBodyCinfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCharacterRigidBodyCinfo, hkpCharacterRigidBodyCinfo, &
+                            mut map
+                        )
+                    }
+                    "hkpCogWheelConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCogWheelConstraintAtom, hkpCogWheelConstraintAtom, &
+                            mut map
+                        )
+                    }
+                    "hkpCogWheelConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCogWheelConstraintData, hkpCogWheelConstraintData, &
+                            mut map
+                        )
+                    }
+                    "hkpCogWheelConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCogWheelConstraintDataAtoms,
+                            hkpCogWheelConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpCollidable" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCollidable, hkpCollidable, & mut map
+                        )
+                    }
+                    "hkpCollidableBoundingVolumeData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCollidableBoundingVolumeData,
+                            hkpCollidableBoundingVolumeData, & mut map
+                        )
+                    }
+                    "hkpCollidableCollidableFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCollidableCollidableFilter,
+                            hkpCollidableCollidableFilter, & mut map
+                        )
+                    }
+                    "hkpCollisionFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCollisionFilter, hkpCollisionFilter, & mut map
+                        )
+                    }
+                    "hkpCollisionFilterList" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCollisionFilterList, hkpCollisionFilterList, & mut map
+                        )
+                    }
+                    "hkpCompressedMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCompressedMeshShape, hkpCompressedMeshShape, & mut map
+                        )
+                    }
+                    "hkpCompressedMeshShapeBigTriangle" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCompressedMeshShapeBigTriangle,
+                            hkpCompressedMeshShapeBigTriangle, & mut map
+                        )
+                    }
+                    "hkpCompressedMeshShapeChunk" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCompressedMeshShapeChunk, hkpCompressedMeshShapeChunk,
+                            & mut map
+                        )
+                    }
+                    "hkpCompressedMeshShapeConvexPiece" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCompressedMeshShapeConvexPiece,
+                            hkpCompressedMeshShapeConvexPiece, & mut map
+                        )
+                    }
+                    "hkpCompressedSampledHeightFieldShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCompressedSampledHeightFieldShape,
+                            hkpCompressedSampledHeightFieldShape, & mut map
+                        )
+                    }
+                    "hkpConeLimitConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConeLimitConstraintAtom, hkpConeLimitConstraintAtom, &
+                            mut map
+                        )
+                    }
+                    "hkpConstrainedSystemFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstrainedSystemFilter, hkpConstrainedSystemFilter, &
+                            mut map
+                        )
+                    }
+                    "hkpConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintAtom, hkpConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpConstraintChainData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintChainData, hkpConstraintChainData, & mut map
+                        )
+                    }
+                    "hkpConstraintChainInstance" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintChainInstance, hkpConstraintChainInstance, &
+                            mut map
+                        )
+                    }
+                    "hkpConstraintChainInstanceAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintChainInstanceAction,
+                            hkpConstraintChainInstanceAction, & mut map
+                        )
+                    }
+                    "hkpConstraintCollisionFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintCollisionFilter,
+                            hkpConstraintCollisionFilter, & mut map
+                        )
+                    }
+                    "hkpConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintData, hkpConstraintData, & mut map
+                        )
+                    }
+                    "hkpConstraintInstance" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintInstance, hkpConstraintInstance, & mut map
+                        )
+                    }
+                    "hkpConstraintInstanceSmallArraySerializeOverrideType" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintInstanceSmallArraySerializeOverrideType,
+                            hkpConstraintInstanceSmallArraySerializeOverrideType, & mut
+                            map
+                        )
+                    }
+                    "hkpConstraintMotor" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConstraintMotor, hkpConstraintMotor, & mut map
+                        )
+                    }
+                    "hkpConvexListFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexListFilter, hkpConvexListFilter, & mut map
+                        )
+                    }
+                    "hkpConvexListShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexListShape, hkpConvexListShape, & mut map
+                        )
+                    }
+                    "hkpConvexPieceMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexPieceMeshShape, hkpConvexPieceMeshShape, & mut
+                            map
+                        )
+                    }
+                    "hkpConvexPieceStreamData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexPieceStreamData, hkpConvexPieceStreamData, & mut
+                            map
+                        )
+                    }
+                    "hkpConvexShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexShape, hkpConvexShape, & mut map
+                        )
+                    }
+                    "hkpConvexTransformShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexTransformShape, hkpConvexTransformShape, & mut
+                            map
+                        )
+                    }
+                    "hkpConvexTransformShapeBase" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexTransformShapeBase, hkpConvexTransformShapeBase,
+                            & mut map
+                        )
+                    }
+                    "hkpConvexTranslateShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexTranslateShape, hkpConvexTranslateShape, & mut
+                            map
+                        )
+                    }
+                    "hkpConvexVerticesConnectivity" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexVerticesConnectivity,
+                            hkpConvexVerticesConnectivity, & mut map
+                        )
+                    }
+                    "hkpConvexVerticesShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexVerticesShape, hkpConvexVerticesShape, & mut map
+                        )
+                    }
+                    "hkpConvexVerticesShapeFourVectors" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpConvexVerticesShapeFourVectors,
+                            hkpConvexVerticesShapeFourVectors, & mut map
+                        )
+                    }
+                    "hkpCylinderShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpCylinderShape, hkpCylinderShape, & mut map
+                        )
+                    }
+                    "hkpDashpotAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpDashpotAction, hkpDashpotAction, & mut map
+                        )
+                    }
+                    "hkpDefaultConvexListFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpDefaultConvexListFilter, hkpDefaultConvexListFilter, &
+                            mut map
+                        )
+                    }
+                    "hkpDefaultWorldMemoryWatchDog" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpDefaultWorldMemoryWatchDog,
+                            hkpDefaultWorldMemoryWatchDog, & mut map
+                        )
+                    }
+                    "hkpDisableEntityCollisionFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpDisableEntityCollisionFilter,
+                            hkpDisableEntityCollisionFilter, & mut map
+                        )
+                    }
+                    "hkpDisplayBindingData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpDisplayBindingData, hkpDisplayBindingData, & mut map
+                        )
+                    }
+                    "hkpDisplayBindingDataPhysicsSystem" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpDisplayBindingDataPhysicsSystem,
+                            hkpDisplayBindingDataPhysicsSystem, & mut map
+                        )
+                    }
+                    "hkpDisplayBindingDataRigidBody" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpDisplayBindingDataRigidBody,
+                            hkpDisplayBindingDataRigidBody, & mut map
+                        )
+                    }
+                    "hkpEntity" => {
+                        deserialize_dev_stack_safe!(de_hkpEntity, hkpEntity, & mut map)
+                    }
+                    "hkpEntityExtendedListeners" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpEntityExtendedListeners, hkpEntityExtendedListeners, &
+                            mut map
+                        )
+                    }
+                    "hkpEntitySmallArraySerializeOverrideType" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpEntitySmallArraySerializeOverrideType,
+                            hkpEntitySmallArraySerializeOverrideType, & mut map
+                        )
+                    }
+                    "hkpEntitySpuCollisionCallback" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpEntitySpuCollisionCallback,
+                            hkpEntitySpuCollisionCallback, & mut map
+                        )
+                    }
+                    "hkpExtendedMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpExtendedMeshShape, hkpExtendedMeshShape, & mut map
+                        )
+                    }
+                    "hkpExtendedMeshShapeShapesSubpart" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpExtendedMeshShapeShapesSubpart,
+                            hkpExtendedMeshShapeShapesSubpart, & mut map
+                        )
+                    }
+                    "hkpExtendedMeshShapeSubpart" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpExtendedMeshShapeSubpart, hkpExtendedMeshShapeSubpart,
+                            & mut map
+                        )
+                    }
+                    "hkpExtendedMeshShapeTrianglesSubpart" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpExtendedMeshShapeTrianglesSubpart,
+                            hkpExtendedMeshShapeTrianglesSubpart, & mut map
+                        )
+                    }
+                    "hkpFastMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpFastMeshShape, hkpFastMeshShape, & mut map
+                        )
+                    }
+                    "hkpFirstPersonGun" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpFirstPersonGun, hkpFirstPersonGun, & mut map
+                        )
+                    }
+                    "hkpFixedRigidMotion" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpFixedRigidMotion, hkpFixedRigidMotion, & mut map
+                        )
+                    }
+                    "hkpGenericConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpGenericConstraintData, hkpGenericConstraintData, & mut
+                            map
+                        )
+                    }
+                    "hkpGenericConstraintDataScheme" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpGenericConstraintDataScheme,
+                            hkpGenericConstraintDataScheme, & mut map
+                        )
+                    }
+                    "hkpGenericConstraintDataSchemeConstraintInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpGenericConstraintDataSchemeConstraintInfo,
+                            hkpGenericConstraintDataSchemeConstraintInfo, & mut map
+                        )
+                    }
+                    "hkpGravityGun" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpGravityGun, hkpGravityGun, & mut map
+                        )
+                    }
+                    "hkpGroupCollisionFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpGroupCollisionFilter, hkpGroupCollisionFilter, & mut
+                            map
+                        )
+                    }
+                    "hkpGroupFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpGroupFilter, hkpGroupFilter, & mut map
+                        )
+                    }
+                    "hkpHeightFieldShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpHeightFieldShape, hkpHeightFieldShape, & mut map
+                        )
+                    }
+                    "hkpHingeConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpHingeConstraintData, hkpHingeConstraintData, & mut map
+                        )
+                    }
+                    "hkpHingeConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpHingeConstraintDataAtoms, hkpHingeConstraintDataAtoms,
+                            & mut map
+                        )
+                    }
+                    "hkpHingeLimitsData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpHingeLimitsData, hkpHingeLimitsData, & mut map
+                        )
+                    }
+                    "hkpHingeLimitsDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpHingeLimitsDataAtoms, hkpHingeLimitsDataAtoms, & mut
+                            map
+                        )
+                    }
+                    "hkpIgnoreModifierConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpIgnoreModifierConstraintAtom,
+                            hkpIgnoreModifierConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpKeyframedRigidMotion" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpKeyframedRigidMotion, hkpKeyframedRigidMotion, & mut
+                            map
+                        )
+                    }
+                    "hkpLimitedForceConstraintMotor" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLimitedForceConstraintMotor,
+                            hkpLimitedForceConstraintMotor, & mut map
+                        )
+                    }
+                    "hkpLimitedHingeConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLimitedHingeConstraintData,
+                            hkpLimitedHingeConstraintData, & mut map
+                        )
+                    }
+                    "hkpLimitedHingeConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLimitedHingeConstraintDataAtoms,
+                            hkpLimitedHingeConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpLinConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLinConstraintAtom, hkpLinConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpLinearParametricCurve" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLinearParametricCurve, hkpLinearParametricCurve, & mut
+                            map
+                        )
+                    }
+                    "hkpLinFrictionConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLinFrictionConstraintAtom,
+                            hkpLinFrictionConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpLinkedCollidable" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLinkedCollidable, hkpLinkedCollidable, & mut map
+                        )
+                    }
+                    "hkpLinLimitConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLinLimitConstraintAtom, hkpLinLimitConstraintAtom, &
+                            mut map
+                        )
+                    }
+                    "hkpLinMotorConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLinMotorConstraintAtom, hkpLinMotorConstraintAtom, &
+                            mut map
+                        )
+                    }
+                    "hkpLinSoftConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpLinSoftConstraintAtom, hkpLinSoftConstraintAtom, & mut
+                            map
+                        )
+                    }
+                    "hkpListShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpListShape, hkpListShape, & mut map
+                        )
+                    }
+                    "hkpListShapeChildInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpListShapeChildInfo, hkpListShapeChildInfo, & mut map
+                        )
+                    }
+                    "hkpMalleableConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMalleableConstraintData, hkpMalleableConstraintData, &
+                            mut map
+                        )
+                    }
+                    "hkpMassChangerModifierConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMassChangerModifierConstraintAtom,
+                            hkpMassChangerModifierConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpMassProperties" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMassProperties, hkpMassProperties, & mut map
+                        )
+                    }
+                    "hkpMaterial" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMaterial, hkpMaterial, & mut map
+                        )
+                    }
+                    "hkpMaxSizeMotion" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMaxSizeMotion, hkpMaxSizeMotion, & mut map
+                        )
+                    }
+                    "hkpMeshMaterial" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMeshMaterial, hkpMeshMaterial, & mut map
+                        )
+                    }
+                    "hkpMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMeshShape, hkpMeshShape, & mut map
+                        )
+                    }
+                    "hkpMeshShapeSubpart" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMeshShapeSubpart, hkpMeshShapeSubpart, & mut map
+                        )
+                    }
+                    "hkpModifierConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpModifierConstraintAtom, hkpModifierConstraintAtom, &
+                            mut map
+                        )
+                    }
+                    "hkpMoppBvTreeShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMoppBvTreeShape, hkpMoppBvTreeShape, & mut map
+                        )
+                    }
+                    "hkpMoppCode" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMoppCode, hkpMoppCode, & mut map
+                        )
+                    }
+                    "hkpMoppCodeCodeInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMoppCodeCodeInfo, hkpMoppCodeCodeInfo, & mut map
+                        )
+                    }
+                    "hkpMoppCodeReindexedTerminal" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMoppCodeReindexedTerminal,
+                            hkpMoppCodeReindexedTerminal, & mut map
+                        )
+                    }
+                    "hkpMotion" => {
+                        deserialize_dev_stack_safe!(de_hkpMotion, hkpMotion, & mut map)
+                    }
+                    "hkpMotorAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMotorAction, hkpMotorAction, & mut map
+                        )
+                    }
+                    "hkpMountedBallGun" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMountedBallGun, hkpMountedBallGun, & mut map
+                        )
+                    }
+                    "hkpMouseSpringAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMouseSpringAction, hkpMouseSpringAction, & mut map
+                        )
+                    }
+                    "hkpMovingSurfaceModifierConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMovingSurfaceModifierConstraintAtom,
+                            hkpMovingSurfaceModifierConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpMultiRayShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMultiRayShape, hkpMultiRayShape, & mut map
+                        )
+                    }
+                    "hkpMultiRayShapeRay" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMultiRayShapeRay, hkpMultiRayShapeRay, & mut map
+                        )
+                    }
+                    "hkpMultiSphereShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMultiSphereShape, hkpMultiSphereShape, & mut map
+                        )
+                    }
+                    "hkpMultithreadedVehicleManager" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpMultithreadedVehicleManager,
+                            hkpMultithreadedVehicleManager, & mut map
+                        )
+                    }
+                    "hkpNamedMeshMaterial" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpNamedMeshMaterial, hkpNamedMeshMaterial, & mut map
+                        )
+                    }
+                    "hkpNullCollisionFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpNullCollisionFilter, hkpNullCollisionFilter, & mut map
+                        )
+                    }
+                    "hkPostFinishAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkPostFinishAttribute, hkPostFinishAttribute, & mut map
+                        )
+                    }
+                    "hkpOverwritePivotConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpOverwritePivotConstraintAtom,
+                            hkpOverwritePivotConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpPairCollisionFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPairCollisionFilter, hkpPairCollisionFilter, & mut map
+                        )
+                    }
+                    "hkpPairCollisionFilterMapPairFilterKeyOverrideType" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPairCollisionFilterMapPairFilterKeyOverrideType,
+                            hkpPairCollisionFilterMapPairFilterKeyOverrideType, & mut map
+                        )
+                    }
+                    "hkpParametricCurve" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpParametricCurve, hkpParametricCurve, & mut map
+                        )
+                    }
+                    "hkpPhantom" => {
+                        deserialize_dev_stack_safe!(de_hkpPhantom, hkpPhantom, & mut map)
+                    }
+                    "hkpPhantomCallbackShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPhantomCallbackShape, hkpPhantomCallbackShape, & mut
+                            map
+                        )
+                    }
+                    "hkpPhysicsData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPhysicsData, hkpPhysicsData, & mut map
+                        )
+                    }
+                    "hkpPhysicsSystem" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPhysicsSystem, hkpPhysicsSystem, & mut map
+                        )
+                    }
+                    "hkpPhysicsSystemWithContacts" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPhysicsSystemWithContacts,
+                            hkpPhysicsSystemWithContacts, & mut map
+                        )
+                    }
+                    "hkpPlaneShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPlaneShape, hkpPlaneShape, & mut map
+                        )
+                    }
+                    "hkpPointToPathConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPointToPathConstraintData,
+                            hkpPointToPathConstraintData, & mut map
+                        )
+                    }
+                    "hkpPointToPlaneConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPointToPlaneConstraintData,
+                            hkpPointToPlaneConstraintData, & mut map
+                        )
+                    }
+                    "hkpPointToPlaneConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPointToPlaneConstraintDataAtoms,
+                            hkpPointToPlaneConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpPositionConstraintMotor" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPositionConstraintMotor, hkpPositionConstraintMotor, &
+                            mut map
+                        )
+                    }
+                    "hkpPoweredChainData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPoweredChainData, hkpPoweredChainData, & mut map
+                        )
+                    }
+                    "hkpPoweredChainDataConstraintInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPoweredChainDataConstraintInfo,
+                            hkpPoweredChainDataConstraintInfo, & mut map
+                        )
+                    }
+                    "hkpPoweredChainMapper" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPoweredChainMapper, hkpPoweredChainMapper, & mut map
+                        )
+                    }
+                    "hkpPoweredChainMapperLinkInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPoweredChainMapperLinkInfo,
+                            hkpPoweredChainMapperLinkInfo, & mut map
+                        )
+                    }
+                    "hkpPoweredChainMapperTarget" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPoweredChainMapperTarget, hkpPoweredChainMapperTarget,
+                            & mut map
+                        )
+                    }
+                    "hkpPrismaticConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPrismaticConstraintData, hkpPrismaticConstraintData, &
+                            mut map
+                        )
+                    }
+                    "hkpPrismaticConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPrismaticConstraintDataAtoms,
+                            hkpPrismaticConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpProjectileGun" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpProjectileGun, hkpProjectileGun, & mut map
+                        )
+                    }
+                    "hkpProperty" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpProperty, hkpProperty, & mut map
+                        )
+                    }
+                    "hkpPropertyValue" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPropertyValue, hkpPropertyValue, & mut map
+                        )
+                    }
+                    "hkpPulleyConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPulleyConstraintAtom, hkpPulleyConstraintAtom, & mut
+                            map
+                        )
+                    }
+                    "hkpPulleyConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPulleyConstraintData, hkpPulleyConstraintData, & mut
+                            map
+                        )
+                    }
+                    "hkpPulleyConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpPulleyConstraintDataAtoms,
+                            hkpPulleyConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpRackAndPinionConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRackAndPinionConstraintAtom,
+                            hkpRackAndPinionConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpRackAndPinionConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRackAndPinionConstraintData,
+                            hkpRackAndPinionConstraintData, & mut map
+                        )
+                    }
+                    "hkpRackAndPinionConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRackAndPinionConstraintDataAtoms,
+                            hkpRackAndPinionConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpRagdollConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRagdollConstraintData, hkpRagdollConstraintData, & mut
+                            map
+                        )
+                    }
+                    "hkpRagdollConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRagdollConstraintDataAtoms,
+                            hkpRagdollConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpRagdollLimitsData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRagdollLimitsData, hkpRagdollLimitsData, & mut map
+                        )
+                    }
+                    "hkpRagdollLimitsDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRagdollLimitsDataAtoms, hkpRagdollLimitsDataAtoms, &
+                            mut map
+                        )
+                    }
+                    "hkpRagdollMotorConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRagdollMotorConstraintAtom,
+                            hkpRagdollMotorConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpRayCollidableFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRayCollidableFilter, hkpRayCollidableFilter, & mut map
+                        )
+                    }
+                    "hkpRayShapeCollectionFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRayShapeCollectionFilter, hkpRayShapeCollectionFilter,
+                            & mut map
+                        )
+                    }
+                    "hkpRejectChassisListener" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRejectChassisListener, hkpRejectChassisListener, & mut
+                            map
+                        )
+                    }
+                    "hkpRemoveTerminalsMoppModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRemoveTerminalsMoppModifier,
+                            hkpRemoveTerminalsMoppModifier, & mut map
+                        )
+                    }
+                    "hkpReorientAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpReorientAction, hkpReorientAction, & mut map
+                        )
+                    }
+                    "hkpRigidBody" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRigidBody, hkpRigidBody, & mut map
+                        )
+                    }
+                    "hkpRotationalConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRotationalConstraintData, hkpRotationalConstraintData,
+                            & mut map
+                        )
+                    }
+                    "hkpRotationalConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpRotationalConstraintDataAtoms,
+                            hkpRotationalConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpSampledHeightFieldShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSampledHeightFieldShape, hkpSampledHeightFieldShape, &
+                            mut map
+                        )
+                    }
+                    "hkpSerializedAgentNnEntry" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSerializedAgentNnEntry, hkpSerializedAgentNnEntry, &
+                            mut map
+                        )
+                    }
+                    "hkpSerializedDisplayMarker" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSerializedDisplayMarker, hkpSerializedDisplayMarker, &
+                            mut map
+                        )
+                    }
+                    "hkpSerializedDisplayMarkerList" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSerializedDisplayMarkerList,
+                            hkpSerializedDisplayMarkerList, & mut map
+                        )
+                    }
+                    "hkpSerializedDisplayRbTransforms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSerializedDisplayRbTransforms,
+                            hkpSerializedDisplayRbTransforms, & mut map
+                        )
+                    }
+                    "hkpSerializedDisplayRbTransformsDisplayTransformPair" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSerializedDisplayRbTransformsDisplayTransformPair,
+                            hkpSerializedDisplayRbTransformsDisplayTransformPair, & mut
+                            map
+                        )
+                    }
+                    "hkpSerializedSubTrack1nInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSerializedSubTrack1nInfo, hkpSerializedSubTrack1nInfo,
+                            & mut map
+                        )
+                    }
+                    "hkpSerializedTrack1nInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSerializedTrack1nInfo, hkpSerializedTrack1nInfo, & mut
+                            map
+                        )
+                    }
+                    "hkpSetLocalRotationsConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSetLocalRotationsConstraintAtom,
+                            hkpSetLocalRotationsConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpSetLocalTransformsConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSetLocalTransformsConstraintAtom,
+                            hkpSetLocalTransformsConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpSetLocalTranslationsConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSetLocalTranslationsConstraintAtom,
+                            hkpSetLocalTranslationsConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpSetupStabilizationAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSetupStabilizationAtom, hkpSetupStabilizationAtom, &
+                            mut map
+                        )
+                    }
+                    "hkpShape" => {
+                        deserialize_dev_stack_safe!(de_hkpShape, hkpShape, & mut map)
+                    }
+                    "hkpShapeCollection" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpShapeCollection, hkpShapeCollection, & mut map
+                        )
+                    }
+                    "hkpShapeCollectionFilter" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpShapeCollectionFilter, hkpShapeCollectionFilter, & mut
+                            map
+                        )
+                    }
+                    "hkpShapeContainer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpShapeContainer, hkpShapeContainer, & mut map
+                        )
+                    }
+                    "hkpShapeInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpShapeInfo, hkpShapeInfo, & mut map
+                        )
+                    }
+                    "hkpShapeModifier" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpShapeModifier, hkpShapeModifier, & mut map
+                        )
+                    }
+                    "hkpShapePhantom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpShapePhantom, hkpShapePhantom, & mut map
+                        )
+                    }
+                    "hkpSimpleContactConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSimpleContactConstraintAtom,
+                            hkpSimpleContactConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpSimpleContactConstraintDataInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSimpleContactConstraintDataInfo,
+                            hkpSimpleContactConstraintDataInfo, & mut map
+                        )
+                    }
+                    "hkpSimpleMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSimpleMeshShape, hkpSimpleMeshShape, & mut map
+                        )
+                    }
+                    "hkpSimpleMeshShapeTriangle" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSimpleMeshShapeTriangle, hkpSimpleMeshShapeTriangle, &
+                            mut map
+                        )
+                    }
+                    "hkpSimpleShapePhantom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSimpleShapePhantom, hkpSimpleShapePhantom, & mut map
+                        )
+                    }
+                    "hkpSimpleShapePhantomCollisionDetail" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSimpleShapePhantomCollisionDetail,
+                            hkpSimpleShapePhantomCollisionDetail, & mut map
+                        )
+                    }
+                    "hkpSimulation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSimulation, hkpSimulation, & mut map
+                        )
+                    }
+                    "hkpSingleShapeContainer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSingleShapeContainer, hkpSingleShapeContainer, & mut
+                            map
+                        )
+                    }
+                    "hkpSoftContactModifierConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSoftContactModifierConstraintAtom,
+                            hkpSoftContactModifierConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpSphereMotion" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSphereMotion, hkpSphereMotion, & mut map
+                        )
+                    }
+                    "hkpSphereRepShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSphereRepShape, hkpSphereRepShape, & mut map
+                        )
+                    }
+                    "hkpSphereShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSphereShape, hkpSphereShape, & mut map
+                        )
+                    }
+                    "hkpSpringAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSpringAction, hkpSpringAction, & mut map
+                        )
+                    }
+                    "hkpSpringDamperConstraintMotor" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpSpringDamperConstraintMotor,
+                            hkpSpringDamperConstraintMotor, & mut map
+                        )
+                    }
+                    "hkpStiffSpringChainData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStiffSpringChainData, hkpStiffSpringChainData, & mut
+                            map
+                        )
+                    }
+                    "hkpStiffSpringChainDataConstraintInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStiffSpringChainDataConstraintInfo,
+                            hkpStiffSpringChainDataConstraintInfo, & mut map
+                        )
+                    }
+                    "hkpStiffSpringConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStiffSpringConstraintAtom,
+                            hkpStiffSpringConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpStiffSpringConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStiffSpringConstraintData,
+                            hkpStiffSpringConstraintData, & mut map
+                        )
+                    }
+                    "hkpStiffSpringConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStiffSpringConstraintDataAtoms,
+                            hkpStiffSpringConstraintDataAtoms, & mut map
+                        )
+                    }
+                    "hkpStorageExtendedMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStorageExtendedMeshShape, hkpStorageExtendedMeshShape,
+                            & mut map
+                        )
+                    }
+                    "hkpStorageExtendedMeshShapeMaterial" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStorageExtendedMeshShapeMaterial,
+                            hkpStorageExtendedMeshShapeMaterial, & mut map
+                        )
+                    }
+                    "hkpStorageExtendedMeshShapeMeshSubpartStorage" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStorageExtendedMeshShapeMeshSubpartStorage,
+                            hkpStorageExtendedMeshShapeMeshSubpartStorage, & mut map
+                        )
+                    }
+                    "hkpStorageExtendedMeshShapeShapeSubpartStorage" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStorageExtendedMeshShapeShapeSubpartStorage,
+                            hkpStorageExtendedMeshShapeShapeSubpartStorage, & mut map
+                        )
+                    }
+                    "hkpStorageMeshShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStorageMeshShape, hkpStorageMeshShape, & mut map
+                        )
+                    }
+                    "hkpStorageMeshShapeSubpartStorage" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStorageMeshShapeSubpartStorage,
+                            hkpStorageMeshShapeSubpartStorage, & mut map
+                        )
+                    }
+                    "hkpStorageSampledHeightFieldShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpStorageSampledHeightFieldShape,
+                            hkpStorageSampledHeightFieldShape, & mut map
+                        )
+                    }
+                    "hkpThinBoxMotion" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpThinBoxMotion, hkpThinBoxMotion, & mut map
+                        )
+                    }
+                    "hkpTransformShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTransformShape, hkpTransformShape, & mut map
+                        )
+                    }
+                    "hkpTriangleShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTriangleShape, hkpTriangleShape, & mut map
+                        )
+                    }
+                    "hkpTriggerVolume" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTriggerVolume, hkpTriggerVolume, & mut map
+                        )
+                    }
+                    "hkpTriggerVolumeEventInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTriggerVolumeEventInfo, hkpTriggerVolumeEventInfo, &
+                            mut map
+                        )
+                    }
+                    "hkpTriSampledHeightFieldBvTreeShape" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTriSampledHeightFieldBvTreeShape,
+                            hkpTriSampledHeightFieldBvTreeShape, & mut map
+                        )
+                    }
+                    "hkpTriSampledHeightFieldCollection" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTriSampledHeightFieldCollection,
+                            hkpTriSampledHeightFieldCollection, & mut map
+                        )
+                    }
+                    "hkpTwistLimitConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTwistLimitConstraintAtom, hkpTwistLimitConstraintAtom,
+                            & mut map
+                        )
+                    }
+                    "hkpTypedBroadPhaseHandle" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTypedBroadPhaseHandle, hkpTypedBroadPhaseHandle, & mut
+                            map
+                        )
+                    }
+                    "hkpTyremarkPoint" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTyremarkPoint, hkpTyremarkPoint, & mut map
+                        )
+                    }
+                    "hkpTyremarksInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTyremarksInfo, hkpTyremarksInfo, & mut map
+                        )
+                    }
+                    "hkpTyremarksWheel" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpTyremarksWheel, hkpTyremarksWheel, & mut map
+                        )
+                    }
+                    "hkpUnaryAction" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpUnaryAction, hkpUnaryAction, & mut map
+                        )
+                    }
+                    "hkpVehicleAerodynamics" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleAerodynamics, hkpVehicleAerodynamics, & mut map
+                        )
+                    }
+                    "hkpVehicleBrake" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleBrake, hkpVehicleBrake, & mut map
+                        )
+                    }
+                    "hkpVehicleCastBatchingManager" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleCastBatchingManager,
+                            hkpVehicleCastBatchingManager, & mut map
+                        )
+                    }
+                    "hkpVehicleData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleData, hkpVehicleData, & mut map
+                        )
+                    }
+                    "hkpVehicleDataWheelComponentParams" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDataWheelComponentParams,
+                            hkpVehicleDataWheelComponentParams, & mut map
+                        )
+                    }
+                    "hkpVehicleDefaultAerodynamics" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultAerodynamics,
+                            hkpVehicleDefaultAerodynamics, & mut map
+                        )
+                    }
+                    "hkpVehicleDefaultAnalogDriverInput" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultAnalogDriverInput,
+                            hkpVehicleDefaultAnalogDriverInput, & mut map
+                        )
+                    }
+                    "hkpVehicleDefaultBrake" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultBrake, hkpVehicleDefaultBrake, & mut map
+                        )
+                    }
+                    "hkpVehicleDefaultBrakeWheelBrakingProperties" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultBrakeWheelBrakingProperties,
+                            hkpVehicleDefaultBrakeWheelBrakingProperties, & mut map
+                        )
+                    }
+                    "hkpVehicleDefaultEngine" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultEngine, hkpVehicleDefaultEngine, & mut
+                            map
+                        )
+                    }
+                    "hkpVehicleDefaultSteering" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultSteering, hkpVehicleDefaultSteering, &
+                            mut map
+                        )
+                    }
+                    "hkpVehicleDefaultSuspension" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultSuspension, hkpVehicleDefaultSuspension,
+                            & mut map
+                        )
+                    }
+                    "hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters,
+                            hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters, &
+                            mut map
+                        )
+                    }
+                    "hkpVehicleDefaultTransmission" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultTransmission,
+                            hkpVehicleDefaultTransmission, & mut map
+                        )
+                    }
+                    "hkpVehicleDefaultVelocityDamper" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDefaultVelocityDamper,
+                            hkpVehicleDefaultVelocityDamper, & mut map
+                        )
+                    }
+                    "hkpVehicleDriverInput" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDriverInput, hkpVehicleDriverInput, & mut map
+                        )
+                    }
+                    "hkpVehicleDriverInputAnalogStatus" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDriverInputAnalogStatus,
+                            hkpVehicleDriverInputAnalogStatus, & mut map
+                        )
+                    }
+                    "hkpVehicleDriverInputStatus" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleDriverInputStatus, hkpVehicleDriverInputStatus,
+                            & mut map
+                        )
+                    }
+                    "hkpVehicleEngine" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleEngine, hkpVehicleEngine, & mut map
+                        )
+                    }
+                    "hkpVehicleFrictionDescription" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleFrictionDescription,
+                            hkpVehicleFrictionDescription, & mut map
+                        )
+                    }
+                    "hkpVehicleFrictionDescriptionAxisDescription" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleFrictionDescriptionAxisDescription,
+                            hkpVehicleFrictionDescriptionAxisDescription, & mut map
+                        )
+                    }
+                    "hkpVehicleFrictionStatus" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleFrictionStatus, hkpVehicleFrictionStatus, & mut
+                            map
+                        )
+                    }
+                    "hkpVehicleFrictionStatusAxisStatus" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleFrictionStatusAxisStatus,
+                            hkpVehicleFrictionStatusAxisStatus, & mut map
+                        )
+                    }
+                    "hkpVehicleInstance" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleInstance, hkpVehicleInstance, & mut map
+                        )
+                    }
+                    "hkpVehicleInstanceWheelInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleInstanceWheelInfo, hkpVehicleInstanceWheelInfo,
+                            & mut map
+                        )
+                    }
+                    "hkpVehicleLinearCastBatchingManager" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleLinearCastBatchingManager,
+                            hkpVehicleLinearCastBatchingManager, & mut map
+                        )
+                    }
+                    "hkpVehicleLinearCastWheelCollide" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleLinearCastWheelCollide,
+                            hkpVehicleLinearCastWheelCollide, & mut map
+                        )
+                    }
+                    "hkpVehicleLinearCastWheelCollideWheelState" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleLinearCastWheelCollideWheelState,
+                            hkpVehicleLinearCastWheelCollideWheelState, & mut map
+                        )
+                    }
+                    "hkpVehicleManager" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleManager, hkpVehicleManager, & mut map
+                        )
+                    }
+                    "hkpVehicleRayCastBatchingManager" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleRayCastBatchingManager,
+                            hkpVehicleRayCastBatchingManager, & mut map
+                        )
+                    }
+                    "hkpVehicleRayCastWheelCollide" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleRayCastWheelCollide,
+                            hkpVehicleRayCastWheelCollide, & mut map
+                        )
+                    }
+                    "hkpVehicleSteering" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleSteering, hkpVehicleSteering, & mut map
+                        )
+                    }
+                    "hkpVehicleSuspension" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleSuspension, hkpVehicleSuspension, & mut map
+                        )
+                    }
+                    "hkpVehicleSuspensionSuspensionWheelParameters" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleSuspensionSuspensionWheelParameters,
+                            hkpVehicleSuspensionSuspensionWheelParameters, & mut map
+                        )
+                    }
+                    "hkpVehicleTransmission" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleTransmission, hkpVehicleTransmission, & mut map
+                        )
+                    }
+                    "hkpVehicleVelocityDamper" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleVelocityDamper, hkpVehicleVelocityDamper, & mut
+                            map
+                        )
+                    }
+                    "hkpVehicleWheelCollide" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVehicleWheelCollide, hkpVehicleWheelCollide, & mut map
+                        )
+                    }
+                    "hkpVelocityConstraintMotor" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpVelocityConstraintMotor, hkpVelocityConstraintMotor, &
+                            mut map
+                        )
+                    }
+                    "hkpViscousSurfaceModifierConstraintAtom" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpViscousSurfaceModifierConstraintAtom,
+                            hkpViscousSurfaceModifierConstraintAtom, & mut map
+                        )
+                    }
+                    "hkpWeldingUtility" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpWeldingUtility, hkpWeldingUtility, & mut map
+                        )
+                    }
+                    "hkpWheelConstraintData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpWheelConstraintData, hkpWheelConstraintData, & mut map
+                        )
+                    }
+                    "hkpWheelConstraintDataAtoms" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpWheelConstraintDataAtoms, hkpWheelConstraintDataAtoms,
+                            & mut map
+                        )
+                    }
+                    "hkpWorld" => {
+                        deserialize_dev_stack_safe!(de_hkpWorld, hkpWorld, & mut map)
+                    }
+                    "hkpWorldCinfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpWorldCinfo, hkpWorldCinfo, & mut map
+                        )
+                    }
+                    "hkpWorldObject" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkpWorldObject, hkpWorldObject, & mut map
+                        )
+                    }
+                    "hkQTransform" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkQTransform, hkQTransform, & mut map
+                        )
+                    }
+                    "hkRangeInt32Attribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkRangeInt32Attribute, hkRangeInt32Attribute, & mut map
+                        )
+                    }
+                    "hkRangeRealAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkRangeRealAttribute, hkRangeRealAttribute, & mut map
+                        )
+                    }
+                    "hkReferencedObject" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkReferencedObject, hkReferencedObject, & mut map
+                        )
+                    }
+                    "hkReflectedFileAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkReflectedFileAttribute, hkReflectedFileAttribute, & mut
+                            map
+                        )
+                    }
+                    "hkResourceBase" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkResourceBase, hkResourceBase, & mut map
+                        )
+                    }
+                    "hkResourceContainer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkResourceContainer, hkResourceContainer, & mut map
+                        )
+                    }
+                    "hkResourceHandle" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkResourceHandle, hkResourceHandle, & mut map
+                        )
+                    }
+                    "hkRootLevelContainer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkRootLevelContainer, hkRootLevelContainer, & mut map
+                        )
+                    }
+                    "hkRootLevelContainerNamedVariant" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkRootLevelContainerNamedVariant,
+                            hkRootLevelContainerNamedVariant, & mut map
+                        )
+                    }
+                    "hkSemanticsAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkSemanticsAttribute, hkSemanticsAttribute, & mut map
+                        )
+                    }
+                    "hkSimpleLocalFrame" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkSimpleLocalFrame, hkSimpleLocalFrame, & mut map
+                        )
+                    }
+                    "hkSphere" => {
+                        deserialize_dev_stack_safe!(de_hkSphere, hkSphere, & mut map)
+                    }
+                    "hkSweptTransform" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkSweptTransform, hkSweptTransform, & mut map
+                        )
+                    }
+                    "hkTraceStreamTitle" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkTraceStreamTitle, hkTraceStreamTitle, & mut map
+                        )
+                    }
+                    "hkTrackerSerializableScanSnapshot" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkTrackerSerializableScanSnapshot,
+                            hkTrackerSerializableScanSnapshot, & mut map
+                        )
+                    }
+                    "hkTrackerSerializableScanSnapshotAllocation" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkTrackerSerializableScanSnapshotAllocation,
+                            hkTrackerSerializableScanSnapshotAllocation, & mut map
+                        )
+                    }
+                    "hkTrackerSerializableScanSnapshotBlock" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkTrackerSerializableScanSnapshotBlock,
+                            hkTrackerSerializableScanSnapshotBlock, & mut map
+                        )
+                    }
+                    "hkUiAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkUiAttribute, hkUiAttribute, & mut map
+                        )
+                    }
+                    "hkVertexFormat" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkVertexFormat, hkVertexFormat, & mut map
+                        )
+                    }
+                    "hkVertexFormatElement" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkVertexFormatElement, hkVertexFormatElement, & mut map
+                        )
+                    }
+                    "hkWorldMemoryAvailableWatchDog" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkWorldMemoryAvailableWatchDog,
+                            hkWorldMemoryAvailableWatchDog, & mut map
+                        )
+                    }
+                    "hkxAnimatedFloat" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxAnimatedFloat, hkxAnimatedFloat, & mut map
+                        )
+                    }
+                    "hkxAnimatedMatrix" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxAnimatedMatrix, hkxAnimatedMatrix, & mut map
+                        )
+                    }
+                    "hkxAnimatedQuaternion" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxAnimatedQuaternion, hkxAnimatedQuaternion, & mut map
+                        )
+                    }
+                    "hkxAnimatedVector" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxAnimatedVector, hkxAnimatedVector, & mut map
+                        )
+                    }
+                    "hkxAttribute" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxAttribute, hkxAttribute, & mut map
+                        )
+                    }
+                    "hkxAttributeGroup" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxAttributeGroup, hkxAttributeGroup, & mut map
+                        )
+                    }
+                    "hkxAttributeHolder" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxAttributeHolder, hkxAttributeHolder, & mut map
+                        )
+                    }
+                    "hkxCamera" => {
+                        deserialize_dev_stack_safe!(de_hkxCamera, hkxCamera, & mut map)
+                    }
+                    "hkxEdgeSelectionChannel" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxEdgeSelectionChannel, hkxEdgeSelectionChannel, & mut
+                            map
+                        )
+                    }
+                    "hkxEnum" => {
+                        deserialize_dev_stack_safe!(de_hkxEnum, hkxEnum, & mut map)
+                    }
+                    "hkxEnumItem" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxEnumItem, hkxEnumItem, & mut map
+                        )
+                    }
+                    "hkxEnvironment" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxEnvironment, hkxEnvironment, & mut map
+                        )
+                    }
+                    "hkxEnvironmentVariable" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxEnvironmentVariable, hkxEnvironmentVariable, & mut map
+                        )
+                    }
+                    "hkxIndexBuffer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxIndexBuffer, hkxIndexBuffer, & mut map
+                        )
+                    }
+                    "hkxLight" => {
+                        deserialize_dev_stack_safe!(de_hkxLight, hkxLight, & mut map)
+                    }
+                    "hkxMaterial" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxMaterial, hkxMaterial, & mut map
+                        )
+                    }
+                    "hkxMaterialEffect" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxMaterialEffect, hkxMaterialEffect, & mut map
+                        )
+                    }
+                    "hkxMaterialProperty" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxMaterialProperty, hkxMaterialProperty, & mut map
+                        )
+                    }
+                    "hkxMaterialShader" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxMaterialShader, hkxMaterialShader, & mut map
+                        )
+                    }
+                    "hkxMaterialShaderSet" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxMaterialShaderSet, hkxMaterialShaderSet, & mut map
+                        )
+                    }
+                    "hkxMaterialTextureStage" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxMaterialTextureStage, hkxMaterialTextureStage, & mut
+                            map
+                        )
+                    }
+                    "hkxMesh" => {
+                        deserialize_dev_stack_safe!(de_hkxMesh, hkxMesh, & mut map)
+                    }
+                    "hkxMeshSection" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxMeshSection, hkxMeshSection, & mut map
+                        )
+                    }
+                    "hkxMeshUserChannelInfo" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxMeshUserChannelInfo, hkxMeshUserChannelInfo, & mut map
+                        )
+                    }
+                    "hkxNode" => {
+                        deserialize_dev_stack_safe!(de_hkxNode, hkxNode, & mut map)
+                    }
+                    "hkxNodeAnnotationData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxNodeAnnotationData, hkxNodeAnnotationData, & mut map
+                        )
+                    }
+                    "hkxNodeSelectionSet" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxNodeSelectionSet, hkxNodeSelectionSet, & mut map
+                        )
+                    }
+                    "hkxScene" => {
+                        deserialize_dev_stack_safe!(de_hkxScene, hkxScene, & mut map)
+                    }
+                    "hkxSkinBinding" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxSkinBinding, hkxSkinBinding, & mut map
+                        )
+                    }
+                    "hkxSparselyAnimatedBool" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxSparselyAnimatedBool, hkxSparselyAnimatedBool, & mut
+                            map
+                        )
+                    }
+                    "hkxSparselyAnimatedEnum" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxSparselyAnimatedEnum, hkxSparselyAnimatedEnum, & mut
+                            map
+                        )
+                    }
+                    "hkxSparselyAnimatedInt" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxSparselyAnimatedInt, hkxSparselyAnimatedInt, & mut map
+                        )
+                    }
+                    "hkxSparselyAnimatedString" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxSparselyAnimatedString, hkxSparselyAnimatedString, &
+                            mut map
+                        )
+                    }
+                    "hkxTextureFile" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxTextureFile, hkxTextureFile, & mut map
+                        )
+                    }
+                    "hkxTextureInplace" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxTextureInplace, hkxTextureInplace, & mut map
+                        )
+                    }
+                    "hkxTriangleSelectionChannel" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxTriangleSelectionChannel, hkxTriangleSelectionChannel,
+                            & mut map
+                        )
+                    }
+                    "hkxVertexBuffer" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxVertexBuffer, hkxVertexBuffer, & mut map
+                        )
+                    }
+                    "hkxVertexBufferVertexData" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxVertexBufferVertexData, hkxVertexBufferVertexData, &
+                            mut map
+                        )
+                    }
+                    "hkxVertexDescription" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxVertexDescription, hkxVertexDescription, & mut map
+                        )
+                    }
+                    "hkxVertexDescriptionElementDecl" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxVertexDescriptionElementDecl,
+                            hkxVertexDescriptionElementDecl, & mut map
+                        )
+                    }
+                    "hkxVertexFloatDataChannel" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxVertexFloatDataChannel, hkxVertexFloatDataChannel, &
+                            mut map
+                        )
+                    }
+                    "hkxVertexIntDataChannel" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxVertexIntDataChannel, hkxVertexIntDataChannel, & mut
+                            map
+                        )
+                    }
+                    "hkxVertexSelectionChannel" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxVertexSelectionChannel, hkxVertexSelectionChannel, &
+                            mut map
+                        )
+                    }
+                    "hkxVertexVectorDataChannel" => {
+                        deserialize_dev_stack_safe!(
+                            de_hkxVertexVectorDataChannel, hkxVertexVectorDataChannel, &
+                            mut map
+                        )
+                    }
+                    _ => {
+                        Err(
+                            _serde::de::Error::unknown_field(
+                                class_name,
+                                &[
+                                    "BGSGamebryoSequenceGenerator",
+                                    "BSBoneSwitchGenerator",
+                                    "BSBoneSwitchGeneratorBoneData",
+                                    "BSComputeAddBoneAnimModifier",
+                                    "BSCyclicBlendTransitionGenerator",
+                                    "BSDecomposeVectorModifier",
+                                    "BSDirectAtModifier",
+                                    "BSDistTriggerModifier",
+                                    "BSEventEveryNEventsModifier",
+                                    "BSEventOnDeactivateModifier",
+                                    "BSEventOnFalseToTrueModifier",
+                                    "BSGetTimeStepModifier",
+                                    "BSInterpValueModifier",
+                                    "BSIsActiveModifier",
+                                    "BSIStateManagerModifier",
+                                    "BSIStateManagerModifierBSiStateData",
+                                    "BSIStateManagerModifierBSIStateManagerStateListener",
+                                    "BSiStateTaggingGenerator",
+                                    "BSLimbIKModifier",
+                                    "BSLookAtModifier",
+                                    "BSLookAtModifierBoneData",
+                                    "BSModifyOnceModifier",
+                                    "BSOffsetAnimationGenerator",
+                                    "BSPassByTargetTriggerModifier",
+                                    "BSRagdollContactListenerModifier",
+                                    "BSSpeedSamplerModifier",
+                                    "BSSynchronizedClipGenerator",
+                                    "BSTimerModifier",
+                                    "BSTweenerModifier",
+                                    "hkAabb",
+                                    "hkAabbHalf",
+                                    "hkAabbUint32",
+                                    "hkaAnimatedReferenceFrame",
+                                    "hkaAnimation",
+                                    "hkaAnimationBinding",
+                                    "hkaAnimationContainer",
+                                    "hkaAnimationPreviewColorContainer",
+                                    "hkaAnnotationTrack",
+                                    "hkaAnnotationTrackAnnotation",
+                                    "hkaBone",
+                                    "hkaBoneAttachment",
+                                    "hkaDefaultAnimatedReferenceFrame",
+                                    "hkaDeltaCompressedAnimation",
+                                    "hkaDeltaCompressedAnimationQuantizationFormat",
+                                    "hkaFootstepAnalysisInfo",
+                                    "hkaFootstepAnalysisInfoContainer",
+                                    "hkaInterleavedUncompressedAnimation",
+                                    "hkaKeyFrameHierarchyUtility",
+                                    "hkaKeyFrameHierarchyUtilityControlData",
+                                    "hkAlignSceneToNodeOptions",
+                                    "hkaMeshBinding",
+                                    "hkaMeshBindingMapping",
+                                    "hkaQuantizedAnimation",
+                                    "hkaQuantizedAnimationTrackCompressionParams",
+                                    "hkaRagdollInstance",
+                                    "hkArrayTypeAttribute",
+                                    "hkaSkeleton",
+                                    "hkaSkeletonLocalFrameOnBone",
+                                    "hkaSkeletonMapper",
+                                    "hkaSkeletonMapperData",
+                                    "hkaSkeletonMapperDataChainMapping",
+                                    "hkaSkeletonMapperDataSimpleMapping",
+                                    "hkaSplineCompressedAnimation",
+                                    "hkaSplineCompressedAnimationAnimationCompressionParams",
+                                    "hkaSplineCompressedAnimationTrackCompressionParams",
+                                    "hkaWaveletCompressedAnimation",
+                                    "hkaWaveletCompressedAnimationCompressionParams",
+                                    "hkaWaveletCompressedAnimationQuantizationFormat",
+                                    "hkBaseObject",
+                                    "hkbAttachmentModifier",
+                                    "hkbAttachmentSetup",
+                                    "hkbAttributeModifier",
+                                    "hkbAttributeModifierAssignment",
+                                    "hkbAuxiliaryNodeInfo",
+                                    "hkbBehaviorEventsInfo",
+                                    "hkbBehaviorGraph",
+                                    "hkbBehaviorGraphData",
+                                    "hkbBehaviorGraphInternalState",
+                                    "hkbBehaviorGraphInternalStateInfo",
+                                    "hkbBehaviorGraphStringData",
+                                    "hkbBehaviorInfo",
+                                    "hkbBehaviorInfoIdToNamePair",
+                                    "hkbBehaviorReferenceGenerator",
+                                    "hkbBindable",
+                                    "hkbBlendCurveUtils",
+                                    "hkbBlenderGenerator",
+                                    "hkbBlenderGeneratorChild",
+                                    "hkbBlenderGeneratorChildInternalState",
+                                    "hkbBlenderGeneratorInternalState",
+                                    "hkbBlendingTransitionEffect",
+                                    "hkbBlendingTransitionEffectInternalState",
+                                    "hkbBoneIndexArray",
+                                    "hkbBoneWeightArray",
+                                    "hkbBoolVariableSequencedData",
+                                    "hkbBoolVariableSequencedDataSample",
+                                    "hkbCameraShakeEventPayload",
+                                    "hkbCharacter",
+                                    "hkbCharacterAddedInfo",
+                                    "hkbCharacterControlCommand",
+                                    "hkbCharacterControllerControlData",
+                                    "hkbCharacterControllerModifier",
+                                    "hkbCharacterControllerModifierInternalState",
+                                    "hkbCharacterData",
+                                    "hkbCharacterDataCharacterControllerInfo",
+                                    "hkbCharacterInfo",
+                                    "hkbCharacterSetup",
+                                    "hkbCharacterSkinInfo",
+                                    "hkbCharacterSteppedInfo",
+                                    "hkbCharacterStringData",
+                                    "hkbClientCharacterState",
+                                    "hkbClipGenerator",
+                                    "hkbClipGeneratorEcho",
+                                    "hkbClipGeneratorInternalState",
+                                    "hkbClipTrigger",
+                                    "hkbClipTriggerArray",
+                                    "hkbCombineTransformsModifier",
+                                    "hkbCombineTransformsModifierInternalState",
+                                    "hkbCompiledExpressionSet",
+                                    "hkbCompiledExpressionSetToken",
+                                    "hkbComputeDirectionModifier",
+                                    "hkbComputeDirectionModifierInternalState",
+                                    "hkbComputeRotationFromAxisAngleModifier",
+                                    "hkbComputeRotationFromAxisAngleModifierInternalState",
+                                    "hkbComputeRotationToTargetModifier",
+                                    "hkbComputeRotationToTargetModifierInternalState",
+                                    "hkbCondition",
+                                    "hkbContext",
+                                    "hkbDampingModifier",
+                                    "hkbDampingModifierInternalState",
+                                    "hkbDefaultMessageLog",
+                                    "hkbDelayedModifier",
+                                    "hkbDelayedModifierInternalState",
+                                    "hkbDetectCloseToGroundModifier",
+                                    "hkbDetectCloseToGroundModifierInternalState",
+                                    "hkbEvaluateExpressionModifier",
+                                    "hkbEvaluateExpressionModifierInternalExpressionData",
+                                    "hkbEvaluateExpressionModifierInternalState",
+                                    "hkbEvaluateHandleModifier",
+                                    "hkbEvent",
+                                    "hkbEventBase",
+                                    "hkbEventDrivenModifier",
+                                    "hkbEventDrivenModifierInternalState",
+                                    "hkbEventInfo",
+                                    "hkbEventPayload",
+                                    "hkbEventPayloadList",
+                                    "hkbEventProperty",
+                                    "hkbEventRaisedInfo",
+                                    "hkbEventRangeData",
+                                    "hkbEventRangeDataArray",
+                                    "hkbEventSequencedData",
+                                    "hkbEventSequencedDataSequencedEvent",
+                                    "hkbEventsFromRangeModifier",
+                                    "hkbEventsFromRangeModifierInternalState",
+                                    "hkbExpressionCondition",
+                                    "hkbExpressionData",
+                                    "hkbExpressionDataArray",
+                                    "hkbExtractRagdollPoseModifier",
+                                    "hkbFootIkControlData",
+                                    "hkbFootIkControlsModifier",
+                                    "hkbFootIkControlsModifierLeg",
+                                    "hkbFootIkDriverInfo",
+                                    "hkbFootIkDriverInfoLeg",
+                                    "hkbFootIkGains",
+                                    "hkbFootIkModifier",
+                                    "hkbFootIkModifierInternalLegData",
+                                    "hkbFootIkModifierLeg",
+                                    "hkbGenerator",
+                                    "hkbGeneratorOutputListener",
+                                    "hkbGeneratorSyncInfo",
+                                    "hkbGeneratorSyncInfoSyncPoint",
+                                    "hkbGeneratorTransitionEffect",
+                                    "hkbGeneratorTransitionEffectInternalState",
+                                    "hkbGetHandleOnBoneModifier",
+                                    "hkbGetUpModifier",
+                                    "hkbGetUpModifierInternalState",
+                                    "hkbGetWorldFromModelModifier",
+                                    "hkbGetWorldFromModelModifierInternalState",
+                                    "hkbHandIkControlData",
+                                    "hkbHandIkControlsModifier",
+                                    "hkbHandIkControlsModifierHand",
+                                    "hkbHandIkDriverInfo",
+                                    "hkbHandIkDriverInfoHand",
+                                    "hkbHandIkModifier",
+                                    "hkbHandIkModifierHand",
+                                    "hkbHandle",
+                                    "hkbIntEventPayload",
+                                    "hkbIntVariableSequencedData",
+                                    "hkbIntVariableSequencedDataSample",
+                                    "hkBitField",
+                                    "hkbKeyframeBonesModifier",
+                                    "hkbKeyframeBonesModifierKeyframeInfo",
+                                    "hkbLinkedSymbolInfo",
+                                    "hkbLookAtModifier",
+                                    "hkbLookAtModifierInternalState",
+                                    "hkbManualSelectorGenerator",
+                                    "hkbManualSelectorGeneratorInternalState",
+                                    "hkbMessageLog",
+                                    "hkbMirroredSkeletonInfo",
+                                    "hkbMirrorModifier",
+                                    "hkbModifier",
+                                    "hkbModifierGenerator",
+                                    "hkbModifierList",
+                                    "hkbModifierWrapper",
+                                    "hkbMoveCharacterModifier",
+                                    "hkbMoveCharacterModifierInternalState",
+                                    "hkbNamedEventPayload",
+                                    "hkbNamedIntEventPayload",
+                                    "hkbNamedRealEventPayload",
+                                    "hkbNamedStringEventPayload",
+                                    "hkbNode",
+                                    "hkbNodeInternalStateInfo",
+                                    "hkbParticleSystemEventPayload",
+                                    "hkbPoseMatchingGenerator",
+                                    "hkbPoseMatchingGeneratorInternalState",
+                                    "hkbPoweredRagdollControlData",
+                                    "hkbPoweredRagdollControlsModifier",
+                                    "hkbProjectData",
+                                    "hkbProjectStringData",
+                                    "hkbProxyModifier",
+                                    "hkbProxyModifierProxyInfo",
+                                    "hkbRaiseEventCommand",
+                                    "hkbRealEventPayload",
+                                    "hkbRealVariableSequencedData",
+                                    "hkbRealVariableSequencedDataSample",
+                                    "hkbReferencePoseGenerator",
+                                    "hkbRegisteredGenerator",
+                                    "hkbRigidBodyRagdollControlData",
+                                    "hkbRigidBodyRagdollControlsModifier",
+                                    "hkbRoleAttribute",
+                                    "hkbRotateCharacterModifier",
+                                    "hkbRotateCharacterModifierInternalState",
+                                    "hkbSenseHandleModifier",
+                                    "hkbSenseHandleModifierRange",
+                                    "hkbSequence",
+                                    "hkbSequencedData",
+                                    "hkbSequenceInternalState",
+                                    "hkbSequenceStringData",
+                                    "hkbSetBehaviorCommand",
+                                    "hkbSetLocalTimeOfClipGeneratorCommand",
+                                    "hkbSetNodePropertyCommand",
+                                    "hkbSetWordVariableCommand",
+                                    "hkbSetWorldFromModelModifier",
+                                    "hkbSimulationControlCommand",
+                                    "hkbSimulationStateInfo",
+                                    "hkbStateChooser",
+                                    "hkbStateListener",
+                                    "hkbStateMachine",
+                                    "hkbStateMachineActiveTransitionInfo",
+                                    "hkbStateMachineDelayedTransitionInfo",
+                                    "hkbStateMachineEventPropertyArray",
+                                    "hkbStateMachineInternalState",
+                                    "hkbStateMachineNestedStateMachineData",
+                                    "hkbStateMachineProspectiveTransitionInfo",
+                                    "hkbStateMachineStateInfo",
+                                    "hkbStateMachineTimeInterval",
+                                    "hkbStateMachineTransitionInfo",
+                                    "hkbStateMachineTransitionInfoArray",
+                                    "hkbStateMachineTransitionInfoReference",
+                                    "hkbStringCondition",
+                                    "hkbStringEventPayload",
+                                    "hkbTestStateChooser",
+                                    "hkbTimerModifier",
+                                    "hkbTimerModifierInternalState",
+                                    "hkbTransformVectorModifier",
+                                    "hkbTransformVectorModifierInternalState",
+                                    "hkbTransitionEffect",
+                                    "hkbTwistModifier",
+                                    "hkbVariableBindingSet",
+                                    "hkbVariableBindingSetBinding",
+                                    "hkbVariableInfo",
+                                    "hkbVariableValue",
+                                    "hkbVariableValueSet",
+                                    "hkbWorldEnums",
+                                    "hkbWorldFromModelModeData",
+                                    "hkClass",
+                                    "hkClassEnum",
+                                    "hkClassEnumItem",
+                                    "hkClassMember",
+                                    "hkColor",
+                                    "hkContactPoint",
+                                    "hkContactPointMaterial",
+                                    "hkCustomAttributes",
+                                    "hkCustomAttributesAttribute",
+                                    "hkDataObjectTypeAttribute",
+                                    "hkDescriptionAttribute",
+                                    "hkDocumentationAttribute",
+                                    "hkGeometry",
+                                    "hkGeometryTriangle",
+                                    "hkGizmoAttribute",
+                                    "hkHalf8",
+                                    "hkIndexedTransformSet",
+                                    "hkLinkAttribute",
+                                    "hkLocalFrame",
+                                    "hkLocalFrameGroup",
+                                    "hkMemoryMeshBody",
+                                    "hkMemoryMeshMaterial",
+                                    "hkMemoryMeshShape",
+                                    "hkMemoryMeshTexture",
+                                    "hkMemoryMeshVertexBuffer",
+                                    "hkMemoryResourceContainer",
+                                    "hkMemoryResourceHandle",
+                                    "hkMemoryResourceHandleExternalLink",
+                                    "hkMemoryTrackerAttribute",
+                                    "hkMeshBody",
+                                    "hkMeshBoneIndexMapping",
+                                    "hkMeshMaterial",
+                                    "hkMeshSection",
+                                    "hkMeshSectionCinfo",
+                                    "hkMeshShape",
+                                    "hkMeshTexture",
+                                    "hkMeshVertexBuffer",
+                                    "hkModelerNodeTypeAttribute",
+                                    "hkMonitorStreamColorTable",
+                                    "hkMonitorStreamColorTableColorPair",
+                                    "hkMonitorStreamFrameInfo",
+                                    "hkMonitorStreamStringMap",
+                                    "hkMonitorStreamStringMapStringMap",
+                                    "hkMoppBvTreeShapeBase",
+                                    "hkMotionState",
+                                    "hkMultipleVertexBuffer",
+                                    "hkMultipleVertexBufferElementInfo",
+                                    "hkMultipleVertexBufferLockedElement",
+                                    "hkMultipleVertexBufferVertexBufferInfo",
+                                    "hkMultiThreadCheck",
+                                    "hkp2dAngConstraintAtom",
+                                    "hkpAabbPhantom",
+                                    "hkPackedVector3",
+                                    "hkPackfileHeader",
+                                    "hkPackfileSectionHeader",
+                                    "hkpAction",
+                                    "hkpAgent1nSector",
+                                    "hkpAngConstraintAtom",
+                                    "hkpAngFrictionConstraintAtom",
+                                    "hkpAngLimitConstraintAtom",
+                                    "hkpAngMotorConstraintAtom",
+                                    "hkpAngularDashpotAction",
+                                    "hkpArrayAction",
+                                    "hkpBallAndSocketConstraintData",
+                                    "hkpBallAndSocketConstraintDataAtoms",
+                                    "hkpBallGun",
+                                    "hkpBallSocketChainData",
+                                    "hkpBallSocketChainDataConstraintInfo",
+                                    "hkpBallSocketConstraintAtom",
+                                    "hkpBinaryAction",
+                                    "hkpBoxMotion",
+                                    "hkpBoxShape",
+                                    "hkpBreakableBody",
+                                    "hkpBreakableConstraintData",
+                                    "hkpBridgeAtoms",
+                                    "hkpBridgeConstraintAtom",
+                                    "hkpBroadPhaseHandle",
+                                    "hkpBvShape",
+                                    "hkpBvTreeShape",
+                                    "hkpCachingShapePhantom",
+                                    "hkpCallbackConstraintMotor",
+                                    "hkpCapsuleShape",
+                                    "hkpCdBody",
+                                    "hkpCenterOfMassChangerModifierConstraintAtom",
+                                    "hkpCharacterControllerCinfo",
+                                    "hkpCharacterMotion",
+                                    "hkpCharacterProxyCinfo",
+                                    "hkpCharacterRigidBodyCinfo",
+                                    "hkpCogWheelConstraintAtom",
+                                    "hkpCogWheelConstraintData",
+                                    "hkpCogWheelConstraintDataAtoms",
+                                    "hkpCollidable",
+                                    "hkpCollidableBoundingVolumeData",
+                                    "hkpCollidableCollidableFilter",
+                                    "hkpCollisionFilter",
+                                    "hkpCollisionFilterList",
+                                    "hkpCompressedMeshShape",
+                                    "hkpCompressedMeshShapeBigTriangle",
+                                    "hkpCompressedMeshShapeChunk",
+                                    "hkpCompressedMeshShapeConvexPiece",
+                                    "hkpCompressedSampledHeightFieldShape",
+                                    "hkpConeLimitConstraintAtom",
+                                    "hkpConstrainedSystemFilter",
+                                    "hkpConstraintAtom",
+                                    "hkpConstraintChainData",
+                                    "hkpConstraintChainInstance",
+                                    "hkpConstraintChainInstanceAction",
+                                    "hkpConstraintCollisionFilter",
+                                    "hkpConstraintData",
+                                    "hkpConstraintInstance",
+                                    "hkpConstraintInstanceSmallArraySerializeOverrideType",
+                                    "hkpConstraintMotor",
+                                    "hkpConvexListFilter",
+                                    "hkpConvexListShape",
+                                    "hkpConvexPieceMeshShape",
+                                    "hkpConvexPieceStreamData",
+                                    "hkpConvexShape",
+                                    "hkpConvexTransformShape",
+                                    "hkpConvexTransformShapeBase",
+                                    "hkpConvexTranslateShape",
+                                    "hkpConvexVerticesConnectivity",
+                                    "hkpConvexVerticesShape",
+                                    "hkpConvexVerticesShapeFourVectors",
+                                    "hkpCylinderShape",
+                                    "hkpDashpotAction",
+                                    "hkpDefaultConvexListFilter",
+                                    "hkpDefaultWorldMemoryWatchDog",
+                                    "hkpDisableEntityCollisionFilter",
+                                    "hkpDisplayBindingData",
+                                    "hkpDisplayBindingDataPhysicsSystem",
+                                    "hkpDisplayBindingDataRigidBody",
+                                    "hkpEntity",
+                                    "hkpEntityExtendedListeners",
+                                    "hkpEntitySmallArraySerializeOverrideType",
+                                    "hkpEntitySpuCollisionCallback",
+                                    "hkpExtendedMeshShape",
+                                    "hkpExtendedMeshShapeShapesSubpart",
+                                    "hkpExtendedMeshShapeSubpart",
+                                    "hkpExtendedMeshShapeTrianglesSubpart",
+                                    "hkpFastMeshShape",
+                                    "hkpFirstPersonGun",
+                                    "hkpFixedRigidMotion",
+                                    "hkpGenericConstraintData",
+                                    "hkpGenericConstraintDataScheme",
+                                    "hkpGenericConstraintDataSchemeConstraintInfo",
+                                    "hkpGravityGun",
+                                    "hkpGroupCollisionFilter",
+                                    "hkpGroupFilter",
+                                    "hkpHeightFieldShape",
+                                    "hkpHingeConstraintData",
+                                    "hkpHingeConstraintDataAtoms",
+                                    "hkpHingeLimitsData",
+                                    "hkpHingeLimitsDataAtoms",
+                                    "hkpIgnoreModifierConstraintAtom",
+                                    "hkpKeyframedRigidMotion",
+                                    "hkpLimitedForceConstraintMotor",
+                                    "hkpLimitedHingeConstraintData",
+                                    "hkpLimitedHingeConstraintDataAtoms",
+                                    "hkpLinConstraintAtom",
+                                    "hkpLinearParametricCurve",
+                                    "hkpLinFrictionConstraintAtom",
+                                    "hkpLinkedCollidable",
+                                    "hkpLinLimitConstraintAtom",
+                                    "hkpLinMotorConstraintAtom",
+                                    "hkpLinSoftConstraintAtom",
+                                    "hkpListShape",
+                                    "hkpListShapeChildInfo",
+                                    "hkpMalleableConstraintData",
+                                    "hkpMassChangerModifierConstraintAtom",
+                                    "hkpMassProperties",
+                                    "hkpMaterial",
+                                    "hkpMaxSizeMotion",
+                                    "hkpMeshMaterial",
+                                    "hkpMeshShape",
+                                    "hkpMeshShapeSubpart",
+                                    "hkpModifierConstraintAtom",
+                                    "hkpMoppBvTreeShape",
+                                    "hkpMoppCode",
+                                    "hkpMoppCodeCodeInfo",
+                                    "hkpMoppCodeReindexedTerminal",
+                                    "hkpMotion",
+                                    "hkpMotorAction",
+                                    "hkpMountedBallGun",
+                                    "hkpMouseSpringAction",
+                                    "hkpMovingSurfaceModifierConstraintAtom",
+                                    "hkpMultiRayShape",
+                                    "hkpMultiRayShapeRay",
+                                    "hkpMultiSphereShape",
+                                    "hkpMultithreadedVehicleManager",
+                                    "hkpNamedMeshMaterial",
+                                    "hkpNullCollisionFilter",
+                                    "hkPostFinishAttribute",
+                                    "hkpOverwritePivotConstraintAtom",
+                                    "hkpPairCollisionFilter",
+                                    "hkpPairCollisionFilterMapPairFilterKeyOverrideType",
+                                    "hkpParametricCurve",
+                                    "hkpPhantom",
+                                    "hkpPhantomCallbackShape",
+                                    "hkpPhysicsData",
+                                    "hkpPhysicsSystem",
+                                    "hkpPhysicsSystemWithContacts",
+                                    "hkpPlaneShape",
+                                    "hkpPointToPathConstraintData",
+                                    "hkpPointToPlaneConstraintData",
+                                    "hkpPointToPlaneConstraintDataAtoms",
+                                    "hkpPositionConstraintMotor",
+                                    "hkpPoweredChainData",
+                                    "hkpPoweredChainDataConstraintInfo",
+                                    "hkpPoweredChainMapper",
+                                    "hkpPoweredChainMapperLinkInfo",
+                                    "hkpPoweredChainMapperTarget",
+                                    "hkpPrismaticConstraintData",
+                                    "hkpPrismaticConstraintDataAtoms",
+                                    "hkpProjectileGun",
+                                    "hkpProperty",
+                                    "hkpPropertyValue",
+                                    "hkpPulleyConstraintAtom",
+                                    "hkpPulleyConstraintData",
+                                    "hkpPulleyConstraintDataAtoms",
+                                    "hkpRackAndPinionConstraintAtom",
+                                    "hkpRackAndPinionConstraintData",
+                                    "hkpRackAndPinionConstraintDataAtoms",
+                                    "hkpRagdollConstraintData",
+                                    "hkpRagdollConstraintDataAtoms",
+                                    "hkpRagdollLimitsData",
+                                    "hkpRagdollLimitsDataAtoms",
+                                    "hkpRagdollMotorConstraintAtom",
+                                    "hkpRayCollidableFilter",
+                                    "hkpRayShapeCollectionFilter",
+                                    "hkpRejectChassisListener",
+                                    "hkpRemoveTerminalsMoppModifier",
+                                    "hkpReorientAction",
+                                    "hkpRigidBody",
+                                    "hkpRotationalConstraintData",
+                                    "hkpRotationalConstraintDataAtoms",
+                                    "hkpSampledHeightFieldShape",
+                                    "hkpSerializedAgentNnEntry",
+                                    "hkpSerializedDisplayMarker",
+                                    "hkpSerializedDisplayMarkerList",
+                                    "hkpSerializedDisplayRbTransforms",
+                                    "hkpSerializedDisplayRbTransformsDisplayTransformPair",
+                                    "hkpSerializedSubTrack1nInfo",
+                                    "hkpSerializedTrack1nInfo",
+                                    "hkpSetLocalRotationsConstraintAtom",
+                                    "hkpSetLocalTransformsConstraintAtom",
+                                    "hkpSetLocalTranslationsConstraintAtom",
+                                    "hkpSetupStabilizationAtom",
+                                    "hkpShape",
+                                    "hkpShapeCollection",
+                                    "hkpShapeCollectionFilter",
+                                    "hkpShapeContainer",
+                                    "hkpShapeInfo",
+                                    "hkpShapeModifier",
+                                    "hkpShapePhantom",
+                                    "hkpSimpleContactConstraintAtom",
+                                    "hkpSimpleContactConstraintDataInfo",
+                                    "hkpSimpleMeshShape",
+                                    "hkpSimpleMeshShapeTriangle",
+                                    "hkpSimpleShapePhantom",
+                                    "hkpSimpleShapePhantomCollisionDetail",
+                                    "hkpSimulation",
+                                    "hkpSingleShapeContainer",
+                                    "hkpSoftContactModifierConstraintAtom",
+                                    "hkpSphereMotion",
+                                    "hkpSphereRepShape",
+                                    "hkpSphereShape",
+                                    "hkpSpringAction",
+                                    "hkpSpringDamperConstraintMotor",
+                                    "hkpStiffSpringChainData",
+                                    "hkpStiffSpringChainDataConstraintInfo",
+                                    "hkpStiffSpringConstraintAtom",
+                                    "hkpStiffSpringConstraintData",
+                                    "hkpStiffSpringConstraintDataAtoms",
+                                    "hkpStorageExtendedMeshShape",
+                                    "hkpStorageExtendedMeshShapeMaterial",
+                                    "hkpStorageExtendedMeshShapeMeshSubpartStorage",
+                                    "hkpStorageExtendedMeshShapeShapeSubpartStorage",
+                                    "hkpStorageMeshShape",
+                                    "hkpStorageMeshShapeSubpartStorage",
+                                    "hkpStorageSampledHeightFieldShape",
+                                    "hkpThinBoxMotion",
+                                    "hkpTransformShape",
+                                    "hkpTriangleShape",
+                                    "hkpTriggerVolume",
+                                    "hkpTriggerVolumeEventInfo",
+                                    "hkpTriSampledHeightFieldBvTreeShape",
+                                    "hkpTriSampledHeightFieldCollection",
+                                    "hkpTwistLimitConstraintAtom",
+                                    "hkpTypedBroadPhaseHandle",
+                                    "hkpTyremarkPoint",
+                                    "hkpTyremarksInfo",
+                                    "hkpTyremarksWheel",
+                                    "hkpUnaryAction",
+                                    "hkpVehicleAerodynamics",
+                                    "hkpVehicleBrake",
+                                    "hkpVehicleCastBatchingManager",
+                                    "hkpVehicleData",
+                                    "hkpVehicleDataWheelComponentParams",
+                                    "hkpVehicleDefaultAerodynamics",
+                                    "hkpVehicleDefaultAnalogDriverInput",
+                                    "hkpVehicleDefaultBrake",
+                                    "hkpVehicleDefaultBrakeWheelBrakingProperties",
+                                    "hkpVehicleDefaultEngine",
+                                    "hkpVehicleDefaultSteering",
+                                    "hkpVehicleDefaultSuspension",
+                                    "hkpVehicleDefaultSuspensionWheelSpringSuspensionParameters",
+                                    "hkpVehicleDefaultTransmission",
+                                    "hkpVehicleDefaultVelocityDamper",
+                                    "hkpVehicleDriverInput",
+                                    "hkpVehicleDriverInputAnalogStatus",
+                                    "hkpVehicleDriverInputStatus",
+                                    "hkpVehicleEngine",
+                                    "hkpVehicleFrictionDescription",
+                                    "hkpVehicleFrictionDescriptionAxisDescription",
+                                    "hkpVehicleFrictionStatus",
+                                    "hkpVehicleFrictionStatusAxisStatus",
+                                    "hkpVehicleInstance",
+                                    "hkpVehicleInstanceWheelInfo",
+                                    "hkpVehicleLinearCastBatchingManager",
+                                    "hkpVehicleLinearCastWheelCollide",
+                                    "hkpVehicleLinearCastWheelCollideWheelState",
+                                    "hkpVehicleManager",
+                                    "hkpVehicleRayCastBatchingManager",
+                                    "hkpVehicleRayCastWheelCollide",
+                                    "hkpVehicleSteering",
+                                    "hkpVehicleSuspension",
+                                    "hkpVehicleSuspensionSuspensionWheelParameters",
+                                    "hkpVehicleTransmission",
+                                    "hkpVehicleVelocityDamper",
+                                    "hkpVehicleWheelCollide",
+                                    "hkpVelocityConstraintMotor",
+                                    "hkpViscousSurfaceModifierConstraintAtom",
+                                    "hkpWeldingUtility",
+                                    "hkpWheelConstraintData",
+                                    "hkpWheelConstraintDataAtoms",
+                                    "hkpWorld",
+                                    "hkpWorldCinfo",
+                                    "hkpWorldObject",
+                                    "hkQTransform",
+                                    "hkRangeInt32Attribute",
+                                    "hkRangeRealAttribute",
+                                    "hkReferencedObject",
+                                    "hkReflectedFileAttribute",
+                                    "hkResourceBase",
+                                    "hkResourceContainer",
+                                    "hkResourceHandle",
+                                    "hkRootLevelContainer",
+                                    "hkRootLevelContainerNamedVariant",
+                                    "hkSemanticsAttribute",
+                                    "hkSimpleLocalFrame",
+                                    "hkSphere",
+                                    "hkSweptTransform",
+                                    "hkTraceStreamTitle",
+                                    "hkTrackerSerializableScanSnapshot",
+                                    "hkTrackerSerializableScanSnapshotAllocation",
+                                    "hkTrackerSerializableScanSnapshotBlock",
+                                    "hkUiAttribute",
+                                    "hkVertexFormat",
+                                    "hkVertexFormatElement",
+                                    "hkWorldMemoryAvailableWatchDog",
+                                    "hkxAnimatedFloat",
+                                    "hkxAnimatedMatrix",
+                                    "hkxAnimatedQuaternion",
+                                    "hkxAnimatedVector",
+                                    "hkxAttribute",
+                                    "hkxAttributeGroup",
+                                    "hkxAttributeHolder",
+                                    "hkxCamera",
+                                    "hkxEdgeSelectionChannel",
+                                    "hkxEnum",
+                                    "hkxEnumItem",
+                                    "hkxEnvironment",
+                                    "hkxEnvironmentVariable",
+                                    "hkxIndexBuffer",
+                                    "hkxLight",
+                                    "hkxMaterial",
+                                    "hkxMaterialEffect",
+                                    "hkxMaterialProperty",
+                                    "hkxMaterialShader",
+                                    "hkxMaterialShaderSet",
+                                    "hkxMaterialTextureStage",
+                                    "hkxMesh",
+                                    "hkxMeshSection",
+                                    "hkxMeshUserChannelInfo",
+                                    "hkxNode",
+                                    "hkxNodeAnnotationData",
+                                    "hkxNodeSelectionSet",
+                                    "hkxScene",
+                                    "hkxSkinBinding",
+                                    "hkxSparselyAnimatedBool",
+                                    "hkxSparselyAnimatedEnum",
+                                    "hkxSparselyAnimatedInt",
+                                    "hkxSparselyAnimatedString",
+                                    "hkxTextureFile",
+                                    "hkxTextureInplace",
+                                    "hkxTriangleSelectionChannel",
+                                    "hkxVertexBuffer",
+                                    "hkxVertexBufferVertexData",
+                                    "hkxVertexDescription",
+                                    "hkxVertexDescriptionElementDecl",
+                                    "hkxVertexFloatDataChannel",
+                                    "hkxVertexIntDataChannel",
+                                    "hkxVertexSelectionChannel",
+                                    "hkxVertexVectorDataChannel",
+                                ],
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+        deserializer
+            .deserialize_class_index(ClassesVisitor {
+                marker: core::marker::PhantomData,
+            })
+    }
+}

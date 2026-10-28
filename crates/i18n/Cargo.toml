@@ -1,0 +1,6 @@
+[package]
+name = "sds-i18n"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "UI language switch (Russian / English) for SDS Anim Studio"

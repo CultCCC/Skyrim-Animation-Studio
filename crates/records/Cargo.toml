@@ -1,0 +1,11 @@
+[package]
+name = "sds-records"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Load-order record index for dressing NPCs (NPC_, RACE, ARMO, ARMA, OTFT, LVLI, LVLN, WEAP)"
+
+[dependencies]
+sds-i18n = { path = "../i18n" }
+sds-vfs = { path = "../vfs" }
+aether-codecs = { path = "../../vendor/aether/codecs" }

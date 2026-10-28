@@ -1,0 +1,10 @@
+[package]
+name = "sds-vfs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "MO2 virtual Data folder: profile mod order, loose files over BSAs"
+
+[dependencies]
+# Aether's BSA reader (std-only). Used from the build copy, the original stays untouched.
+aether-core = { path = "../../vendor/aether/core" }
