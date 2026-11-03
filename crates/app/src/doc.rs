@@ -144,6 +144,8 @@ impl ClipDoc {
 pub struct MotionPath {
     pub moves: Vec<(f32, [f32; 3])>,
     pub turns: Vec<(f32, f32)>,
+    /// `PIE.@SGVF|MCO_AttackSpeed|x`: the clip plays at ×x from that key on.
+    pub attack_speed: Vec<(f32, f32)>,
 }
 
 impl MotionPath {
@@ -153,6 +155,15 @@ impl MotionPath {
             match parse(&a.text).kind {
                 Kind::AnimMotion(v) => m.moves.push((a.time, v)),
                 Kind::AnimRotation(d) => m.turns.push((a.time, d)),
+                Kind::Pie { command, args } if command.eq_ignore_ascii_case("@SGVF") || command.eq_ignore_ascii_case("@SGVI") => {
+                    if let [name, value, ..] = args.as_slice() {
+                        if name.eq_ignore_ascii_case("MCO_AttackSpeed") {
+                            if let Ok(v) = value.trim().parse::<f32>() {
+                                m.attack_speed.push((a.time, v));
+                            }
+                        }
+                    }
+                }
                 _ => {}
             }
         }
@@ -171,6 +182,29 @@ impl MotionPath {
     /// Yaw turned since the clip start, degrees.
     pub fn yaw(&self, t: f32) -> f32 {
         sample(&self.turns, t, 0.0, lerp)
+    }
+
+    /// MCO_AttackSpeed at `t`: 1 until the first key (MCO/BFCO reset it at
+    /// the attack start), then the last key's value. Zero or less is ignored.
+    pub fn attack_speed(&self, t: f32) -> f32 {
+        self.attack_speed.iter().take_while(|k| k.0 <= t + 1e-5).filter(|k| k.1 > 0.0).last().map_or(1.0, |k| k.1)
+    }
+
+    /// Clip time after `real` seconds from `t`, with MCO_AttackSpeed applied
+    /// piecewise between its keys.
+    pub fn advance(&self, mut t: f32, mut real: f32) -> f32 {
+        for _ in 0..64 {
+            let m = self.attack_speed(t);
+            let next = self.attack_speed.iter().map(|k| k.0).find(|&k| k > t + 1e-5);
+            match next {
+                Some(b) if t + real * m > b => {
+                    real -= (b - t) / m;
+                    t = b;
+                }
+                _ => return t + real * m,
+            }
+        }
+        t
     }
 
     /// Horizontal speed (units/s) at `t`, from neighbouring keys.
@@ -243,6 +277,13 @@ mod tests {
         assert_eq!(d.motion.position(0.25), [0.0, 25.0, 0.0]);
         assert_eq!(d.motion.position(0.75), [5.0, 75.0, 0.0]);
         assert_eq!(d.motion.yaw(0.5), 45.0);
+        let s = doc(&[(0.5, "PIE.@SGVF|MCO_AttackSpeed|2.0"), (0.7, "PIE.@SGVF|mco_attackspeed|0.5")]);
+        assert_eq!(s.motion.attack_speed(0.2), 1.0);
+        assert_eq!(s.motion.attack_speed(0.6), 2.0);
+        assert_eq!(s.motion.attack_speed(0.9), 0.5);
+        // 0.4 real s: 0.4 at ×1 → 0.5, then 0.1 s at ×2 → 0.7, nothing left.
+        assert!((s.motion.advance(0.1, 0.5) - 0.7).abs() < 1e-5);
+        assert!((s.motion.advance(0.7, 0.2) - 0.8).abs() < 1e-5);
         assert!(d.to_hkanno_txt().contains("0.500000 animmotion 0 50 0"));
     }
 }

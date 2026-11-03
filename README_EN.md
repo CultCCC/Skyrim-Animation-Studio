@@ -26,6 +26,7 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
   - diamonds for points, bars for start/end pairs: MCO/BFCO windows, `Collision_Add`→`Remove`/`Duration`, TargetLock, ReachTarget, CastOK;
   - a ruler in frames or seconds, a frame grid, the playhead;
   - root motion folds into one row with a speed curve, and a «root values» lane under it shows the animmotion (x, y, z) and animrotation (↻°) numbers; with dense keys only those with room are labelled, zooming in shows all. The «root values» checkbox in the timeline bar hides the lane.
+  - playback speed (×) and the «MCO» checkbox: the clip plays at the speed its `PIE.@SGVF|MCO_AttackSpeed|x` annotations set — ×1 before the first, then the last one's value — multiplied by the × speed. The current multiplier is shown next to it; with no such annotations the checkbox is greyed out. Sounds are not sped up by MCO_AttackSpeed, as in game.
 - **Timeline — mouse.**
   - The time (playhead) changes only on the frames/seconds ruler: click or drag.
   - In annotation rows a click selects (an empty spot clears the selection) and the playhead stays put.

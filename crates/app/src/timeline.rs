@@ -727,6 +727,17 @@ fn transport(app: &mut StudioApp, ui: &mut egui::Ui) {
             ui.checkbox(&mut app.settings.motion_values, sds_i18n::t!("значения root", "root values"))
                 .on_hover_text(sds_i18n::t!("Числа animmotion / animrotation под строкой Root motion", "animmotion / animrotation numbers under the Root motion row"));
             ui.add(egui::DragValue::new(&mut app.play.speed).speed(0.01).range(0.05..=4.0).prefix("×"));
+            let mco = app.doc.as_ref().filter(|d| !d.motion.attack_speed.is_empty()).map(|d| d.motion.attack_speed(app.play.time));
+            let label = match mco {
+                Some(m) if app.play.mco_speed => format!("MCO ×{}", (m * 100.0).round() / 100.0),
+                _ => "MCO".to_string(),
+            };
+            ui.add_enabled_ui(mco.is_some(), |ui| {
+                ui.checkbox(&mut app.play.mco_speed, label).on_hover_text(sds_i18n::t!(
+                    "Скорость проигрывания по аннотациям PIE.@SGVF|MCO_AttackSpeed|x: до первой ×1, дальше — значение последней. Множится на скорость слева.",
+                    "Playback speed from PIE.@SGVF|MCO_AttackSpeed|x annotations: ×1 before the first, then the last one's value. Multiplies the speed on the left."
+                ));
+            });
             ui.separator();
             let icon = if !app.settings.sound_on || app.settings.volume <= 0.0 { "🔇" } else { "🔊" };
             if ui.selectable_label(app.settings.sound_on, icon).on_hover_text(sds_i18n::t!("Звук: SoundPlay и звуки эффектов PIE при проигрывании (вкл/выкл)", "Sound: SoundPlay and PIE effect sounds during playback (on/off)")).clicked() {

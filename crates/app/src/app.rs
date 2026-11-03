@@ -124,6 +124,8 @@ pub struct Playback {
     pub playing: bool,
     pub looping: bool,
     pub speed: f32,
+    /// Play the clip at the speed its MCO_AttackSpeed annotations set.
+    pub mco_speed: bool,
 }
 
 pub struct StudioApp {
@@ -244,7 +246,7 @@ impl StudioApp {
             doc: None,
             selected: None,
             clipboard: Vec::new(),
-            play: Playback { time: 0.0, playing: false, looping: true, speed: 1.0 },
+            play: Playback { time: 0.0, playing: false, looping: true, speed: 1.0, mco_speed: true },
             scene: SceneOptions {
                 root_motion: true,
                 show_path: true,
@@ -882,7 +884,7 @@ impl StudioApp {
         }
         let dur = doc.duration().max(1e-3);
         let prev = self.play.time;
-        self.play.time += dt * self.play.speed;
+        self.play.time = if self.play.mco_speed { doc.motion.advance(prev, dt * self.play.speed) } else { prev + dt * self.play.speed };
         let mut wrapped = false;
         if self.play.time > dur {
             if self.play.looping {
