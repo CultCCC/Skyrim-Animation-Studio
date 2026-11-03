@@ -938,7 +938,10 @@ fn precision_form(
     bones: &[(String, bool)],
 ) -> Option<(String, Option<String>)> {
     use sds_anno::precision::{build, separator_of, ParamKind, EVENTS, PARAMS};
-    let sep = separator_of(text);
+    // Precision reads `Event.First(v)|Second(v)|...`: always write `|`
+    // between parameters, converting old `.`-separated texts on edit.
+    let sep = '|';
+    let old_style = separator_of(text) == '.' && params.len() > 1;
     let mut ev = event.to_string();
     let mut list: Vec<(String, String)> = params.to_vec();
     let mut changed = false;
@@ -1076,7 +1079,14 @@ fn precision_form(
     if is_add && pos(&list, "Node").is_none() {
         ui.colored_label(Color32::from_rgb(240, 160, 80), sds_i18n::t!("Collision_Add без Node() Precision отклонит", "Precision rejects Collision_Add without Node()"));
     }
-    ui.small(sds_i18n::tf!("Разделитель параметров: «{sep}» (как в исходном тексте)", "Parameter separator: «{sep}» (as in the source text)"));
+    if old_style {
+        ui.horizontal(|ui| {
+            ui.colored_label(Color32::from_rgb(240, 160, 80), sds_i18n::t!("Параметры разделены «.», нужно «|»", "Parameters are separated by «.», «|» is needed"));
+            if ui.small_button(sds_i18n::t!("Исправить", "Fix")).clicked() {
+                changed = true;
+            }
+        });
+    }
     if !changed {
         return None;
     }

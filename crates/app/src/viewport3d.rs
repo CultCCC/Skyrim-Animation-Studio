@@ -51,6 +51,9 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
         ui.checkbox(&mut app.scene.show_body, sds_i18n::t!("Тело", "Body"));
         ui.checkbox(&mut app.scene.show_skeleton, sds_i18n::t!("Скелет", "Skeleton"));
         ui.checkbox(&mut app.scene.root_motion, "Root motion");
+        if ui.add_enabled(app.doc.is_some(), egui::Button::new(sds_i18n::t!("Редактор…", "Editor…"))).on_hover_text(sds_i18n::t!("Редактор рут-моушена: кривые X/Y", "Root Motion Editor: X/Y curves")).clicked() {
+            app.rm.open = true;
+        }
         ui.checkbox(&mut app.scene.follow, sds_i18n::t!("Камера за NPC", "Camera follows NPC"));
         if ui.button(sds_i18n::t!("Сброс камеры", "Reset camera")).clicked() {
             app.camera.yaw = 25f32.to_radians();

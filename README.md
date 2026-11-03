@@ -6,7 +6,7 @@ It reads a Mod Organizer 2 build (loose files and BSAs), plays HKX animations on
 
 - Precision hitboxes and trails;
 - PIE spell art and particles, sounds (`SoundPlay`, effect sounds, weapon swings, footsteps);
-- the NPC root-motion path with SDSCombat target lock / ReachTarget;
+- the NPC root-motion path with SDSCombat target lock / ReachTarget, and a Blender-style Bézier editor for the clip's `animmotion` root motion;
 - SCAR action zones, a combo graph and a combo simulator;
 - OAR submods, priorities and export.
 

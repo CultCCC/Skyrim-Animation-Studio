@@ -153,6 +153,8 @@ pub struct StudioApp {
     pub next_use: (bool, bool),
     /// The edit-text window: (annotation index, text being edited).
     pub edit_anno: Option<(usize, String)>,
+    /// The Root Motion Editor window.
+    pub rm: crate::root_motion::RootMotionEditor,
     pub profiles: Vec<String>,
     pub shot: Option<Shot>,
     pub camera: Camera,
@@ -294,6 +296,7 @@ impl StudioApp {
             next_n: (1, 1),
             next_use: (true, true),
             edit_anno: None,
+            rm: Default::default(),
             profiles: Vec::new(),
             shot: None,
             last_frame: None,
@@ -1011,7 +1014,7 @@ impl StudioApp {
         if right {
             self.step_frames(1);
         }
-        if home {
+        if home && !self.rm.hovered {
             self.play.time = 0.0;
         }
         if end {
@@ -1019,7 +1022,8 @@ impl StudioApp {
                 self.play.time = d.duration();
             }
         }
-        if del {
+        // Over the Root Motion Editor's graph, Delete and Home are its own.
+        if del && !self.rm.hovered {
             self.delete_selected();
         }
         if z {
@@ -1128,6 +1132,10 @@ impl StudioApp {
                     }
                 }
                 ui.separator();
+                if ui.add_enabled(self.doc.is_some(), egui::Button::new(sds_i18n::t!("Редактор рут-моушена…", "Root Motion Editor…"))).clicked() {
+                    self.rm.open = true;
+                    ui.close();
+                }
                 if ui.button(sds_i18n::t!("Сбросить раскладку", "Reset layout")).clicked() {
                     self.dock = default_layout();
                 }
@@ -1211,6 +1219,7 @@ impl eframe::App for StudioApp {
         crate::timeline::favorites_window(self, &ctx);
         crate::timeline::next_attack_window(self, &ctx);
         crate::timeline::edit_window(self, &ctx);
+        crate::root_motion::window(self, &ctx);
     }
 
     fn on_exit(&mut self) {

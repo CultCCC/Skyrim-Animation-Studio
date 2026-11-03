@@ -57,6 +57,14 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
   - root motion from `animmotion`/`animrotation` (on/off);
   - the NPC path with annotation markers, and skeleton lines on top;
   - camera: LMB rotate, RMB pan, wheel zoom, «Camera follows NPC». «Top 2D» is the flat top view of the path.
+- **Root Motion Editor** (View → «Root Motion Editor…» or the «Editor…» button in the 3D view):
+  - The clip's AMR path (`animmotion`) as two Bézier curves, X (red) and Y (green), in a Blender-style graph: time across, offset up; on the right, the path from above with the NPC at the playhead.
+  - On open, the clip's keys are fitted into a curve within «Accuracy» (2 units by default); the original path stays dashed. «Re-import» rebuilds the curves.
+  - LMB — select and drag a key (time snaps to frames) or a selected key's handle; Shift — add to the selection / drag along one axis; LMB on empty — box select; Ctrl+LMB — a new key on the nearest curve; I — keys at the playhead; X/Delete — delete; A / Alt+A — select all / none; Home — frame all; wheel — zoom (Ctrl — value, Shift — time), MMB — pan; the top ruler moves the playhead.
+  - Handles as in Blender: Auto (smooth, no overshoot), Aligned, Free, Vector (straight segments). Dragging an Auto handle makes it Aligned.
+  - Every change is baked back into `animmotion` on every frame (or every Nth, «Bake every»), so the 3D view, the SDSCombat path and saving see it at once. One drag is one Ctrl+Z step. Z and `animrotation` are left as they are.
+  - Nothing changes until you edit. «Restore original» puts `animmotion` back as it was when the clip was opened. Deleting every key removes `animmotion` from the clip.
+  - A clip with no `animmotion` starts from flat zero curves: the keys you add are AMR root motion, which needs Animation Motion Revolution in game.
 - **NPCs from ESP** (the «Character» tab):
   - **Finding NPCs:**
     - search by EditorID, name (localized names from `.STRINGS`) or FormID among the build's 14,495 NPCs;
@@ -88,7 +96,7 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - ID, the flags;
     - DamageMult, Length/LengthMult, Radius/RadiusMult, Duration, Scale, Rotation/Translation, GroundShake;
     - the trail overrides.
-    - The text is rebuilt in documentation order; the separator (`.` or `|`) is kept.
+    - The text is rebuilt in documentation order with `|` between parameters (`Collision_Add.Node(WEAPON)|Radius(25.5)`). For an old `.`-separated text the form offers «Fix».
   - **Sizes:**
     - `WEAPON` length = max(weapon model length or `Length()`, fMinWeaponLength) × fWeaponLengthMult × LengthMult × Scale;
     - the radius is fWeaponCapsuleRadius or `Radius()`;

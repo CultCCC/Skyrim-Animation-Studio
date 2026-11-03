@@ -16,6 +16,7 @@ mod pie;
 mod precision_view;
 mod project;
 mod render;
+mod root_motion;
 mod scar_panel;
 mod sds_path;
 mod settings;
@@ -119,6 +120,9 @@ fn main() -> eframe::Result {
             }
             if std::env::args().any(|a| a == "--next-open") {
                 app.next_open = true;
+            }
+            if std::env::args().any(|a| a == "--rm-open") {
+                app.rm.open = true;
             }
             if std::env::args().any(|a| a == "--combo-next") {
                 app.combo.only_next = true;
