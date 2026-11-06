@@ -9,7 +9,9 @@
 //! PROJ DATA: 2 type u16, 4 gravity, 8 speed, 12 range, 36 explosion,
 //! 40 flight sound, 72 collision radius, 76 lifetime; model in MODL.
 //! EXPL DATA: 4 sound, 8 sound (no-AV variant), 12 impact set, 32 radius;
-//! model in MODL. IPCT: MODL, DATA
+//! model in MODL; 16 placed object (a HAZD: DATA 4 radius in feet, 8
+//! lifetime, 20 flags 0x10 drop to ground, 36 looping sound; checked on
+//! TrapOilHazard01). IPCT: MODL, DATA
 //! 0 effect duration, SNAM sound. ADDN: DATA node index (the `AddOnNode<N>`
 //! nodes of effect NIFs), MODL. MGEF DATA 44 spellmaking area (feet), 100
 //! impact set (IPDS). PROJ DATA 84 is a decal (TXST), not an impact set.
@@ -19,7 +21,14 @@
 //! falloff, 56 edge colour, 60..80 the edge envelope, 84/88 fill/edge full
 //! alpha ratio, 312/316 fill colour keys 2/3, 320..328 their scales,
 //! 332..340 their times, 384 flags, 388/392 fill UV scale. ICON fill
-//! texture, NAM8 membrane palette.
+//! texture, NAM8 membrane palette. Particles: 112/116/120 birth ramp up /
+//! full time / ramp down, 124 full birth ratio, 128 persistent count, 132
+//! lifetime ±136, 140 speed along normal (±224), 144 acceleration along
+//! normal, 148..156 initial velocity, 160..168 acceleration, 172/176 scale
+//! keys at 180/184, 188..196 colour keys (bytes), 200..208 their alphas,
+//! 212..220 their times, 228..240 rotation and its speed (degrees, ±),
+//! 276/280 atlas cells U/V, 344 colour scale; ICO2 texture, NAM9 palette;
+//! flags 0x8 no particle shader, 0x10000/0x20000 particle greyscale.
 
 use crate::{f32_at, u32_at, zstr, Db, FormKey, Rec};
 
@@ -85,6 +94,8 @@ pub struct Impact {
     pub sound: Option<FormKey>,
     /// Seconds the model stays.
     pub duration: f32,
+    /// IPCT DATA 4: 0 surface normal, 1 projectile vector, 2 its reflection.
+    pub orientation: u32,
 }
 
 /// Alpha over time of one EFSH layer (fill or edge).
@@ -148,6 +159,85 @@ pub struct EffectShader {
     pub falloff: f32,
     pub uv_scale: [f32; 2],
     pub uv_speed: [f32; 2],
+    pub particles: Option<EfshParticles>,
+}
+
+/// The particle half of an EFSH: sprites born over the actor's surface.
+#[derive(Debug, Clone)]
+pub struct EfshParticles {
+    pub texture: String,
+    pub palette: String,
+    pub grey_color: bool,
+    pub grey_alpha: bool,
+    pub ramp_up: f32,
+    pub full_time: f32,
+    pub ramp_down: f32,
+    /// Births per second at full, then while it persists.
+    pub full_rate: f32,
+    pub persistent_rate: f32,
+    pub life: f32,
+    pub life_var: f32,
+    pub speed_normal: f32,
+    pub speed_normal_var: f32,
+    pub accel_normal: f32,
+    pub velocity: [f32; 3],
+    pub accel: [f32; 3],
+    /// (size, normalized time) ×2.
+    pub scale: [(f32, f32); 2],
+    /// (rgb 0..1, alpha, normalized time) ×3.
+    pub colors: [([f32; 3], f32, f32); 3],
+    pub color_scale: f32,
+    pub atlas: [u32; 2],
+    /// Degrees: start ±, speed ±.
+    pub rotation: [f32; 4],
+}
+
+impl EfshParticles {
+    /// Births per second `age` seconds after the start; 0 once removed.
+    pub fn rate(&self, age: f32, removed: bool) -> f32 {
+        if removed {
+            return 0.0;
+        }
+        let (a, b, c) = (self.ramp_up, self.ramp_up + self.full_time, self.ramp_up + self.full_time + self.ramp_down);
+        if age < a {
+            self.full_rate * age / a.max(1e-4)
+        } else if age < b {
+            self.full_rate
+        } else if age < c {
+            self.full_rate + (self.persistent_rate - self.full_rate) * (age - b) / (c - b).max(1e-4)
+        } else {
+            self.persistent_rate
+        }
+    }
+
+    /// Size at normalized life `x`.
+    pub fn size(&self, x: f32) -> f32 {
+        let [(s0, t0), (s1, t1)] = self.scale;
+        if x <= t0 {
+            s0
+        } else if x >= t1 {
+            s1
+        } else {
+            s0 + (s1 - s0) * (x - t0) / (t1 - t0).max(1e-4)
+        }
+    }
+
+    /// Colour and alpha at normalized life `x`.
+    pub fn color(&self, x: f32) -> ([f32; 3], f32) {
+        let k = &self.colors;
+        let mix = |a: &([f32; 3], f32, f32), b: &([f32; 3], f32, f32), f: f32| {
+            ([a.0[0] + (b.0[0] - a.0[0]) * f, a.0[1] + (b.0[1] - a.0[1]) * f, a.0[2] + (b.0[2] - a.0[2]) * f], a.1 + (b.1 - a.1) * f)
+        };
+        if x <= k[0].2 {
+            return (k[0].0, k[0].1);
+        }
+        for w in k.windows(2) {
+            if x <= w[1].2 {
+                return mix(&w[0], &w[1], (x - w[0].2) / (w[1].2 - w[0].2).max(1e-4));
+            }
+        }
+        (k[2].0, k[2].1)
+    }
 }
 
 impl EffectShader {
@@ -256,6 +346,21 @@ pub struct Explosion {
     pub radius: f32,
     /// Impact set (IPDS) on the ground where it goes off.
     pub impact_set: Option<FormKey>,
+    /// The hazard it leaves (fire pool, cloud, rune).
+    pub hazard: Option<Hazard>,
+}
+
+#[derive(Debug, Clone)]
+pub struct Hazard {
+    pub edid: String,
+    pub model: String,
+    /// Units (the record keeps feet).
+    pub radius: f32,
+    /// Seconds; 0 = until something removes it.
+    pub lifetime: f32,
+    pub drop_to_ground: bool,
+    /// Looping sound while it lasts.
+    pub sound: Option<FormKey>,
 }
 
 #[derive(Debug, Clone)]
@@ -390,7 +495,8 @@ impl Db {
         let model = r.first(b"MODL").map(zstr).filter(|m| !m.is_empty()).map(|m| meshes_path(&m)).unwrap_or_default();
         let sound = r.first(b"SNAM").and_then(|d| u32_at(d, 0)).and_then(|raw| self.link(r, raw));
         let duration = r.first(b"DATA").and_then(|d| f32_at(d, 0)).unwrap_or(0.0);
-        Some(Impact { edid: r.edid(), model, sound, duration })
+        let orientation = r.first(b"DATA").and_then(|d| u32_at(d, 4)).unwrap_or(0);
+        Some(Impact { edid: r.edid(), model, sound, duration, orientation })
     }
 
     /// Addon nodes: `AddOnNode<N>` index → model.
@@ -431,6 +537,32 @@ impl Db {
             falloff: f(52),
             uv_scale: [if scale[0] > 0.0 { scale[0] } else { 1.0 }, if scale[1] > 0.0 { scale[1] } else { 1.0 }],
             uv_speed: [f(44), f(48)],
+            particles: {
+                let texture = tex(b"ICO2");
+                (flags & 0x8 == 0 && !texture.is_empty() && f(132) > 0.0 && (f(124) > 0.0 || f(128) > 0.0)).then(|| EfshParticles {
+                    texture,
+                    palette: tex(b"NAM9"),
+                    grey_color: flags & 0x10000 != 0,
+                    grey_alpha: flags & 0x20000 != 0,
+                    ramp_up: f(112),
+                    full_time: f(116),
+                    ramp_down: f(120),
+                    full_rate: f(124),
+                    persistent_rate: f(128),
+                    life: f(132),
+                    life_var: f(136),
+                    speed_normal: f(140),
+                    speed_normal_var: f(224),
+                    accel_normal: f(144),
+                    velocity: [f(148), f(152), f(156)],
+                    accel: [f(160), f(164), f(168)],
+                    scale: [(f(172), f(180)), (f(176), f(184))],
+                    colors: [(rgb(188), f(200), f(212)), (rgb(192), f(204), f(216)), (rgb(196), f(208), f(220))],
+                    color_scale: if f(344) > 0.0 { f(344) } else { 1.0 },
+                    atlas: [u32_at(d, 276).unwrap_or(1).max(1), u32_at(d, 280).unwrap_or(1).max(1)],
+                    rotation: [f(228), f(232), f(236), f(240)],
+                })
+            },
         })
     }
 
@@ -462,7 +594,23 @@ impl Db {
         let d = e.first(b"DATA").unwrap_or(&[]);
         let model = e.first(b"MODL").map(zstr).filter(|m| !m.is_empty()).map(|m| meshes_path(&m)).unwrap_or_default();
         let sound = [4, 8].into_iter().find_map(|o| u32_at(d, o).and_then(|raw| self.link(e, raw)));
-        Some(Explosion { key: k, edid: e.edid(), model, sound, radius: f32_at(d, 32).unwrap_or(0.0), impact_set: u32_at(d, 12).and_then(|raw| self.link(e, raw)) })
+        let hazard = u32_at(d, 16).and_then(|raw| self.link(e, raw)).and_then(|h| self.hazard(h));
+        Some(Explosion { key: k, edid: e.edid(), model, sound, radius: f32_at(d, 32).unwrap_or(0.0), impact_set: u32_at(d, 12).and_then(|raw| self.link(e, raw)), hazard })
+    }
+
+    /// A HAZD record.
+    pub fn hazard(&self, k: FormKey) -> Option<Hazard> {
+        let h = self.get(k).filter(|r| &r.sig == b"HAZD")?;
+        let d = h.first(b"DATA").unwrap_or(&[]);
+        let model = h.first(b"MODL").map(zstr).filter(|m| !m.is_empty()).map(|m| meshes_path(&m)).unwrap_or_default();
+        Some(Hazard {
+            edid: h.edid(),
+            model,
+            radius: f32_at(d, 4).unwrap_or(0.0) * UNITS_PER_FOOT,
+            lifetime: f32_at(d, 8).unwrap_or(0.0),
+            drop_to_ground: u32_at(d, 20).is_some_and(|f| f & 0x10 != 0),
+            sound: u32_at(d, 36).and_then(|raw| self.link(h, raw)),
+        })
     }
 
     /// Name, keywords and enchantment facts of a weapon.

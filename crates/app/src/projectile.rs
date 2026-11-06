@@ -25,8 +25,20 @@ const TARGET_RADIUS: f32 = 30.0;
 const TARGET_HEIGHT: f32 = 140.0;
 /// How long the explosion art stays (EXPL has no duration of its own).
 pub const EXPLOSION_LIFE: f32 = 3.0;
+/// A hazard with no lifetime stays this long in the preview.
+pub const HAZARD_DEFAULT_LIFE: f32 = 10.0;
 /// How long an instant (beam, flame) projectile model shows.
 const INSTANT_LIFE: f32 = 0.35;
+
+#[derive(Debug, Clone)]
+pub struct ImpactHit {
+    pub impact: sds_records::fx::Impact,
+    pub at: [f32; 3],
+    /// Surface normal at `at` (up on the floor, back at the caster on the target).
+    pub normal: [f32; 3],
+    /// "target" or the floor material, for labels.
+    pub surface: String,
+}
 
 #[derive(Debug, Clone)]
 pub struct Flight {
@@ -45,9 +57,12 @@ pub struct Flight {
     pub hit_point: [f32; 3],
     /// The target was hit directly or is inside the explosion.
     pub hits_target: bool,
-    /// The impact (IPCT) on the surface it burst on: the explosion's impact
-    /// set, else the magic effect's, for the ground material of the scene.
-    pub impact_fx: Option<sds_records::fx::Impact>,
+    /// It struck the target itself (not the floor, not just the blast).
+    pub direct: bool,
+    /// Impacts (IPCT) it leaves: the magic effect's on what it struck (the
+    /// target's skin, or the floor's material) and the explosion's on the
+    /// floor under the blast.
+    pub impacts: Vec<ImpactHit>,
     /// When the projectile model disappears.
     pub end: f32,
 }
@@ -117,7 +132,7 @@ pub fn fly(key: String, shot: &Shot, from: [f32; 3], to: [f32; 3]) -> Flight {
     let d = sub(to, from);
     let dist = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
     let h = d[0].hypot(d[1]);
-    let mut f = Flight { key, shot: shot.clone(), from, to, vel: [0.0; 3], g: 0.0, impact: Some(shot.start), hit_point: to, hits_target: true, impact_fx: None, end: shot.start + INSTANT_LIFE };
+    let mut f = Flight { key, shot: shot.clone(), from, to, vel: [0.0; 3], g: 0.0, impact: Some(shot.start), hit_point: to, hits_target: true, direct: true, impacts: Vec::new(), end: shot.start + INSTANT_LIFE };
     if f.instant() {
         if p.range > 0.0 && dist > p.range {
             f.impact = None;
@@ -182,6 +197,7 @@ pub fn fly(key: String, shot: &Shot, from: [f32; 3], to: [f32; 3]) -> Flight {
             f.impact = Some(shot.start + t);
             f.end = shot.start + t;
             f.hit_point = f.pos(f.end);
+            f.direct = direct;
             if !direct {
                 f.hit_point[2] = 0.0;
             }
@@ -223,8 +239,25 @@ pub fn flights(app: &StudioApp, cues: &[Cue], path: Option<&Path>) -> Vec<Flight
             let mut f = fly(format!("{}:{i}", cue.index), shot, from, to);
             if let (Some(l), Some(_)) = (&app.loaded, f.impact) {
                 let ground = l.db.by_edid(b"MATT", &app.settings.ground);
-                let set = f.shot.explosion.as_ref().and_then(|e| e.impact_set).or(f.shot.impact_set);
-                f.impact_fx = set.and_then(|s| l.db.impact(s, ground));
+                // The dummy is a humanoid: Havok skin.
+                let skin = l.db.by_edid(b"MATT", "MaterialSkin");
+                let hp = f.hit_point;
+                let up = [0.0, 0.0, 1.0];
+                if let Some(set) = f.shot.impact_set {
+                    let (mat, normal, surface) = if f.direct { (skin, f.dir(f.end).map(|v| -v), "target".to_string()) } else { (ground, up, app.settings.ground.clone()) };
+                    if let Some(i) = l.db.impact(set, mat) {
+                        f.impacts.push(ImpactHit { impact: i, at: hp, normal, surface });
+                    }
+                }
+                // The explosion's own set marks the floor under it, when the
+                // blast reaches down that far.
+                if let Some(e) = &f.shot.explosion {
+                    if let (Some(set), true) = (e.impact_set, hp[2] <= e.radius.max(f.shot.blast_radius)) {
+                        if let Some(i) = l.db.impact(set, ground) {
+                            f.impacts.push(ImpactHit { impact: i, at: [hp[0], hp[1], 0.0], normal: up, surface: app.settings.ground.clone() });
+                        }
+                    }
+                }
             }
             if std::env::var_os("SDS_FX_DEBUG").is_some() {
                 let p = &f.shot.projectile;
@@ -232,7 +265,7 @@ pub fn flights(app: &StudioApp, cues: &[Cue], path: Option<&Path>) -> Vec<Flight
                     "FXPROJ {} {} {:?} speed {} grav {} model {:?} start {:.3} impact {:?} end {:.3} expl {:?} blast {:.0} hits {} ipds {:?} ipct {:?}",
                     f.key, p.edid, p.kind, p.speed, p.gravity, p.model, f.shot.start, f.impact, f.end,
                     f.shot.explosion.as_ref().map(|e| (&e.edid, &e.model)), f.shot.blast_radius, f.hits_target,
-                    f.shot.explosion.as_ref().and_then(|e| e.impact_set).or(f.shot.impact_set), f.impact_fx.as_ref().map(|i| (&i.edid, &i.model, i.duration))
+                    f.shot.explosion.as_ref().and_then(|e| e.impact_set).or(f.shot.impact_set), f.impacts.iter().map(|i| (&i.impact.edid, &i.impact.model, &i.surface)).collect::<Vec<_>>()
                 );
             }
             out.push(f);
@@ -258,8 +291,16 @@ pub fn sounds(flights: &[Flight], db: &sds_records::Db) -> Vec<FlightSound> {
             out.push(FlightSound { time: f.shot.start, sound: s, label: sds_i18n::tf!("полёт: {} ({})", "flight: {} ({})", edid(s), f.shot.spell), until: Some(f.end) });
         }
         let Some(ti) = f.impact else { continue };
-        if let Some(s) = f.impact_fx.as_ref().and_then(|i| i.sound.map(|s| (s, &i.edid))) {
-            out.push(FlightSound { time: ti, sound: s.0, label: sds_i18n::tf!("импакт: {} ({})", "impact: {} ({})", edid(s.0), s.1), until: None });
+        for h in &f.impacts {
+            if let Some(s) = h.impact.sound {
+                out.push(FlightSound { time: ti, sound: s, label: sds_i18n::tf!("импакт: {} ({}, {})", "impact: {} ({}, {})", edid(s), h.impact.edid, h.surface), until: None });
+            }
+        }
+        if let Some(h) = f.shot.explosion.as_ref().and_then(|e| e.hazard.as_ref()) {
+            if let Some(s) = h.sound {
+                let life = if h.lifetime > 0.0 { h.lifetime } else { HAZARD_DEFAULT_LIFE };
+                out.push(FlightSound { time: ti, sound: s, label: sds_i18n::tf!("хазард: {} ({})", "hazard: {} ({})", edid(s), h.edid), until: Some(ti + life) });
+            }
         }
         if let Some(e) = &f.shot.explosion {
             if let Some(s) = e.sound {
@@ -296,12 +337,34 @@ pub fn draw(
         if t < ti {
             continue;
         }
-        if let Some(i) = f.impact_fx.as_ref().filter(|i| !i.model.is_empty()) {
-            let life = if i.duration > 0.0 { i.duration } else { 2.0 };
+        for (k, h) in f.impacts.iter().enumerate().filter(|(_, h)| !h.impact.model.is_empty()) {
+            let life = if h.impact.duration > 0.0 { h.impact.duration } else { 2.0 };
             if t < ti + life {
-                let asset = player.asset(vfs, &i.model);
-                let world = Transform::from_av(f.impact_point(), facing(f.dir(ti)), 1.0);
-                player.draw_full(vfs, &format!("ipct:{}", f.key), &asset, &|_: f32| world, t - ti, cam, None, out);
+                let asset = player.asset(vfs, &h.impact.model);
+                let d = f.dir(ti);
+                // IPCT orientation: the surface normal, the projectile's
+                // vector, or that vector reflected off the surface.
+                let n = h.normal;
+                let dot = d[0] * n[0] + d[1] * n[1] + d[2] * n[2];
+                let axis = match h.impact.orientation {
+                    1 => d,
+                    2 => [d[0] - 2.0 * dot * n[0], d[1] - 2.0 * dot * n[1], d[2] - 2.0 * dot * n[2]],
+                    _ => n,
+                };
+                let world = Transform::from_av(h.at, facing(axis), 1.0);
+                player.draw_full(vfs, &format!("ipct:{}:{k}", f.key), &asset, &|_: f32| world, t - ti, cam, None, out);
+            }
+        }
+        if let Some(h) = f.shot.explosion.as_ref().and_then(|e| e.hazard.as_ref()).filter(|h| !h.model.is_empty()) {
+            let life = if h.lifetime > 0.0 { h.lifetime } else { HAZARD_DEFAULT_LIFE };
+            if t < ti + life {
+                let asset = player.asset(vfs, &h.model);
+                let mut at = f.impact_point();
+                if h.drop_to_ground {
+                    at[2] = 0.0;
+                }
+                let world = Transform::from_av(at, Transform::IDENTITY.rot, 1.0);
+                player.draw_full(vfs, &format!("hazd:{}", f.key), &asset, &|_: f32| world, t - ti, cam, None, out);
             }
         }
         if let Some(e) = f.shot.explosion.as_ref().filter(|e| !e.model.is_empty()) {

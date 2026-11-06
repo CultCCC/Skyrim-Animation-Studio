@@ -112,6 +112,9 @@ pub fn load_asset(vfs: &Vfs, path: &str) -> FxAsset {
                 });
                 if std::env::var("SDS_FX_DEBUG").is_ok() {
                     eprintln!("FXDEBUG {path} {}: tex={:?} pal={:?} gc={} ga={} add={} tint={:?} bcs={}", desc.name, desc.texture, desc.greyscale_texture, desc.greyscale_color, desc.greyscale_alpha, desc.additive, desc.tint, desc.base_color_scale);
+                    for e in &desc.emitters {
+                        eprintln!("FXEMIT {path} {}: rate={} keys={} active={:?} window={}..{} loop={} life={}±{} max={}", desc.name, e.birth_rate, e.birth_keys.keys.len(), e.active_keys, e.start_time, e.stop_time, e.looping, e.life_span, e.life_span_variation, desc.max_particles);
+                    }
                 }
                 let unresolved = desc.unresolved_mesh_emitters();
                 if !unresolved.is_empty() {
@@ -139,6 +142,16 @@ pub fn load_asset(vfs: &Vfs, path: &str) -> FxAsset {
         .collect();
     if std::env::var("SDS_FX_DEBUG").is_ok() {
         eprintln!("FXM {path}: emitter shapes {:?}; meshes {:?}", emitter_shapes, meshes.iter().map(|m| (m.name.clone(), m.node.clone(), m.texture.clone())).collect::<Vec<_>>());
+        for m in &meshes {
+            let (mut lo, mut hi) = ([f32::MAX; 3], [f32::MIN; 3]);
+            for v in &m.verts {
+                for k in 0..3 {
+                    lo[k] = lo[k].min(v.0[k]);
+                    hi[k] = hi[k].max(v.0[k]);
+                }
+            }
+            eprintln!("FXBOUNDS {path} {}: {:?}..{:?} additive={} mode={}", m.name, lo, hi, m.additive, m.mode);
+        }
     }
     meshes.retain(|m| !emitter_shapes.iter().any(|n| n == &m.name));
     clips = aether_core::sequence::sequences_from_nif(&nif).clips;
@@ -620,7 +633,7 @@ impl FxPlayer {
             let add = if d.additive { 1.0 } else { 0.0 };
             if std::env::var("SDS_FX_DEBUG").is_ok() {
                 if let Some(p) = sim.particles.first() {
-                    eprintln!("FXP {} n={} color={:?} size={} radius={} atlas={} uvs={:?} mode={} grey=({}, {}, {})", d.name, sim.particles.len(), p.color, p.size, p.radius, p.atlas_index, d.atlas_uv(p.atlas_index), mode, d.base_color_scale, d.tint[0], d.tint[3]);
+                    eprintln!("FXP {} simt={:.3} n={} color={:?} size={} radius={} atlas={} uvs={:?} mode={} grey=({}, {}, {})", d.name, sim.time, sim.particles.len(), p.color, p.size, p.radius, p.atlas_index, d.atlas_uv(p.atlas_index), mode, d.base_color_scale, d.tint[0], d.tint[3]);
                 }
             }
             for p in &sim.particles {

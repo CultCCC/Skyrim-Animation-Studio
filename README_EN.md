@@ -207,7 +207,8 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - when Range or lifetime runs out first, it vanishes without exploding;
     - on impact the explosion plays (the MGEF's EXPL, else the PROJ's own — only with its Explosion flag). The effect's hit art and hit sound play when the target was hit directly or is inside the explosion. With the path on, the trajectory is an orange line;
     - blast radius: the spell effect's Area, else the MGEF's area (both in feet, ×21.33 → 15 ft = 320 u), else the EXPL's own Radius. It shows as a red ring for 3 s after the blast;
-    - impact: the EXPL's impact set, else the MGEF's (DATA@100) → the IPCT for the surface chosen in Scene → Sound (or its parent). Its model stands at the hit point for the IPCT duration, its sound plays with the blast;
+    - impacts strike what was hit. The MGEF's set (DATA@100): on the target, the IPCT for skin (MaterialSkin); on the floor, the one for the surface chosen in Scene → Sound (or its parent). The explosion's set always marks the floor under the blast when the blast reaches down that far. The model follows the IPCT orientation (surface normal, projectile vector or its reflection) for the IPCT duration; the sound plays on impact;
+    - hazard: when the explosion's PlacedObject is a HAZD, its model stays at the blast (on the floor with «drop to ground») for its Lifetime (10 s without one), with a yellow ring of its radius (feet ×21.33) and its sound looping until the end;
     - sounds: the PROJ flight loop until the impact, the EXPL sound and the MGEF hit sound on it;
     - the PIE inspector notes «projectile …, type, speed → explosion»; `SDS_FX_DEBUG=1` prints FXPROJ lines.
   - **AddOnNode.** `AddOnNode<N>` nodes in any art, projectile, explosion or impact get the model of the ADDN record with index N (lightning, sparks, dust — usually particle systems) and are born where the node is (with the projectile's flight and the node's animation); nested addons go two levels deep.
@@ -216,7 +217,8 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - fill — the fill texture with UV scroll and scale, coloured by its three keys; with the grayscale flag the texture's brightness is looked up in the membrane palette;
     - edge — a fresnel glow in the edge colour, its width from the falloff;
     - fill and edge alpha follow the EFSH envelopes (fade in, full, fade to persistent, pulse);
-    - «affect skin only» keeps it on skin; shaders on the target are not drawn (it has no body); EFSH particles and weapon enchantment shaders are not drawn.
+    - EFSH particles: sprites born at random points of the body (ICO2, U×V atlas, NAM9 palette) fly along the normal plus their initial velocity and acceleration; size, colour and alpha follow the life keys; the rate ramps up, holds, ramps down to the persistent level. The rate is taken per 5000 square units of body surface — an estimate, the engine's unit is not known;
+    - «affect skin only» keeps it on skin; shaders on the target are not drawn (it has no body); weapon enchantment shaders are not drawn.
   - Not modelled: mEnd, bow arrows (BowRelease), projectile collisions with anything but the target and the ground.
   - Debug: `SDS_FX_DEBUG=1` prints the meshes, systems and clips of each art NIF.
 - **Sound** (🔊 and the volume slider in the timeline bar; saved in settings):

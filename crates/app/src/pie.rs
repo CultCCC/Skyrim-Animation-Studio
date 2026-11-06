@@ -206,7 +206,11 @@ pub struct BodyShader {
 /// A body shader as it looks at one moment.
 pub struct ActiveShader {
     pub shader: sds_records::fx::EffectShader,
+    /// Which cue/shader, for stable particle seeds.
+    pub seed: u32,
     pub age: f32,
+    /// Seconds since it was removed.
+    pub ended: Option<f32>,
     pub fill: [f32; 4],
     pub edge: [f32; 4],
 }
@@ -214,24 +218,25 @@ pub struct ActiveShader {
 /// Every body shader visible at `t`, with its colours and alphas.
 pub fn active_shaders(cues: &[Cue], db: &Db, t: f32) -> Vec<ActiveShader> {
     let mut out = Vec::new();
-    for b in cues.iter().flat_map(|c| &c.body_shaders) {
+    for (n, b) in cues.iter().flat_map(|c| &c.body_shaders).enumerate() {
         let age = t - b.start;
         if age < 0.0 {
             continue;
         }
-        let Some(s) = db.effect_shader(b.shader).filter(|s| !s.no_membrane) else { continue };
+        let Some(s) = db.effect_shader(b.shader).filter(|s| !s.no_membrane || s.particles.is_some()) else { continue };
         let ended = b.life.map(|l| age - l).filter(|e| *e > 0.0);
-        let fade = s.fill.fade_out.max(s.edge.fade_out).max(0.1);
-        if ended.is_some_and(|e| e > fade) || (b.life.is_none() && age > s.natural_life()) {
+        let fade = s.fill.fade_out.max(s.edge.fade_out).max(s.particles.as_ref().map_or(0.0, |p| p.life + p.life_var)).max(0.1);
+        if ended.is_some_and(|e| e > fade) || (b.life.is_none() && age > s.natural_life() && s.particles.is_none()) {
             continue;
         }
         let rgb = s.fill_color(age);
         let fill = [rgb[0], rgb[1], rgb[2], s.fill.alpha(age, ended)];
         let edge = [s.edge_color[0], s.edge_color[1], s.edge_color[2], s.edge.alpha(age, ended)];
-        if fill[3] <= 0.0 && edge[3] <= 0.0 {
+        let (fill, edge) = if s.no_membrane { ([0.0; 4], [0.0; 4]) } else { (fill, edge) };
+        if fill[3] <= 0.0 && edge[3] <= 0.0 && s.particles.is_none() {
             continue;
         }
-        out.push(ActiveShader { shader: s, age, fill, edge });
+        out.push(ActiveShader { shader: s, seed: n as u32 * 7919 + b.shader.id, age, ended, fill, edge });
     }
     out
 }

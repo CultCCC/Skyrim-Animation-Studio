@@ -310,6 +310,20 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
                             for w in pts.windows(2) {
                                 line(&mut lines, w[0], w[1], col);
                             }
+                            // The hazard's radius while it lasts.
+                            if let (Some(ti), Some(h)) = (f.impact, f.shot.explosion.as_ref().and_then(|e| e.hazard.as_ref())) {
+                                let life = if h.lifetime > 0.0 { h.lifetime } else { crate::projectile::HAZARD_DEFAULT_LIFE };
+                                if t >= ti && t < ti + life && h.radius > 0.0 {
+                                    let c = f.hit_point;
+                                    let ring: Vec<[f32; 3]> = (0..=48).map(|i| {
+                                        let a = i as f32 / 48.0 * std::f32::consts::TAU;
+                                        [c[0] + h.radius * a.cos(), c[1] + h.radius * a.sin(), 1.5]
+                                    }).collect();
+                                    for w in ring.windows(2) {
+                                        line(&mut lines, w[0], w[1], [1.0, 0.8, 0.1, 0.8]);
+                                    }
+                                }
+                            }
                             // The blast radius around where it went off.
                             if let (Some(ti), true) = (f.impact, f.shot.blast_radius > 0.0) {
                                 if t >= ti && t < ti + crate::projectile::EXPLOSION_LIFE {
@@ -375,8 +389,23 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
     };
     let gen = app.character_gen * 10_000;
     let mut shells = Vec::new();
+    {
+        let fwd = {
+            let d = [cam.target[0] - eye[0], cam.target[1] - eye[1], cam.target[2] - eye[2]];
+            let l = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt().max(1e-6);
+            [d[0] / l, d[1] / l, d[2] / l]
+        };
+        let rl = fwd[0].hypot(fwd[1]).max(1e-6);
+        let right = [fwd[1] / rl, -fwd[0] / rl, 0.0];
+        let up = [right[1] * fwd[2] - right[2] * fwd[1], right[2] * fwd[0] - right[0] * fwd[2], right[0] * fwd[1] - right[1] * fwd[0]];
+        let own: Vec<&crate::paired::Skinned> = skinned.iter().filter(|m| (gen..gen + 5_000).contains(&m.id) && !m.blend).collect();
+        fx_batches.extend(crate::body_fx::particles(&shaders, &own, right, up));
+    }
     for a in &shaders {
         let s = &a.shader;
+        if s.no_membrane {
+            continue;
+        }
         for m in skinned.iter().filter(|m| (gen..gen + 5_000).contains(&m.id) && (!s.skin_only || m.skin) && !m.blend) {
             shells.push(crate::render::Shell {
                 mesh: m.id,

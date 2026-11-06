@@ -2,6 +2,7 @@
 
 mod app;
 mod audio;
+mod body_fx;
 mod character;
 mod combo;
 mod combo_panel;
