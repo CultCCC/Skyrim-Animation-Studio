@@ -246,6 +246,11 @@ pub struct Shot {
     pub spell: String,
     pub projectile: sds_records::fx::Projectile,
     pub explosion: Option<sds_records::fx::Explosion>,
+    /// Blast radius, units: the spell's EFIT area, else the MGEF's area
+    /// (both feet), else the explosion's own radius.
+    pub blast_radius: f32,
+    /// The MGEF's impact set (IPDS).
+    pub impact_set: Option<sds_records::FormKey>,
     /// Effect art on the target, `start` relative to the impact.
     pub hits: Vec<Piece>,
     /// MGEF hit sounds, played on impact: (SNDR, label).
@@ -343,8 +348,14 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
                         let hand = if op == "@CASTLEFT" { LEFT_MAGIC } else { RIGHT_MAGIC };
                         // Cast at the target with a projectile: it flies, and the
                         // hit art and hit sound wait for the impact.
-                        let flight = s.projectile.as_ref().filter(|_| !self_target).and_then(|p| Some((p.projectile.clone()?, p.explosion.clone())));
-                        let mut shot = flight.map(|(projectile, explosion)| Shot {
+                        let flight = s.projectile.as_ref().filter(|_| !self_target).and_then(|p| Some((p.projectile.clone()?, p.explosion.clone(), p.mgef_area, p.impact_set)));
+                        let mut shot = flight.map(|(projectile, explosion, mgef_area, impact_set)| Shot {
+                            impact_set,
+                            blast_radius: match (s.area, mgef_area) {
+                                (a, _) if a > 0 => a as f32 * sds_records::fx::UNITS_PER_FOOT,
+                                (_, a) if a > 0 => a as f32 * sds_records::fx::UNITS_PER_FOOT,
+                                _ => explosion.as_ref().map_or(0.0, |e| e.radius),
+                            },
                             start: at,
                             hand: hand.into(),
                             spell: if s.name.is_empty() { s.edid.clone() } else { format!("{} «{}»", s.edid, s.name) },
@@ -383,12 +394,13 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
                             Some(sh) => {
                                 let p = &sh.projectile;
                                 cue.notes.push(sds_i18n::tf!(
-                                    "снаряд {} ({}, {:.0} ед/с){}",
-                                    "projectile {} ({}, {:.0} u/s){}",
+                                    "снаряд {} ({}, {:.0} ед/с){}, радиус взрыва {:.0}",
+                                    "projectile {} ({}, {:.0} u/s){}, blast radius {:.0}",
                                     p.edid,
                                     p.kind.label(),
                                     p.speed,
-                                    sh.explosion.as_ref().map(|e| format!(" → {}", e.edid)).unwrap_or_default()
+                                    sh.explosion.as_ref().map(|e| format!(" → {}", e.edid)).unwrap_or_default(),
+                                    sh.blast_radius
                                 ));
                             }
                             None if !self_target => cue.notes.push(sds_i18n::t!("не на себя, снаряда нет: арт эффекта сразу на цели", "not on self, no projectile: the effect art goes straight onto the target").into()),

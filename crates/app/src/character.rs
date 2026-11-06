@@ -67,6 +67,9 @@ pub struct Piece {
     pub attach: Option<String>,
     /// Shapes whose name contains one of these are not drawn (hair under a helmet).
     pub hide_shapes: Vec<String>,
+    /// Weapons: Some(true) keeps only the scabbard (`Scb*` shapes or nodes),
+    /// Some(false) drops it; None keeps everything.
+    pub scabbard: Option<bool>,
     pub visible: bool,
 }
 
@@ -192,6 +195,7 @@ impl Character {
                     path: format!("meshes/actors/character/character assets/{part}.nif"),
                     attach: None,
                     hide_shapes: Vec::new(),
+                    scabbard: None,
                     visible: true,
                 });
             }
@@ -344,7 +348,22 @@ impl Character {
             piece.hide_shapes.iter().any(|h| n.contains(h.as_str()))
                 || std::env::var("SDS_HIDE").is_ok_and(|v| v.split(',').any(|h| !h.is_empty() && n.contains(&h.to_ascii_lowercase())))
         };
-        let skip = |m: &aether_core::mesh::RenderMesh| m.hidden || m.marker || m.no_material || m.effect || hidden(&m.name);
+        // A weapon NIF's scabbard: a shape or an ancestor node named Scb*.
+        let in_scb = |m: &aether_core::mesh::RenderMesh| {
+            let scb = |n: &str| n.to_ascii_lowercase().starts_with("scb");
+            let mut node = m.node;
+            let mut found = scb(&m.name);
+            while let (false, Some(n)) = (found, node) {
+                found = scb(&scene.nodes[n].name);
+                node = scene.nodes[n].parent;
+            }
+            found
+        };
+        if piece.scabbard == Some(true) && piece.attach.as_deref().and_then(|a| self.resolve(a)).is_none() {
+            // No sheath node on this skeleton: leave the scabbard out.
+            return;
+        }
+        let skip = |m: &aether_core::mesh::RenderMesh| m.hidden || m.marker || m.no_material || m.effect || hidden(&m.name) || piece.scabbard.is_some_and(|keep| in_scb(m) != keep);
         let skinned: std::collections::HashSet<usize> = scene.skinned.iter().map(|s| s.mesh).collect();
         for sk in &scene.skinned {
             let m = &scene.meshes[sk.mesh];

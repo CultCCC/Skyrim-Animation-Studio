@@ -282,6 +282,9 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
         let up = [right[1] * fwd[2] - right[2] * fwd[1], right[2] * fwd[0] - right[0] * fwd[2], right[0] * fwd[1] - right[1] * fwd[0]];
         let fcam = crate::fx::Camera { eye, right, up };
         let mut player = std::mem::take(&mut app.fx);
+        if player.addons.is_none() {
+            player.addons = app.loaded.as_ref().map(|l| std::sync::Arc::new(l.db.addon_models()));
+        }
         player.begin_frame();
         if app.scene.show_fx {
             if let (Some(doc), Some(l)) = (&app.doc, &app.loaded) {
@@ -306,6 +309,19 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
                             let pts = if span == 0.0 { vec![f.from, f.to] } else { pts };
                             for w in pts.windows(2) {
                                 line(&mut lines, w[0], w[1], col);
+                            }
+                            // The blast radius around where it went off.
+                            if let (Some(ti), true) = (f.impact, f.shot.blast_radius > 0.0) {
+                                if t >= ti && t < ti + crate::projectile::EXPLOSION_LIFE {
+                                    let (c, r) = (f.hit_point, f.shot.blast_radius);
+                                    let ring: Vec<[f32; 3]> = (0..=48).map(|i| {
+                                        let a = i as f32 / 48.0 * std::f32::consts::TAU;
+                                        [c[0] + r * a.cos(), c[1] + r * a.sin(), 1.0]
+                                    }).collect();
+                                    for w in ring.windows(2) {
+                                        line(&mut lines, w[0], w[1], [1.0, 0.35, 0.2, 0.8]);
+                                    }
+                                }
                             }
                         }
                     }
@@ -339,7 +355,7 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
                         };
                         let world = world.compose(&Transform::from_av(piece.offset, Transform::IDENTITY.rot, piece.scale));
                         let key = format!("{}:{}:{}:{}:{}", cue.index, k, piece.start, piece.model, on_weapon);
-                        player.draw(&key, &asset, &world, t - piece.start, &fcam, if on_weapon { weapon_geo.as_ref() } else { None }, &mut fx_batches);
+                        player.draw_full(&vfs, &key, &asset, &world, t - piece.start, &fcam, if on_weapon { weapon_geo.as_ref() } else { None }, &mut fx_batches);
                     }
                 }
             }

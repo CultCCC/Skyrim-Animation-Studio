@@ -45,6 +45,9 @@ pub struct Flight {
     pub hit_point: [f32; 3],
     /// The target was hit directly or is inside the explosion.
     pub hits_target: bool,
+    /// The impact (IPCT) on the surface it burst on: the explosion's impact
+    /// set, else the magic effect's, for the ground material of the scene.
+    pub impact_fx: Option<sds_records::fx::Impact>,
     /// When the projectile model disappears.
     pub end: f32,
 }
@@ -114,7 +117,7 @@ pub fn fly(key: String, shot: &Shot, from: [f32; 3], to: [f32; 3]) -> Flight {
     let d = sub(to, from);
     let dist = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
     let h = d[0].hypot(d[1]);
-    let mut f = Flight { key, shot: shot.clone(), from, to, vel: [0.0; 3], g: 0.0, impact: Some(shot.start), hit_point: to, hits_target: true, end: shot.start + INSTANT_LIFE };
+    let mut f = Flight { key, shot: shot.clone(), from, to, vel: [0.0; 3], g: 0.0, impact: Some(shot.start), hit_point: to, hits_target: true, impact_fx: None, end: shot.start + INSTANT_LIFE };
     if f.instant() {
         if p.range > 0.0 && dist > p.range {
             f.impact = None;
@@ -183,7 +186,7 @@ pub fn fly(key: String, shot: &Shot, from: [f32; 3], to: [f32; 3]) -> Flight {
                 f.hit_point[2] = 0.0;
             }
             // Missed the target: it still takes the hit inside the explosion.
-            let blast = shot.explosion.as_ref().map_or(0.0, |e| e.radius);
+            let blast = shot.blast_radius;
             f.hits_target = direct || (f.hit_point[0] - to[0]).hypot(f.hit_point[1] - to[1]) <= blast + TARGET_RADIUS;
         }
         None => {
@@ -217,13 +220,19 @@ pub fn flights(app: &StudioApp, cues: &[Cue], path: Option<&Path>) -> Vec<Flight
                 None => None,
             };
             let from = hand.unwrap_or([root.t[0], root.t[1], root.t[2] + 110.0 * root.s]);
-            let f = fly(format!("{}:{i}", cue.index), shot, from, to);
+            let mut f = fly(format!("{}:{i}", cue.index), shot, from, to);
+            if let (Some(l), Some(_)) = (&app.loaded, f.impact) {
+                let ground = l.db.by_edid(b"MATT", &app.settings.ground);
+                let set = f.shot.explosion.as_ref().and_then(|e| e.impact_set).or(f.shot.impact_set);
+                f.impact_fx = set.and_then(|s| l.db.impact(s, ground));
+            }
             if std::env::var_os("SDS_FX_DEBUG").is_some() {
                 let p = &f.shot.projectile;
                 eprintln!(
-                    "FXPROJ {} {} {:?} speed {} grav {} model {:?} start {:.3} impact {:?} end {:.3} expl {:?}",
+                    "FXPROJ {} {} {:?} speed {} grav {} model {:?} start {:.3} impact {:?} end {:.3} expl {:?} blast {:.0} hits {} ipds {:?} ipct {:?}",
                     f.key, p.edid, p.kind, p.speed, p.gravity, p.model, f.shot.start, f.impact, f.end,
-                    f.shot.explosion.as_ref().map(|e| (&e.edid, &e.model))
+                    f.shot.explosion.as_ref().map(|e| (&e.edid, &e.model)), f.shot.blast_radius, f.hits_target,
+                    f.shot.explosion.as_ref().and_then(|e| e.impact_set).or(f.shot.impact_set), f.impact_fx.as_ref().map(|i| (&i.edid, &i.model, i.duration))
                 );
             }
             out.push(f);
@@ -249,6 +258,9 @@ pub fn sounds(flights: &[Flight], db: &sds_records::Db) -> Vec<FlightSound> {
             out.push(FlightSound { time: f.shot.start, sound: s, label: sds_i18n::tf!("полёт: {} ({})", "flight: {} ({})", edid(s), f.shot.spell), until: Some(f.end) });
         }
         let Some(ti) = f.impact else { continue };
+        if let Some(s) = f.impact_fx.as_ref().and_then(|i| i.sound.map(|s| (s, &i.edid))) {
+            out.push(FlightSound { time: ti, sound: s.0, label: sds_i18n::tf!("импакт: {} ({})", "impact: {} ({})", edid(s.0), s.1), until: None });
+        }
         if let Some(e) = &f.shot.explosion {
             if let Some(s) = e.sound {
                 out.push(FlightSound { time: ti, sound: s, label: sds_i18n::tf!("взрыв: {} ({})", "explosion: {} ({})", edid(s), e.edid), until: None });
@@ -277,17 +289,25 @@ pub fn draw(
         if t >= f.shot.start && t < f.end.max(f.shot.start + 1e-3) && !p.model.is_empty() {
             let asset = player.asset(vfs, &p.model);
             let world = Transform::from_av(f.pos(t), facing(f.dir(t)), f.scale(t));
-            player.draw(&format!("proj:{}", f.key), &asset, &world, t - f.shot.start, cam, None, out);
+            player.draw_full(vfs, &format!("proj:{}", f.key), &asset, &world, t - f.shot.start, cam, None, out);
         }
         let Some(ti) = f.impact else { continue };
         if t < ti {
             continue;
         }
+        if let Some(i) = f.impact_fx.as_ref().filter(|i| !i.model.is_empty()) {
+            let life = if i.duration > 0.0 { i.duration } else { 2.0 };
+            if t < ti + life {
+                let asset = player.asset(vfs, &i.model);
+                let world = Transform::from_av(f.impact_point(), facing(f.dir(ti)), 1.0);
+                player.draw_full(vfs, &format!("ipct:{}", f.key), &asset, &world, t - ti, cam, None, out);
+            }
+        }
         if let Some(e) = f.shot.explosion.as_ref().filter(|e| !e.model.is_empty()) {
             if t < ti + EXPLOSION_LIFE {
                 let asset = player.asset(vfs, &e.model);
                 let world = Transform::from_av(f.impact_point(), Transform::IDENTITY.rot, 1.0);
-                player.draw(&format!("expl:{}", f.key), &asset, &world, t - ti, cam, None, out);
+                player.draw_full(vfs, &format!("expl:{}", f.key), &asset, &world, t - ti, cam, None, out);
             }
         }
         for (k, piece) in f.shot.hits.iter().enumerate().filter(|_| f.hits_target) {
@@ -296,7 +316,7 @@ pub fn draw(
             }
             let asset = player.asset(vfs, &piece.model);
             let world = target.compose(&Transform::from_av(piece.offset, Transform::IDENTITY.rot, piece.scale));
-            player.draw(&format!("hit:{}:{k}", f.key), &asset, &world, t - ti - piece.start, cam, None, out);
+            player.draw_full(vfs, &format!("hit:{}:{k}", f.key), &asset, &world, t - ti - piece.start, cam, None, out);
         }
     }
 }
@@ -313,6 +333,8 @@ mod tests {
             spell: String::new(),
             projectile: Projectile { key: FormKey { module: 0, id: 1 }, edid: "P".into(), model: String::new(), kind, gravity, speed, range, lifetime: 0.0, sound: None, explosion: None, cone_spread: 15.0, collision_radius: 16.0 },
             explosion: None,
+            blast_radius: 0.0,
+            impact_set: None,
             hits: Vec::new(),
             hit_sounds: Vec::new(),
         }

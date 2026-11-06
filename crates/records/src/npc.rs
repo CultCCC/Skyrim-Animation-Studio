@@ -42,9 +42,31 @@ pub struct Weapon {
     pub name: String,
     pub model: String,
     pub anim_type: u8,
+    /// CNTO count of the inventory entry it came from.
+    pub count: i32,
 }
 
 impl Weapon {
+    /// One-handed: sword, dagger, axe, mace.
+    pub fn one_handed(&self) -> bool {
+        (1..=4).contains(&self.anim_type)
+    }
+
+    /// Skeleton node the sheathed weapon (and, drawn, its scabbard) hangs
+    /// from; the left-hand twin is this name + `Left` (XPMSE skeletons).
+    pub fn sheath_node(&self) -> Option<&'static str> {
+        Some(match self.anim_type {
+            1 => "WeaponSword",
+            2 => "WeaponDagger",
+            3 => "WeaponAxe",
+            4 => "WeaponMace",
+            5 | 6 => "WeaponBack",
+            7 => "WeaponBow",
+            9 => "WeaponCrossBow",
+            _ => return None,
+        })
+    }
+
     pub fn type_name(&self) -> &'static str {
         match self.anim_type {
             0 => sds_i18n::t!("рукопашный", "unarmed"),
@@ -92,6 +114,9 @@ pub struct NpcLook {
     pub skin_tone: Option<[f32; 3]>,
     pub parts: Vec<Part>,
     pub weapons: Vec<Weapon>,
+    /// The combat style (CSTY DATA flag 0x4) allows dual wielding.
+    pub dual_wield: bool,
+    pub combat_style: String,
     pub notes: Vec<String>,
 }
 
@@ -199,6 +224,14 @@ impl Db {
         }
         let traits = self.rec_sig(traits_key, b"NPC_")?;
         let inv = self.rec_sig(inv_key, b"NPC_")?;
+        // Combat style comes with the AI Data template flag.
+        let ai_key = self.template_for(k, 0x10);
+        let style = self
+            .rec_sig(ai_key, b"NPC_")
+            .and_then(|n| n.first(b"ZNAM").and_then(|d| u32_at(d, 0)).and_then(|raw| self.link(n, raw)))
+            .and_then(|ck| self.rec_sig(ck, b"CSTY"));
+        let dual_wield = style.and_then(|s| s.first(b"DATA")).and_then(|d| u32_at(d, 0)).is_some_and(|f| f & 0x4 != 0);
+        let combat_style = style.map(|s| s.edid()).unwrap_or_default();
 
         let female = traits.first(b"ACBS").and_then(|d| u32_at(d, 0)).unwrap_or(0) & 1 != 0;
         let npc_height = traits.first(b"NAM6").and_then(|d| f32_at(d, 0)).filter(|h| *h > 0.0).unwrap_or(1.0);
@@ -344,6 +377,7 @@ impl Db {
                 continue;
             }
             let mut items = Vec::new();
+            let count = u32_at(d, 4).map_or(1, |c| c as i32);
             if let Some(k) = u32_at(d, 0).and_then(|raw| self.link(inv, raw)) {
                 self.level_items(k, 0, &mut items);
             }
@@ -359,6 +393,7 @@ impl Db {
                     name: self.name(w),
                     model: meshes_path(&model),
                     anim_type: w.first(b"DNAM").and_then(|d| d.first().copied()).unwrap_or(0),
+                    count,
                 });
             }
         }
@@ -384,6 +419,8 @@ impl Db {
             skin_tone: traits.first(b"QNAM").and_then(skin_tone),
             parts,
             weapons,
+            dual_wield,
+            combat_style,
             notes,
         })
     }

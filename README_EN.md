@@ -66,6 +66,8 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
   - Every change is baked back into `animmotion` on every frame (or every Nth, «Bake every»), so the 3D view, the SDSCombat path and saving see it at once. One drag is one Ctrl+Z step. Z and `animrotation` are left as they are.
   - Nothing changes until you edit. «Restore original» puts `animmotion` back as it was when the clip was opened. Deleting every key removes `animmotion` from the clip.
   - A clip with no `animmotion` starts from flat zero curves: the keys you add are AMR root motion, which needs Animation Motion Revolution in game.
+- **NPC weapons in combat.** The blade is in the hand and the scabbard stays on the body: the `Scb*` shapes and nodes of the weapon NIF hang from the skeleton's sheath node (WeaponSword, WeaponDagger, WeaponAxe, WeaponMace, WeaponBack, WeaponBow). Without that node on the skeleton the scabbard is not drawn.
+  - Two weapons: when the NPC's combat style (CSTY, AllowDualWielding flag, inherited with the AI Data template flag) allows it, a second one-handed weapon from the inventory (or a second copy when the count is ≥ 2) goes to the left hand (SHIELD node), its scabbard to the `…Left` node (XPMSE). The Character tab picks the left-hand weapon and shows the combat style.
 - **NPCs from ESP** (the «Character» tab):
   - **Finding NPCs:**
     - search by EditorID, name (localized names from `.STRINGS`) or FormID among the build's 14,495 NPCs;
@@ -204,8 +206,11 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - Beam/Flame/Barrier hit at once;
     - when Range or lifetime runs out first, it vanishes without exploding;
     - on impact the explosion plays (the MGEF's EXPL, else the PROJ's own — only with its Explosion flag). The effect's hit art and hit sound play when the target was hit directly or is inside the explosion. With the path on, the trajectory is an orange line;
+    - blast radius: the spell effect's Area, else the MGEF's area (both in feet, ×21.33 → 15 ft = 320 u), else the EXPL's own Radius. It shows as a red ring for 3 s after the blast;
+    - impact: the EXPL's impact set, else the MGEF's (DATA@100) → the IPCT for the surface chosen in Scene → Sound (or its parent). Its model stands at the hit point for the IPCT duration, its sound plays with the blast;
     - sounds: the PROJ flight loop until the impact, the EXPL sound and the MGEF hit sound on it;
     - the PIE inspector notes «projectile …, type, speed → explosion»; `SDS_FX_DEBUG=1` prints FXPROJ lines.
+  - **AddOnNode.** `AddOnNode<N>` nodes in any art, projectile, explosion or impact get the model of the ADDN record with index N (lightning, sparks, dust — usually particle systems) and follow the node's animation; nested addons go two levels deep. An unknown index is logged.
   - **Effect shaders on the body (EFSH).** The MGEF hit shader covers the NPC's body on a self `@CAST` (for the effect's duration, or by its own envelopes for instant effects) and on `@APPLYSPELL` (until `@UNAPPLYSPELL`, then it fades out):
     - fill — the fill texture with UV scroll and scale, coloured by its three keys; with the grayscale flag the texture's brightness is looked up in the membrane palette;
     - edge — a fresnel glow in the edge colour, its width from the falloff;

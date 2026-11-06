@@ -195,20 +195,10 @@ impl Db {
         v
     }
 
-    /// The sound a footstep tag (`FootLeft`, `FootScuffRight`, …) plays from
-    /// footstep set `fsts` on `ground`: the first FSTP of the set with that
-    /// tag (walk group first), its impact set's entry for the ground material
-    /// or its nearest parent material, that impact's sound.
-    pub fn footstep_sound(&self, fsts: FormKey, tag: &str, ground: Option<FormKey>) -> Option<FootstepTrace> {
-        let set = self.get(fsts).filter(|r| &r.sig == b"FSTS")?;
-        let list = set.first(b"DATA")?;
-        let fstp = list
-            .chunks_exact(4)
-            .filter_map(|c| self.link(set, u32::from_le_bytes(c.try_into().unwrap())))
-            .filter_map(|k| self.get(k).filter(|r| &r.sig == b"FSTP").map(|r| (k, r)))
-            .find(|(_, r)| r.first(b"ANAM").map(zstr).is_some_and(|t| t.eq_ignore_ascii_case(tag)))?;
-        let ipds_key = fstp.1.first(b"DATA").and_then(|d| u32_at(d, 0)).and_then(|raw| self.link(fstp.1, raw))?;
-        let ipds = self.get(ipds_key)?;
+    /// The IPCT an impact set (IPDS) gives for `ground` (or its nearest
+    /// parent material, else its first entry), with the material matched.
+    pub fn impact_for(&self, ipds_key: FormKey, ground: Option<FormKey>) -> Option<(Option<FormKey>, FormKey)> {
+        let ipds = self.get(ipds_key).filter(|r| &r.sig == b"IPDS")?;
         let pairs: Vec<(Option<FormKey>, Option<FormKey>)> = ipds
             .subs()
             .filter(|(s, d)| *s == b"PNAM" && d.len() == 8)
@@ -227,8 +217,26 @@ impl Db {
         let (mat, ipct) = chain_mats
             .iter()
             .find_map(|mk| pairs.iter().find(|(pm, _)| *pm == Some(*mk)).map(|(pm, pi)| (*pm, *pi)))
-            .or_else(|| pairs.first().copied())?;
-        let ipct_key = ipct?;
+            .or_else(|| pairs.iter().find(|(_, pi)| pi.is_some()).copied())?;
+        Some((mat, ipct?))
+    }
+
+
+    /// The sound a footstep tag (`FootLeft`, `FootScuffRight`, …) plays from
+    /// footstep set `fsts` on `ground`: the first FSTP of the set with that
+    /// tag (walk group first), its impact set's entry for the ground material
+    /// or its nearest parent material, that impact's sound.
+    pub fn footstep_sound(&self, fsts: FormKey, tag: &str, ground: Option<FormKey>) -> Option<FootstepTrace> {
+        let set = self.get(fsts).filter(|r| &r.sig == b"FSTS")?;
+        let list = set.first(b"DATA")?;
+        let fstp = list
+            .chunks_exact(4)
+            .filter_map(|c| self.link(set, u32::from_le_bytes(c.try_into().unwrap())))
+            .filter_map(|k| self.get(k).filter(|r| &r.sig == b"FSTP").map(|r| (k, r)))
+            .find(|(_, r)| r.first(b"ANAM").map(zstr).is_some_and(|t| t.eq_ignore_ascii_case(tag)))?;
+        let ipds_key = fstp.1.first(b"DATA").and_then(|d| u32_at(d, 0)).and_then(|raw| self.link(fstp.1, raw))?;
+        let ipds = self.get(ipds_key)?;
+        let (mat, ipct_key) = self.impact_for(ipds_key, ground)?;
         let ipct = self.get(ipct_key)?;
         let sound = ipct.first(b"SNAM").and_then(|d| u32_at(d, 0)).and_then(|raw| self.link(ipct, raw))?;
         let ed = |k: Option<FormKey>| k.and_then(|k| self.get(k)).map(|r| r.edid()).unwrap_or_else(|| "?".into());

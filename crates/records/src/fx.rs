@@ -8,7 +8,11 @@
 //! (0 self, 1 touch, 2 aimed, 3 target actor, 4 target location).
 //! PROJ DATA: 2 type u16, 4 gravity, 8 speed, 12 range, 36 explosion,
 //! 40 flight sound, 72 collision radius, 76 lifetime; model in MODL.
-//! EXPL DATA: 4 sound, 8 sound (no-AV variant), 32 radius; model in MODL.
+//! EXPL DATA: 4 sound, 8 sound (no-AV variant), 12 impact set, 32 radius;
+//! model in MODL. IPCT: MODL, DATA
+//! 0 effect duration, SNAM sound. ADDN: DATA node index (the `AddOnNode<N>`
+//! nodes of effect NIFs), MODL. MGEF DATA 44 spellmaking area (feet), 100
+//! impact set (IPDS). PROJ DATA 84 is a decal (TXST), not an impact set.
 //! EFSH DATA (checked against the parsed fields of FireFXShader): 16 fill
 //! colour key 1, 20..40 fill fade in / full time / fade out / persistent
 //! ratio / pulse amplitude / pulse frequency, 44/48 fill UV speed, 52 edge
@@ -65,6 +69,22 @@ pub struct SpellVisuals {
     pub projectile: Option<SpellProjectile>,
     /// MGEF hit shaders (EFSH @32): (effect, EFSH, EFIT duration).
     pub shaders: Vec<(String, FormKey, f32)>,
+    /// The largest EFIT area, feet.
+    pub area: u32,
+}
+
+/// Feet (spell areas) to game units: 15 ft = 320 u (Fireball, FireBallExp01).
+pub const UNITS_PER_FOOT: f32 = 21.333;
+
+/// One impact (IPCT) for a surface.
+#[derive(Debug, Clone)]
+pub struct Impact {
+    pub edid: String,
+    /// `meshes/...`, empty when it has none.
+    pub model: String,
+    pub sound: Option<FormKey>,
+    /// Seconds the model stays.
+    pub duration: f32,
 }
 
 /// Alpha over time of one EFSH layer (fill or edge).
@@ -234,6 +254,8 @@ pub struct Explosion {
     pub model: String,
     pub sound: Option<FormKey>,
     pub radius: f32,
+    /// Impact set (IPDS) on the ground where it goes off.
+    pub impact_set: Option<FormKey>,
 }
 
 #[derive(Debug, Clone)]
@@ -244,6 +266,10 @@ pub struct SpellProjectile {
     pub projectile: Option<Projectile>,
     /// The MGEF's explosion, else the projectile's own.
     pub explosion: Option<Explosion>,
+    /// The MGEF's spellmaking area, feet.
+    pub mgef_area: u32,
+    /// The MGEF's impact set (IPDS) for what the projectile hits.
+    pub impact_set: Option<FormKey>,
 }
 
 /// What Precision's trail definitions match a weapon by.
@@ -302,6 +328,7 @@ impl Db {
             sounds: Vec::new(),
             projectile: None,
             shaders: Vec::new(),
+            area: 0,
         };
         let mut current: Option<FormKey> = None;
         let push = |mk: FormKey, duration: f32, out: &mut SpellVisuals| {
@@ -313,7 +340,7 @@ impl Db {
                 if let Some(p) = proj {
                     let own = u32_at(data, 76).and_then(|raw| self.link(m, raw)).and_then(|k| self.explosion(k));
                     let explosion = own.or_else(|| p.explosion.clone());
-                    out.projectile = Some(SpellProjectile { effect: effect.clone(), delivery: u32_at(data, 84).unwrap_or(0), projectile: Some(p), explosion });
+                    out.projectile = Some(SpellProjectile { effect: effect.clone(), delivery: u32_at(data, 84).unwrap_or(0), projectile: Some(p), explosion, mgef_area: u32_at(data, 44).unwrap_or(0), impact_set: u32_at(data, 100).and_then(|raw| self.link(m, raw)) });
                 }
             }
             for (kind, sk) in self.effect_sounds(mk) {
@@ -341,6 +368,7 @@ impl Db {
                     current = u32_at(d, 0).and_then(|raw| self.link(spel, raw));
                 }
                 b"EFIT" => {
+                    out.area = out.area.max(u32_at(d, 4).unwrap_or(0));
                     if let Some(mk) = current.take() {
                         let dur = u32_at(d, 8).unwrap_or(0) as f32;
                         push(mk, dur, &mut out);
@@ -353,6 +381,27 @@ impl Db {
             push(prev, 0.0, &mut out);
         }
         Some(out)
+    }
+
+    /// The impact an impact set gives on the `ground` material.
+    pub fn impact(&self, ipds: FormKey, ground: Option<FormKey>) -> Option<Impact> {
+        let (_, k) = self.impact_for(ipds, ground)?;
+        let r = self.get(k)?;
+        let model = r.first(b"MODL").map(zstr).filter(|m| !m.is_empty()).map(|m| meshes_path(&m)).unwrap_or_default();
+        let sound = r.first(b"SNAM").and_then(|d| u32_at(d, 0)).and_then(|raw| self.link(r, raw));
+        let duration = r.first(b"DATA").and_then(|d| f32_at(d, 0)).unwrap_or(0.0);
+        Some(Impact { edid: r.edid(), model, sound, duration })
+    }
+
+    /// Addon nodes: `AddOnNode<N>` index → model.
+    pub fn addon_models(&self) -> std::collections::HashMap<u32, String> {
+        let mut out = std::collections::HashMap::new();
+        for k in self.by_sig.get(b"ADDN").into_iter().flatten() {
+            let Some(r) = self.get(*k) else { continue };
+            let (Some(i), Some(m)) = (r.first(b"DATA").and_then(|d| u32_at(d, 0)), r.first(b"MODL").map(zstr).filter(|m| !m.is_empty())) else { continue };
+            out.insert(i, meshes_path(&m));
+        }
+        out
     }
 
     /// An EFSH record's membrane (body) part.
@@ -413,7 +462,7 @@ impl Db {
         let d = e.first(b"DATA").unwrap_or(&[]);
         let model = e.first(b"MODL").map(zstr).filter(|m| !m.is_empty()).map(|m| meshes_path(&m)).unwrap_or_default();
         let sound = [4, 8].into_iter().find_map(|o| u32_at(d, o).and_then(|raw| self.link(e, raw)));
-        Some(Explosion { key: k, edid: e.edid(), model, sound, radius: f32_at(d, 32).unwrap_or(0.0) })
+        Some(Explosion { key: k, edid: e.edid(), model, sound, radius: f32_at(d, 32).unwrap_or(0.0), impact_set: u32_at(d, 12).and_then(|raw| self.link(e, raw)) })
     }
 
     /// Name, keywords and enchantment facts of a weapon.

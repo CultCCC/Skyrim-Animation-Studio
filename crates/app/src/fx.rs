@@ -224,6 +224,10 @@ pub struct FxPlayer {
     assets: HashMap<String, Arc<FxAsset>>,
     running: HashMap<String, Running>,
     pub notes: Vec<String>,
+    /// ADDN records: `AddOnNode<N>` index → model (set from the load order).
+    pub addons: Option<Arc<HashMap<u32, String>>>,
+    /// Addon nodes of the last `draw`: (index, world).
+    last_addons: Vec<(u32, Transform)>,
 }
 
 pub struct Camera {
@@ -247,6 +251,33 @@ impl FxPlayer {
         }
         self.assets.insert(path.to_string(), a.clone());
         a
+    }
+
+    /// `draw`, then the ADDN model of every `AddOnNode<N>` in the art at
+    /// that node (lightning, sparks, dust), two levels deep at most.
+    #[allow(clippy::too_many_arguments)]
+    pub fn draw_full(&mut self, vfs: &Vfs, key: &str, asset: &FxAsset, world: &Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>) {
+        self.draw_nested(vfs, key, asset, world, local_t, cam, target, out, 0);
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn draw_nested(&mut self, vfs: &Vfs, key: &str, asset: &FxAsset, world: &Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>, depth: u32) {
+        self.draw(key, asset, world, local_t, cam, target, out);
+        let Some(addons) = self.addons.clone() else { return };
+        if depth >= 2 {
+            return;
+        }
+        for (k, (index, node_world)) in std::mem::take(&mut self.last_addons).into_iter().enumerate() {
+            let Some(model) = addons.get(&index) else {
+                let note = format!("AddOnNode{index}: ADDN not found");
+                if !self.notes.contains(&note) {
+                    self.notes.push(note);
+                }
+                continue;
+            };
+            let a = self.asset(vfs, model);
+            self.draw_nested(vfs, &format!("{key}/addon{k}"), &a, &node_world, local_t, cam, None, out, depth + 1);
+        }
     }
 
     pub fn begin_frame(&mut self) {
@@ -447,6 +478,17 @@ impl FxPlayer {
             }
             push_mesh(&fx_mesh(&r), world, out);
         }
+        // Addon nodes where the art's animation has them now.
+        self.last_addons = scene
+            .nodes
+            .iter()
+            .enumerate()
+            .filter_map(|(i, n)| {
+                let lower = n.name.to_ascii_lowercase();
+                let index = lower.strip_prefix("addonnode")?.trim().parse::<u32>().ok()?;
+                Some((index, world.compose(&scene.node_world(i, &overrides))))
+            })
+            .collect();
         if asset.systems.is_empty() {
             return;
         }

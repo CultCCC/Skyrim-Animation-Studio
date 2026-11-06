@@ -32,10 +32,35 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
                         let text = format!("{} «{}» — {}", w.edid, w.name, w.type_name());
                         if ui.selectable_label(choice.weapon == Some(i), text).clicked() {
                             choice.weapon = Some(i);
+                            choice.left = crate::app::default_left(look, i);
                             rebuild = true;
                         }
                     }
                 });
+            });
+            ui.horizontal(|ui| {
+                ui.label(sds_i18n::t!("Левая рука:", "Left hand:"));
+                let current = choice.left.and_then(|i| look.weapons.get(i)).map(|w| format!("{} ({})", w.edid, w.type_name())).unwrap_or_else(|| sds_i18n::t!("пусто", "empty").into());
+                egui::ComboBox::from_id_salt("npc-weapon-left").selected_text(current).width(ui.available_width()).show_ui(ui, |ui| {
+                    if ui.selectable_label(choice.left.is_none(), sds_i18n::t!("пусто", "empty")).clicked() {
+                        choice.left = None;
+                        rebuild = true;
+                    }
+                    for (i, w) in look.weapons.iter().enumerate().filter(|(_, w)| w.one_handed()) {
+                        let text = format!("{} «{}» — {}", w.edid, w.name, w.type_name());
+                        if ui.selectable_label(choice.left == Some(i), text).clicked() {
+                            choice.left = Some(i);
+                            rebuild = true;
+                        }
+                    }
+                });
+            });
+            ui.small(if look.combat_style.is_empty() {
+                sds_i18n::t!("Стиль боя не задан", "No combat style").to_string()
+            } else if look.dual_wield {
+                sds_i18n::tf!("Стиль боя {}: два оружия разрешены", "Combat style {}: dual wielding allowed", look.combat_style)
+            } else {
+                sds_i18n::tf!("Стиль боя {}: без двух оружий", "Combat style {}: no dual wielding", look.combat_style)
             });
             if ui.button(sds_i18n::t!("Сбросить на тело по умолчанию", "Reset to the default body")).clicked() {
                 clear = true;

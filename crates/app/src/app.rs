@@ -214,6 +214,8 @@ pub struct NpcChoice {
     pub look: sds_records::npc::NpcLook,
     /// Index into `look.weapons`, None = empty hands.
     pub weapon: Option<usize>,
+    /// The left-hand weapon (dual wielding), into `look.weapons`.
+    pub left: Option<usize>,
 }
 
 /// `--screenshot <png> [--open <vfs path>] [--time <s>] [--select <i>]`: wait
@@ -632,7 +634,8 @@ impl StudioApp {
         };
         // Weapon in hand: the first melee one, else the first.
         let weapon = look.weapons.iter().position(|w| (1..=6).contains(&w.anim_type)).or(if look.weapons.is_empty() { None } else { Some(0) });
-        self.npc = Some(NpcChoice { look, weapon });
+        let left = weapon.and_then(|r| default_left(&look, r));
+        self.npc = Some(NpcChoice { look, weapon, left });
         self.rebuild_npc();
     }
 
@@ -658,6 +661,7 @@ impl StudioApp {
                 if !armed {
                     if let Some(n) = &mut self.npc {
                         n.weapon = None;
+                        n.left = None;
                     }
                     self.rebuild_npc();
                 }
@@ -676,6 +680,7 @@ impl StudioApp {
         let db = loaded.db.clone();
         let look = choice.look.clone();
         let weapon_choice = choice.weapon;
+        let left_choice = choice.left;
         let look = &look;
         use crate::character::Piece;
         use sds_records::npc::{PartKind, SLOT_HAIR, SLOT_HEAD};
@@ -683,7 +688,7 @@ impl StudioApp {
         let mut pieces: Vec<Piece> = look
             .parts
             .iter()
-            .map(|p| Piece { label: p.source.clone(), path: p.model.clone(), attach: None, hide_shapes: Vec::new(), visible: true })
+            .map(|p| Piece { label: p.source.clone(), path: p.model.clone(), attach: None, hide_shapes: Vec::new(), scabbard: None, visible: true })
             .collect();
         let mut notes = look.notes.clone();
         if used & SLOT_HEAD == 0 {
@@ -696,13 +701,23 @@ impl StudioApp {
                 path: face.unwrap_or_else(|| look.head_fallback.clone()),
                 attach: None,
                 hide_shapes: if used & SLOT_HAIR != 0 { vec!["hair".into()] } else { Vec::new() },
+                scabbard: None,
                 visible: true,
             });
         }
-        if let Some(w) = weapon_choice.and_then(|i| look.weapons.get(i)) {
-            pieces.push(Piece { label: format!("{} ({})", w.edid, w.type_name()), path: w.model.clone(), attach: Some(w.hand_node().into()), hide_shapes: Vec::new(), visible: true });
+        // Drawn weapons: the blade in the hand, the scabbard left on the
+        // sheath node (belt or back), as in combat.
+        let hands = [(weapon_choice, false), (left_choice, true)];
+        for (w, left) in hands.iter().filter_map(|(i, left)| i.and_then(|i| look.weapons.get(i)).map(|w| (w, *left))) {
+            let side = if left { sds_i18n::t!(", левая рука", ", left hand") } else { "" };
+            let hand = if left { "SHIELD" } else { w.hand_node() };
+            pieces.push(Piece { label: format!("{} ({}{side})", w.edid, w.type_name()), path: w.model.clone(), attach: Some(hand.into()), hide_shapes: Vec::new(), scabbard: Some(false), visible: true });
+            if let Some(sheath) = w.sheath_node() {
+                let node = if left { format!("{sheath}Left") } else { sheath.to_string() };
+                pieces.push(Piece { label: sds_i18n::tf!("ножны: {} ({node})", "scabbard: {} ({node})", w.edid), path: w.model.clone(), attach: Some(node), hide_shapes: Vec::new(), scabbard: Some(true), visible: true });
+            }
         }
-        let id = format!("npc:{}|{:?}", db.label(look.key), weapon_choice);
+        let id = format!("npc:{}|{:?}|{:?}", db.label(look.key), weapon_choice, left_choice);
         let label = format!("{} «{}»", look.edid, look.name);
         match crate::character::Character::build(&vfs, &id, &look.skeleton_hkx, Some(&look.skeleton_nif), pieces, look.scale, look.weight / 100.0) {
             Ok(mut c) => {
@@ -1336,4 +1351,14 @@ fn load_trails(vfs: &Vfs) -> (crate::fx::TrailSettings, Vec<crate::fx::TrailDef>
         }
     }
     (ts, defs, used)
+}
+
+/// The left-hand weapon a dual-wielding NPC draws with `right`: another
+/// one-handed weapon, or a second copy of the same one (count ≥ 2).
+pub fn default_left(look: &sds_records::npc::NpcLook, right: usize) -> Option<usize> {
+    let r = look.weapons.get(right)?;
+    if !look.dual_wield || !r.one_handed() {
+        return None;
+    }
+    look.weapons.iter().enumerate().position(|(i, w)| i != right && w.one_handed()).or((r.count >= 2).then_some(right))
 }
