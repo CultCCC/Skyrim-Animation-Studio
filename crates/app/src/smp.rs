@@ -20,7 +20,9 @@
 //! margin-multiplier) out of the triangles of keyframed shapes, front side
 //! only, up to `penetration` deep, when neither lists the other's tag in
 //! `no-collide-with-tag`. The push goes to the vertex's dynamic bones by
-//! weight (translation and turn). Dynamic-vs-dynamic contacts are skipped.
+//! weight (translation and turn). Between two moving shapes (cape against
+//! skirt) the push is shared: half to the vertex, half against the
+//! triangle's corners; cloth with penetration 0 is two-sided.
 
 use crate::app::StudioApp;
 use crate::character::{BoneRef, Character};
@@ -692,82 +694,108 @@ impl System {
         }
     }
 
-    /// The fixed shapes' triangles at `pose`, in a grid; once per step.
-    fn fixed_tris(&self, pose: &Pose) -> Vec<Option<Tris>> {
-        let mut fixed: Vec<Option<Tris>> = Vec::new();
-        if self.shapes.iter().all(|s| !s.dynamic) {
-            return fixed;
-        }
-        for sh in &self.shapes {
-            if sh.dynamic {
-                fixed.push(None);
+    /// A shape's triangles where its bones are now, in a grid.
+    fn build_tris(&self, sh: &Shape, pose: &Pose) -> Tris {
+        let v: Vec<[f32; 3]> = self.skin_shape(sh, pose, None).into_iter().map(|x| x.1).collect();
+        let tris: Vec<[u32; 3]> = sh.mesh.indices.chunks_exact(3).map(|t| [t[0] as u32, t[1] as u32, t[2] as u32]).collect();
+        let mut grid: Vec<(u64, u32)> = Vec::with_capacity(tris.len() * 4);
+        let mut large = Vec::new();
+        let pad = if sh.dynamic { 1.0 } else { 4.0 } + sh.def.margin;
+        for (ti, t) in tris.iter().enumerate() {
+            let (a, b, c) = (v[t[0] as usize], v[t[1] as usize], v[t[2] as usize]);
+            let lo = cell([a[0].min(b[0]).min(c[0]) - pad, a[1].min(b[1]).min(c[1]) - pad, a[2].min(b[2]).min(c[2]) - pad]);
+            let hi = cell([a[0].max(b[0]).max(c[0]) + pad, a[1].max(b[1]).max(c[1]) + pad, a[2].max(b[2]).max(c[2]) + pad]);
+            if (hi.0 - lo.0 + 1) * (hi.1 - lo.1 + 1) * (hi.2 - lo.2 + 1) > 64 {
+                large.push(ti as u32);
                 continue;
             }
-            let v: Vec<[f32; 3]> = self.skin_shape(sh, pose, None).into_iter().map(|x| x.1).collect();
-            let tris: Vec<[u32; 3]> = sh.mesh.indices.chunks_exact(3).map(|t| [t[0] as u32, t[1] as u32, t[2] as u32]).collect();
-            let mut grid: Vec<(u64, u32)> = Vec::with_capacity(tris.len() * 4);
-            let mut large = Vec::new();
-            let pad = 4.0 + sh.def.margin;
-            for (ti, t) in tris.iter().enumerate() {
-                let (a, b, c) = (v[t[0] as usize], v[t[1] as usize], v[t[2] as usize]);
-                let lo = cell([a[0].min(b[0]).min(c[0]) - pad, a[1].min(b[1]).min(c[1]) - pad, a[2].min(b[2]).min(c[2]) - pad]);
-                let hi = cell([a[0].max(b[0]).max(c[0]) + pad, a[1].max(b[1]).max(c[1]) + pad, a[2].max(b[2]).max(c[2]) + pad]);
-                if (hi.0 - lo.0 + 1) * (hi.1 - lo.1 + 1) * (hi.2 - lo.2 + 1) > 64 {
-                    large.push(ti as u32);
-                    continue;
-                }
-                for x in lo.0..=hi.0 {
-                    for y in lo.1..=hi.1 {
-                        for z in lo.2..=hi.2 {
-                            grid.push((cell_key((x, y, z)), ti as u32));
-                        }
+            for x in lo.0..=hi.0 {
+                for y in lo.1..=hi.1 {
+                    for z in lo.2..=hi.2 {
+                        grid.push((cell_key((x, y, z)), ti as u32));
                     }
                 }
             }
-            grid.sort_unstable();
-            let pad = 8.0;
-            let mut lo = [f32::MAX; 3];
-            let mut hi = [f32::MIN; 3];
-            for p in &v {
-                for k in 0..3 {
-                    lo[k] = lo[k].min(p[k] - pad);
-                    hi[k] = hi[k].max(p[k] + pad);
-                }
-            }
-            if std::env::var_os("SDS_SMP_DEBUG").is_some() && self.time < DT * 1.5 {
-                eprintln!("SMPSHAPE {} verts={} tris={} large={} cells={}", sh.def.name, v.len(), tris.len(), large.len(), grid.len());
-            }
-            fixed.push(Some(Tris { v, tris, grid, large, lo, hi }));
         }
-        fixed
+        grid.sort_unstable();
+        let pad = 8.0;
+        let mut lo = [f32::MAX; 3];
+        let mut hi = [f32::MIN; 3];
+        for p in &v {
+            for k in 0..3 {
+                lo[k] = lo[k].min(p[k] - pad);
+                hi[k] = hi[k].max(p[k] + pad);
+            }
+        }
+        if std::env::var_os("SDS_SMP_DEBUG").is_some() && self.time < DT * 1.5 {
+            eprintln!("SMPSHAPE {} dynamic={} verts={} tris={} large={} cells={}", sh.def.name, sh.dynamic, v.len(), tris.len(), large.len(), grid.len());
+        }
+        Tris { v, tris, grid, large, lo, hi }
     }
 
-    /// Push the dynamic shapes' vertices out of the fixed shapes' triangles.
+    /// Which shapes each moving shape may touch (tags).
+    fn partners(&self) -> Vec<Vec<usize>> {
+        let n = self.shapes.len();
+        (0..n)
+            .map(|di| {
+                let d = &self.shapes[di];
+                if !d.dynamic {
+                    return Vec::new();
+                }
+                (0..n).filter(|&ki| ki != di && d.def.collides_with(&self.shapes[ki].def)).collect()
+            })
+            .collect()
+    }
+
+    /// Obstacle triangles, once per step: the fixed shapes at `pose`, and
+    /// the moving shapes some other moving shape can touch, where their
+    /// bones are at the start of the step (one step behind at most).
+    fn fixed_tris(&self, pose: &Pose) -> Vec<Option<Tris>> {
+        if self.shapes.iter().all(|s| !s.dynamic) {
+            return Vec::new();
+        }
+        let partners = self.partners();
+        self.shapes
+            .iter()
+            .enumerate()
+            .map(|(ki, sh)| (!sh.dynamic || partners.iter().any(|p| p.contains(&ki))).then(|| self.build_tris(sh, pose)))
+            .collect()
+    }
+
+    /// Push the moving shapes' vertices out of other shapes' triangles: the
+    /// fixed ones (the vertex takes the whole push) and other moving ones
+    /// (cape against skirt: half to the vertex, half against the triangle,
+    /// spread over its corners). Cloth with penetration 0 is two-sided.
     fn collide(&mut self, pose: &Pose, fixed: &[Option<Tris>]) {
         self.contacts = 0;
         if fixed.is_empty() {
             return;
         }
+        let n = self.shapes.len();
+        let partners = self.partners();
         let mut pushes: Vec<(usize, [f32; 3], [f32; 3])> = Vec::new();
-        for (di, d) in self.shapes.iter().enumerate().filter(|(_, s)| s.dynamic) {
-            // The fixed shapes this one may touch (tags), decided once.
-            let partners: Vec<usize> = (0..self.shapes.len()).filter(|&ki| ki != di && fixed[ki].is_some() && d.def.collides_with(&self.shapes[ki].def)).collect();
-            if partners.is_empty() {
+        let dot = |x: [f32; 3], y: [f32; 3]| x[0] * y[0] + x[1] * y[1] + x[2] * y[2];
+        for di in 0..n {
+            if partners[di].is_empty() {
                 continue;
             }
+            let d = &self.shapes[di];
             let verts = self.skin_shape(d, pose, Some(&d.sample));
             for (vi, p) in verts {
                 let (_, _, bi, wts) = &d.mesh.raw[vi];
                 // The vertex's own radius: its heaviest bone's multiplier.
                 let heavy = (0..4).max_by(|&x, &y| wts[x].total_cmp(&wts[y])).unwrap_or(0);
                 let mult = d.slot_body.get(bi[heavy] as usize).copied().flatten().map_or(1.0, |i| self.bodies[i].margin_mult);
-                let mut best: Option<[f32; 3]> = None;
-                for &ki in &partners {
-                    let (k, Some(tr)) = (&self.shapes[ki], &fixed[ki]) else { continue };
+                // (push, moving obstacle: shape, triangle, barycentrics)
+                let mut best: Option<([f32; 3], Option<(usize, [u32; 3], [f32; 3])>)> = None;
+                for &ki in &partners[di] {
+                    let k = &self.shapes[ki];
+                    let Some(tr) = fixed.get(ki).and_then(|f| f.as_ref()) else { continue };
                     if (0..3).any(|a| p[a] < tr.lo[a] || p[a] > tr.hi[a]) && tr.large.is_empty() {
                         continue;
                     }
                     let r = d.def.margin * mult + k.def.margin;
+                    let two_sided = k.dynamic && k.def.penetration <= 0.0;
                     let pen = if k.def.penetration > 0.0 { k.def.penetration } else { 1.0 };
                     for ti in tr.near(p).iter().map(|e| e.1).chain(tr.large.iter().copied()) {
                         let t = tr.tris[ti as usize];
@@ -778,14 +806,17 @@ impl System {
                         if nl < 1e-8 {
                             continue;
                         }
-                        let n = mul(nrm, 1.0 / nl);
-                        let dist = (p[0] - a[0]) * n[0] + (p[1] - a[1]) * n[1] + (p[2] - a[2]) * n[2];
+                        let mut nn = mul(nrm, 1.0 / nl);
+                        let mut dist = dot(sub(p, a), nn);
+                        if two_sided && dist < 0.0 {
+                            nn = mul(nn, -1.0);
+                            dist = -dist;
+                        }
                         if dist >= r || dist <= -pen {
                             continue;
                         }
                         // Inside the triangle (barycentric of the projection)?
-                        let q = sub(sub(p, mul(n, dist)), a);
-                        let dot = |x: [f32; 3], y: [f32; 3]| x[0] * y[0] + x[1] * y[1] + x[2] * y[2];
+                        let q = sub(sub(p, mul(nn, dist)), a);
                         let (d00, d01, d11, d20, d21) = (dot(e1, e1), dot(e1, e2), dot(e2, e2), dot(q, e1), dot(q, e2));
                         let den = d00 * d11 - d01 * d01;
                         if den.abs() < 1e-12 {
@@ -796,19 +827,33 @@ impl System {
                         if v < 0.0 || w < 0.0 || v + w > 1.0 {
                             continue;
                         }
-                        let push = mul(n, r - dist);
-                        if best.is_none_or(|b| len(b) < len(push)) {
-                            best = Some(push);
+                        let push = mul(nn, r - dist);
+                        if best.as_ref().is_none_or(|b| len(b.0) < len(push)) {
+                            best = Some((push, k.dynamic.then_some((ki, t, [1.0 - v - w, v, w]))));
                         }
                     }
                 }
-                if let Some(push) = best {
-                    for k in 0..4 {
-                        if wts[k] <= 0.0 {
-                            continue;
-                        }
-                        if let Some(i) = d.slot_body.get(bi[k] as usize).copied().flatten().filter(|&i| self.bodies[i].inv_mass > 0.0) {
-                            pushes.push((i, p, mul(push, wts[k])));
+                let Some((push, other)) = best else { continue };
+                let share = if other.is_some() { 0.5 } else { 1.0 };
+                for k in 0..4 {
+                    if wts[k] <= 0.0 {
+                        continue;
+                    }
+                    if let Some(i) = d.slot_body.get(bi[k] as usize).copied().flatten().filter(|&i| self.bodies[i].inv_mass > 0.0) {
+                        pushes.push((i, p, mul(push, wts[k] * share)));
+                    }
+                }
+                if let Some((ki, t, bary)) = other {
+                    let (k, tr) = (&self.shapes[ki], fixed[ki].as_ref().unwrap());
+                    for (corner, &ri) in t.iter().enumerate() {
+                        let (_, _, cbi, cw) = &k.mesh.raw[ri as usize];
+                        for s in 0..4 {
+                            if cw[s] <= 0.0 {
+                                continue;
+                            }
+                            if let Some(i) = k.slot_body.get(cbi[s] as usize).copied().flatten().filter(|&i| self.bodies[i].inv_mass > 0.0) {
+                                pushes.push((i, tr.v[ri as usize], mul(push, -0.5 * bary[corner] * cw[s])));
+                            }
                         }
                     }
                 }
