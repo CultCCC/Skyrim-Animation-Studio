@@ -61,6 +61,13 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
             app.camera.pitch = 12f32.to_radians();
             app.camera.dist = 320.0;
         }
+        ui.menu_button("🖱", |ui| {
+            ui.label(sds_i18n::t!("Вращение камеры (ЛКМ)", "Camera orbit (LMB)"));
+            ui.checkbox(&mut app.settings.invert_x, sds_i18n::t!("Инвертировать по горизонтали", "Invert horizontal"));
+            ui.checkbox(&mut app.settings.invert_y, sds_i18n::t!("Инвертировать по вертикали", "Invert vertical"));
+        })
+        .response
+        .on_hover_text(sds_i18n::t!("Инверсия управления камерой", "Camera control inversion"));
         ui.separator();
         crate::export::toolbar(app, ui);
     });
@@ -71,11 +78,12 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
 
     let (rect, resp) = ui.allocate_exact_size(ui.available_size(), Sense::click_and_drag());
     // Camera input.
+    let (ix, iy) = (if app.settings.invert_x { -1.0 } else { 1.0 }, if app.settings.invert_y { -1.0 } else { 1.0 });
     let cam = &mut app.camera;
     if resp.dragged_by(egui::PointerButton::Primary) {
         let d = resp.drag_delta();
-        cam.yaw -= d.x * 0.01;
-        cam.pitch = (cam.pitch + d.y * 0.01).clamp(-1.4, 1.4);
+        cam.yaw -= d.x * 0.01 * ix;
+        cam.pitch = (cam.pitch + d.y * 0.01 * iy).clamp(-1.4, 1.4);
     }
     let (fwd, right) = {
         let (s, c) = cam.yaw.sin_cos();
@@ -282,6 +290,26 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
                 let tgt = crate::sds_path::target_pos(app);
                 let vfs = l.vfs.clone();
                 let weapon_geo = app.character.as_ref().and_then(|c| c.weapon_geometry());
+                // Spell projectiles: flight, explosion and hit art on impact.
+                let flights = crate::projectile::flights(app, &cues, path.as_ref());
+                if !flights.is_empty() {
+                    let yaw = (root.t[0] - tgt[0]).atan2(root.t[1] - tgt[1]);
+                    let (s, c) = (-yaw).sin_cos();
+                    let target = Transform::from_av([tgt[0], tgt[1], 0.0], [c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0], 1.0);
+                    crate::projectile::draw(&flights, t, &mut player, &vfs, &fcam, &target, &mut fx_batches);
+                    if app.scene.show_path {
+                        for f in &flights {
+                            let col = if f.impact.is_some() { [1.0, 0.6, 0.2, 0.7] } else { [0.6, 0.6, 0.6, 0.5] };
+                            let n = 24;
+                            let span = (f.end - f.shot.start).max(0.0);
+                            let pts: Vec<[f32; 3]> = (0..=n).map(|i| f.pos(f.shot.start + span * i as f32 / n as f32)).collect();
+                            let pts = if span == 0.0 { vec![f.from, f.to] } else { pts };
+                            for w in pts.windows(2) {
+                                line(&mut lines, w[0], w[1], col);
+                            }
+                        }
+                    }
+                }
                 for cue in &cues {
                     for (k, piece) in cue.pieces.iter().enumerate() {
                         if t < piece.start || t >= piece.start + piece.life {

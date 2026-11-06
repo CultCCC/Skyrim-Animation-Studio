@@ -72,7 +72,9 @@ pub fn parse(bytes: &[u8]) -> Result<Clip, String> {
 }
 
 enum Cmd {
-    Play { clip: Arc<Clip>, gain: f32, ratio: f32, looping: bool },
+    Play { clip: Arc<Clip>, gain: f32, ratio: f32, looping: bool, id: u64 },
+    /// Stop the voices started with this id.
+    Stop(u64),
     StopAll,
     StopLoops,
     Master(f32),
@@ -99,8 +101,12 @@ impl Audio {
     }
 
     /// `gain` linear; `ratio` playback rate (1 = as recorded).
-    pub fn play(&self, clip: Arc<Clip>, gain: f32, ratio: f32, looping: bool) {
-        let _ = self.tx.send(Cmd::Play { clip, gain, ratio, looping });
+    /// `stop(id)` ends it later (0 = untagged).
+    pub fn play_tagged(&self, clip: Arc<Clip>, gain: f32, ratio: f32, looping: bool, id: u64) {
+        let _ = self.tx.send(Cmd::Play { clip, gain, ratio, looping, id });
+    }
+    pub fn stop(&self, id: u64) {
+        let _ = self.tx.send(Cmd::Stop(id));
     }
     pub fn stop_all(&self) {
         let _ = self.tx.send(Cmd::StopAll);
@@ -140,6 +146,7 @@ fn run(rx: Receiver<Cmd>, ready: Sender<Result<(), String>>, volume: f32) {
         _clip: Arc<Clip>,
         ratio: f32,
         looping: bool,
+        id: u64,
     }
 
     let engine = unsafe {
@@ -187,7 +194,7 @@ fn run(rx: Receiver<Cmd>, ready: Sender<Result<(), String>>, volume: f32) {
     };
     loop {
         match rx.recv_timeout(Duration::from_millis(100)) {
-            Ok(Cmd::Play { clip, gain, ratio, looping }) => unsafe {
+            Ok(Cmd::Play { clip, gain, ratio, looping, id }) => unsafe {
                 if voices.len() >= MAX_VOICES {
                     destroy(&voices.remove(0));
                 }
@@ -213,7 +220,7 @@ fn run(rx: Receiver<Cmd>, ready: Sender<Result<(), String>>, volume: f32) {
                 let _ = voice.SetVolume(gain, 0);
                 let _ = voice.SetFrequencyRatio((ratio * speed).clamp(0.01, MAX_RATIO), 0);
                 let _ = voice.Start(0, 0);
-                voices.push(Voice { voice, _clip: clip, ratio, looping });
+                voices.push(Voice { voice, _clip: clip, ratio, looping, id });
             },
             Ok(Cmd::Probe(clip, reply)) => unsafe {
                 let mut sv: Option<IXAudio2SourceVoice> = None;
@@ -232,6 +239,12 @@ fn run(rx: Receiver<Cmd>, ready: Sender<Result<(), String>>, volume: f32) {
                 }
                 let _ = reply.send(r);
             },
+            Ok(Cmd::Stop(id)) => voices.retain(|v| {
+                if v.id == id {
+                    destroy(v);
+                }
+                v.id != id
+            }),
             Ok(Cmd::StopAll) => {
                 for v in voices.drain(..) {
                     destroy(&v);

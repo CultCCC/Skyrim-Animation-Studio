@@ -39,6 +39,9 @@ pub struct Settings {
     pub motion_values: bool,
     /// PNG/GIF preview export.
     pub export: crate::export::ExportOpts,
+    /// 3D camera orbit: dragging turns the view the other way.
+    pub invert_x: bool,
+    pub invert_y: bool,
 }
 
 impl Settings {
@@ -75,6 +78,8 @@ impl Default for Settings {
             favorites: Vec::new(),
             motion_values: true,
             export: Default::default(),
+            invert_x: true,
+            invert_y: true,
         }
     }
 }

@@ -57,7 +57,7 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
   - spline and interleaved decoding;
   - root motion from `animmotion`/`animrotation` (on/off);
   - the NPC path with annotation markers, and skeleton lines on top;
-  - camera: LMB rotate, RMB pan, wheel zoom, «Camera follows NPC». «Top 2D» is the flat top view of the path.
+  - camera: LMB rotate, RMB pan, wheel zoom, «Camera follows NPC». Orbit is inverted on both axes by default; the 🖱 button in the view bar toggles horizontal and vertical inversion separately. «Top 2D» is the flat top view of the path.
 - **Root Motion Editor** (View → «Root Motion Editor…» or the «Editor…» button in the 3D view):
   - The clip's AMR path (`animmotion`) as two Bézier curves, X (red) and Y (green), in a Blender-style graph: time across, offset up; on the right, the path from above with the NPC at the playhead.
   - On open, the clip's keys are fitted into a curve within «Accuracy» (2 units by default); the original path stays dashed. «Re-import» rebuilds the curves.
@@ -197,7 +197,13 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - effect meshes animate colour, alpha, emissive and UV, node transforms and billboards;
     - greyscale-to-palette is applied; refraction meshes are skipped;
     - particles run through the Aether simulator (checked against SkyrimSE 1.5.97); strip systems are drawn as ribbons.
-  - Not modelled: EFSH body shaders, projectiles, mEnd.
+  - **Projectiles and explosions.** A non-self `@CAST` of a spell with a projectile (MGEF → PROJ) launches it from the hand's magic node (posed at the cast) at the target's chest:
+    - Missile/Arrow fly straight at the PROJ speed, Lobber on a gravity arc (×9.81 m/s²), Beam/Flame/Cone hit at once;
+    - when Range or lifetime runs out first, it vanishes without exploding;
+    - on impact the explosion (the MGEF's EXPL, else the PROJ's own) and the effect art on the target play; with the path on, the trajectory is an orange line;
+    - sounds: the PROJ flight loop until the impact, the EXPL sound and the MGEF hit sound on it;
+    - the PIE inspector notes «projectile …, type, speed → explosion»; `SDS_FX_DEBUG=1` prints FXPROJ lines.
+  - Not modelled: EFSH body shaders, mEnd, bow arrows (BowRelease), projectile collisions with anything but the target.
   - Debug: `SDS_FX_DEBUG=1` prints the meshes, systems and clips of each art NIF.
 - **Sound** (🔊 and the volume slider in the timeline bar; saved in settings):
   - **What plays:** every event the playhead passes during playback:

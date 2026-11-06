@@ -186,7 +186,25 @@ pub struct Cue {
     pub pieces: Vec<Piece>,
     /// Effect sounds (MGEF SNDD) the instructions play.
     pub sounds: Vec<CueSound>,
+    /// Projectiles the casts launch (flown in `projectile.rs`).
+    pub shots: Vec<Shot>,
     pub notes: Vec<String>,
+}
+
+/// A spell cast at the target that flies as a projectile.
+#[derive(Debug, Clone)]
+pub struct Shot {
+    /// Launch time (annotation time + delay).
+    pub start: f32,
+    /// The casting hand's magic node.
+    pub hand: String,
+    pub spell: String,
+    pub projectile: sds_records::fx::Projectile,
+    pub explosion: Option<sds_records::fx::Explosion>,
+    /// Effect art on the target, `start` relative to the impact.
+    pub hits: Vec<Piece>,
+    /// MGEF hit sounds, played on impact: (SNDR, label).
+    pub hit_sounds: Vec<(sds_records::FormKey, String)>,
 }
 
 #[derive(Debug, Clone)]
@@ -232,7 +250,7 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
     let mut cues: Vec<Cue> = Vec::new();
     for (index, (time, text)) in items.iter().enumerate() {
         let Some(body) = text.trim().strip_prefix("PIE.").or_else(|| text.trim().strip_prefix("pie.")) else { continue };
-        let mut cue = Cue { index, time: *time, instructions: Vec::new(), alias_file: None, spells: Vec::new(), pieces: Vec::new(), sounds: Vec::new(), notes: Vec::new() };
+        let mut cue = Cue { index, time: *time, instructions: Vec::new(), alias_file: None, spells: Vec::new(), pieces: Vec::new(), sounds: Vec::new(), shots: Vec::new(), notes: Vec::new() };
         // Expand aliases (one level of nesting is enough for real configs; deeper is guarded).
         let mut queue: Vec<(f32, String, usize)> = vec![(0.0, body.to_string(), 0)];
         while let Some((delay, raw, depth)) = queue.pop() {
@@ -278,15 +296,36 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
                     if let Some(s) = spell_of(&mut cue) {
                         let self_target = parts.get(5).is_some_and(|v| v.trim() == "1");
                         let hand = if op == "@CASTLEFT" { LEFT_MAGIC } else { RIGHT_MAGIC };
-                        // Release on the cast; the hit sound too when it lands on
-                        // the caster (a projectile's flight is not modelled).
+                        // Cast at the target with a projectile: it flies, and the
+                        // hit art and hit sound wait for the impact.
+                        let flight = s.projectile.as_ref().filter(|_| !self_target).and_then(|p| Some((p.projectile.clone()?, p.explosion.clone())));
+                        let mut shot = flight.map(|(projectile, explosion)| Shot {
+                            start: at,
+                            hand: hand.into(),
+                            spell: if s.name.is_empty() { s.edid.clone() } else { format!("{} «{}»", s.edid, s.name) },
+                            projectile,
+                            explosion,
+                            hits: Vec::new(),
+                            hit_sounds: Vec::new(),
+                        });
+                        // Release on the cast; the hit sound on the caster for self
+                        // spells, on the impact for projectiles.
                         for (effect, kind, sk) in &s.sounds {
-                            if *kind == 3 || (*kind == 5 && self_target) {
-                                let edid = db.and_then(|d| d.get(*sk)).map(|r| r.edid()).unwrap_or_default();
-                                cue.sounds.push(CueSound { time: at, sound: *sk, label: format!("{}: {edid} ({effect})", sds_records::sound::mgef_sound_slot(*kind)) });
+                            let edid = db.and_then(|d| d.get(*sk)).map(|r| r.edid()).unwrap_or_default();
+                            let label = format!("{}: {edid} ({effect})", sds_records::sound::mgef_sound_slot(*kind));
+                            match (kind, &mut shot) {
+                                (3, _) => cue.sounds.push(CueSound { time: at, sound: *sk, label }),
+                                (5, Some(sh)) => sh.hit_sounds.push((*sk, label)),
+                                (5, None) if self_target => cue.sounds.push(CueSound { time: at, sound: *sk, label }),
+                                _ => {}
                             }
                         }
                         for v in &s.visuals {
+                            if let (ArtSlot::Hit, Some(sh)) = (v.slot, &mut shot) {
+                                let life = if v.duration > 0.0 { v.duration } else { 2.0 };
+                                sh.hits.push(Piece { slot: v.slot, model: v.model.clone(), anchor: Anchor::Target, effect: v.effect.clone(), start: 0.0, life: life.min(duration.max(1.0) + 5.0), scale: 1.0, offset: [0.0; 3] });
+                                continue;
+                            }
                             let (anchor, life) = match v.slot {
                                 ArtSlot::Casting => (Anchor::Node(hand.into()), 1.0),
                                 ArtSlot::Hit if self_target => (Anchor::Node(ROOT.into()), if v.duration > 0.0 { v.duration } else { 3.0 }),
@@ -295,9 +334,22 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
                             };
                             cue.pieces.push(Piece { slot: v.slot, model: v.model.clone(), anchor, effect: v.effect.clone(), start: at, life: life.min(duration.max(1.0) + 5.0), scale: 1.0, offset: [0.0; 3] });
                         }
-                        if !self_target {
-                            cue.notes.push(sds_i18n::t!("не на себя: арт эффекта показан на цели (снаряд не моделируется)", "not on self: the effect art is shown on the target (projectile not modelled)").into());
+                        match &shot {
+                            Some(sh) => {
+                                let p = &sh.projectile;
+                                cue.notes.push(sds_i18n::tf!(
+                                    "снаряд {} ({}, {:.0} ед/с){}",
+                                    "projectile {} ({}, {:.0} u/s){}",
+                                    p.edid,
+                                    p.kind.label(),
+                                    p.speed,
+                                    sh.explosion.as_ref().map(|e| format!(" → {}", e.edid)).unwrap_or_default()
+                                ));
+                            }
+                            None if !self_target => cue.notes.push(sds_i18n::t!("не на себя, снаряда нет: арт эффекта сразу на цели", "not on self, no projectile: the effect art goes straight onto the target").into()),
+                            None => {}
                         }
+                        cue.shots.extend(shot);
                         cue.spells.push(s);
                     }
                 }

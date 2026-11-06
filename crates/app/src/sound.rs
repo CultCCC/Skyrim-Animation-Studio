@@ -19,6 +19,8 @@ pub struct SoundEvent {
     pub edid: String,
     /// Why an engine event (swing, footstep) has no sound.
     pub note: Option<String>,
+    /// Cut it off at this clip time (a projectile's flight loop).
+    pub until: Option<f32>,
 }
 
 /// The sound the ENGINE plays for an animation event: `weaponSwing` /
@@ -74,6 +76,9 @@ pub struct SoundSim {
     was_playing: bool,
     volume: Option<f32>,
     speed: Option<f32>,
+    /// Tagged voices and the clip time they stop at.
+    timed: Vec<(u64, f32)>,
+    next_id: u64,
 }
 
 impl SoundSim {
@@ -129,6 +134,11 @@ impl SoundSim {
 
     /// Plays one descriptor now. `Err` says why not.
     pub fn play(&mut self, l: &Loaded, key: FormKey, volume: f32, speed: f32) -> Result<String, String> {
+        self.play_until(l, key, volume, speed, None)
+    }
+
+    /// `until`: stop it when the playhead passes that clip time.
+    pub fn play_until(&mut self, l: &Loaded, key: FormKey, volume: f32, speed: f32, until: Option<f32>) -> Result<String, String> {
         let d = self.describe(l, key).ok_or(sds_i18n::t!("не SNDR / SOUN", "not an SNDR / SOUN"))?;
         if d.files.is_empty() {
             return Err(format!("{}: {}", d.edid, d.notes.join("; ")));
@@ -147,11 +157,21 @@ impl SoundSim {
             None => return Err(sds_i18n::t!("нет звука", "no sound").into()),
         };
         audio.set_speed(speed);
-        audio.play(clip.clone(), gain, ratio, d.looping);
+        let id = match until {
+            Some(u) => {
+                self.next_id += 1;
+                self.timed.push((self.next_id, u));
+                self.next_id
+            }
+            None => 0,
+        };
+        let audio = self.audio.as_ref().and_then(|a| a.as_ref().ok()).unwrap();
+        audio.play_tagged(clip.clone(), gain, ratio, d.looping, id);
         Ok(sds_i18n::tf!("{} → {} ({}, {:.2} с)", "{} → {} ({}, {:.2} s)", d.edid, path, clip.format, clip.seconds))
     }
 
     pub fn stop(&mut self) {
+        self.timed.clear();
         if let Some(Ok(a)) = &self.audio {
             a.stop_all();
         }
@@ -178,20 +198,28 @@ pub fn events(app: &StudioApp) -> Vec<SoundEvent> {
     for a in &doc.annos {
         if let sds_anno::Kind::Sound { descriptor } = sds_anno::parse(&a.text).kind {
             if !descriptor.trim().is_empty() {
-                out.push(SoundEvent { time: a.time, key: None, edid: descriptor.trim().to_string(), note: None });
+                out.push(SoundEvent { time: a.time, key: None, edid: descriptor.trim().to_string(), note: None, until: None });
             }
             continue;
         }
         match engine_sound(app, &a.text) {
-            Some(Ok((k, how))) => out.push(SoundEvent { time: a.time, key: Some(k), edid: how, note: None }),
-            Some(Err(why)) => out.push(SoundEvent { time: a.time, key: None, edid: a.text.clone(), note: Some(why) }),
+            Some(Ok((k, how))) => out.push(SoundEvent { time: a.time, key: Some(k), edid: how, note: None, until: None }),
+            Some(Err(why)) => out.push(SoundEvent { time: a.time, key: None, edid: a.text.clone(), note: Some(why), until: None }),
             None => {}
         }
     }
     let items: Vec<(f32, &str)> = doc.annos.iter().map(|a| (a.time, a.text.as_str())).collect();
     for cue in crate::pie::resolve(&items, doc.duration(), &l.pie, Some(&l.db)) {
         for s in cue.sounds {
-            out.push(SoundEvent { time: s.time, key: Some(s.sound), edid: s.label, note: None });
+            out.push(SoundEvent { time: s.time, key: Some(s.sound), edid: s.label, note: None, until: None });
+        }
+    }
+    let cues = crate::pie::resolve(&items, doc.duration(), &l.pie, Some(&l.db));
+    if cues.iter().any(|c| !c.shots.is_empty()) {
+        let path = crate::sds_path::compute(app, false);
+        let flights = crate::projectile::flights(app, &cues, path.as_ref());
+        for s in crate::projectile::sounds(&flights, &l.db) {
+            out.push(SoundEvent { time: s.time, key: Some(s.sound), edid: s.label, note: None, until: s.until });
         }
     }
     out
@@ -227,7 +255,7 @@ impl StudioApp {
                 let key = e.key.or_else(|| sim.lookup(l, &e.edid));
                 let r = match (key, &e.note) {
                     (_, Some(why)) => Err(format!("{}: {why}", e.edid)),
-                    (Some(k), None) => sim.play(l, k, volume, speed),
+                    (Some(k), None) => sim.play_until(l, k, volume, speed, e.until),
                     (None, None) => Err(sds_i18n::tf!("{}: нет SNDR / SOUN с таким EditorID", "{}: no SNDR / SOUN with this EditorID", e.edid)),
                 };
                 if let Err(msg) = r {
@@ -241,6 +269,16 @@ impl StudioApp {
                     self.log(sds_i18n::tf!("Звук отключён: {msg}", "Sound disabled: {msg}"));
                 }
             }
+        }
+        // Flight loops end at the impact (or on the loop point).
+        if let Some(Ok(a)) = &sim.audio {
+            sim.timed.retain(|&(id, until)| {
+                let done = wrapped || seek || now >= until;
+                if done {
+                    a.stop(id);
+                }
+                !done
+            });
         }
         sim.was_playing = true;
         self.sound = sim;

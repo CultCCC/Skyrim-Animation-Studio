@@ -17,6 +17,7 @@ mod panels;
 mod pie;
 mod precision_view;
 mod project;
+mod projectile;
 mod render;
 mod root_motion;
 mod scar_panel;

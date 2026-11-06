@@ -15,7 +15,7 @@ use sds_vfs::Vfs;
 use std::collections::HashMap;
 use std::io::{Read, Seek, SeekFrom};
 
-pub const WANTED: [&[u8; 4]; 21] = [b"NPC_", b"RACE", b"ARMO", b"ARMA", b"OTFT", b"LVLI", b"LVLN", b"WEAP", b"SPEL", b"MGEF", b"ARTO", b"ENCH", b"KYWD", b"SNDR", b"SOUN", b"SNCT", b"FSTS", b"FSTP", b"IPDS", b"IPCT", b"MATT"];
+pub const WANTED: [&[u8; 4]; 23] = [b"NPC_", b"RACE", b"ARMO", b"ARMA", b"OTFT", b"LVLI", b"LVLN", b"WEAP", b"SPEL", b"MGEF", b"ARTO", b"ENCH", b"KYWD", b"SNDR", b"SOUN", b"SNCT", b"FSTS", b"FSTP", b"IPDS", b"IPCT", b"MATT", b"PROJ", b"EXPL"];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct FormKey {
