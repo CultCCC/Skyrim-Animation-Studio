@@ -355,7 +355,7 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
                         };
                         let world = world.compose(&Transform::from_av(piece.offset, Transform::IDENTITY.rot, piece.scale));
                         let key = format!("{}:{}:{}:{}:{}", cue.index, k, piece.start, piece.model, on_weapon);
-                        player.draw_full(&vfs, &key, &asset, &world, t - piece.start, &fcam, if on_weapon { weapon_geo.as_ref() } else { None }, &mut fx_batches);
+                        player.draw_full(&vfs, &key, &asset, &|_: f32| world, t - piece.start, &fcam, if on_weapon { weapon_geo.as_ref() } else { None }, &mut fx_batches);
                     }
                 }
             }

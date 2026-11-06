@@ -288,8 +288,9 @@ pub fn draw(
         let p = &f.shot.projectile;
         if t >= f.shot.start && t < f.end.max(f.shot.start + 1e-3) && !p.model.is_empty() {
             let asset = player.asset(vfs, &p.model);
-            let world = Transform::from_av(f.pos(t), facing(f.dir(t)), f.scale(t));
-            player.draw_full(vfs, &format!("proj:{}", f.key), &asset, &world, t - f.shot.start, cam, None, out);
+            let start = f.shot.start;
+            let world_at = |lt: f32| Transform::from_av(f.pos(start + lt), facing(f.dir(start + lt)), f.scale(start + lt));
+            player.draw_full(vfs, &format!("proj:{}", f.key), &asset, &world_at, t - start, cam, None, out);
         }
         let Some(ti) = f.impact else { continue };
         if t < ti {
@@ -300,14 +301,14 @@ pub fn draw(
             if t < ti + life {
                 let asset = player.asset(vfs, &i.model);
                 let world = Transform::from_av(f.impact_point(), facing(f.dir(ti)), 1.0);
-                player.draw_full(vfs, &format!("ipct:{}", f.key), &asset, &world, t - ti, cam, None, out);
+                player.draw_full(vfs, &format!("ipct:{}", f.key), &asset, &|_: f32| world, t - ti, cam, None, out);
             }
         }
         if let Some(e) = f.shot.explosion.as_ref().filter(|e| !e.model.is_empty()) {
             if t < ti + EXPLOSION_LIFE {
                 let asset = player.asset(vfs, &e.model);
                 let world = Transform::from_av(f.impact_point(), Transform::IDENTITY.rot, 1.0);
-                player.draw_full(vfs, &format!("expl:{}", f.key), &asset, &world, t - ti, cam, None, out);
+                player.draw_full(vfs, &format!("expl:{}", f.key), &asset, &|_: f32| world, t - ti, cam, None, out);
             }
         }
         for (k, piece) in f.shot.hits.iter().enumerate().filter(|_| f.hits_target) {
@@ -316,7 +317,7 @@ pub fn draw(
             }
             let asset = player.asset(vfs, &piece.model);
             let world = target.compose(&Transform::from_av(piece.offset, Transform::IDENTITY.rot, piece.scale));
-            player.draw_full(vfs, &format!("hit:{}:{k}", f.key), &asset, &world, t - ti - piece.start, cam, None, out);
+            player.draw_full(vfs, &format!("hit:{}:{k}", f.key), &asset, &|_: f32| world, t - ti - piece.start, cam, None, out);
         }
     }
 }

@@ -210,7 +210,8 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - impact: the EXPL's impact set, else the MGEF's (DATA@100) → the IPCT for the surface chosen in Scene → Sound (or its parent). Its model stands at the hit point for the IPCT duration, its sound plays with the blast;
     - sounds: the PROJ flight loop until the impact, the EXPL sound and the MGEF hit sound on it;
     - the PIE inspector notes «projectile …, type, speed → explosion»; `SDS_FX_DEBUG=1` prints FXPROJ lines.
-  - **AddOnNode.** `AddOnNode<N>` nodes in any art, projectile, explosion or impact get the model of the ADDN record with index N (lightning, sparks, dust — usually particle systems) and follow the node's animation; nested addons go two levels deep. An unknown index is logged.
+  - **AddOnNode.** `AddOnNode<N>` nodes in any art, projectile, explosion or impact get the model of the ADDN record with index N (lightning, sparks, dust — usually particle systems) and are born where the node is (with the projectile's flight and the node's animation); nested addons go two levels deep.
+  - **World-space particles.** Particle systems with the World Space flag (nearly every Skyrim effect) leave their particles where they were born: a flying projectile or a moving hand trails them instead of carrying the cloud along. The art's placement is taken at each particle's birth, so a playhead jump still lays the trail along the whole path. An unknown index is logged.
   - **Effect shaders on the body (EFSH).** The MGEF hit shader covers the NPC's body on a self `@CAST` (for the effect's duration, or by its own envelopes for instant effects) and on `@APPLYSPELL` (until `@UNAPPLYSPELL`, then it fades out):
     - fill — the fill texture with UV scroll and scale, coloured by its three keys; with the grayscale flag the texture's brightness is looked up in the membrane palette;
     - edge — a fresnel glow in the edge colour, its width from the falloff;

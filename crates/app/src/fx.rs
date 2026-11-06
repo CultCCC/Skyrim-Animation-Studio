@@ -41,11 +41,15 @@ pub struct FxAsset {
     pub clips: Vec<SequenceClip>,
     /// Node tree, billboards and free-running node controllers.
     pub scene: MeshScene,
+    /// Per system: `NiParticleSystem` World Space. Its particles are born
+    /// where the emitter is and then stay in the world (a moving projectile
+    /// leaves them behind) instead of travelling with the art.
+    pub world_space: Vec<bool>,
     pub notes: Vec<String>,
 }
 
 pub fn load_asset(vfs: &Vfs, path: &str) -> FxAsset {
-    let empty = |note: String| FxAsset { meshes: Vec::new(), systems: Vec::new(), needs_target: false, attach_node: None, clips: Vec::new(), scene: MeshScene::default(), notes: vec![note] };
+    let empty = |note: String| FxAsset { meshes: Vec::new(), systems: Vec::new(), needs_target: false, attach_node: None, clips: Vec::new(), scene: MeshScene::default(), world_space: Vec::new(), notes: vec![note] };
     let bytes = match vfs.read(path) {
         Ok(b) => b,
         Err(e) => return empty(format!("{path}: {e}")),
@@ -88,9 +92,14 @@ pub fn load_asset(vfs: &Vfs, path: &str) -> FxAsset {
     }
     let mut needs_target = false;
     let clips;
+    let mut world_space = Vec::new();
     let systems = match aether_core::decompile::decompile(&nif) {
         Ok(d) => {
             let mut v = systems_from_graph(&d.graph);
+            // Same order as systems_from_graph: particle system nodes by id.
+            let mut ids: Vec<_> = d.graph.nodes.iter().filter(|(_, n)| n.kind == aether_core::graph::NodeKind::ParticleSystem).map(|(id, _)| *id).collect();
+            ids.sort();
+            world_space = ids.iter().map(|id| d.graph.nodes[id].bool_or("World Space", true)).collect();
             for desc in &mut v {
                 // Mesh emitters sample the NIF's own shapes when it has them.
                 desc.resolve_mesh_emitters(&mut |name: &str| {
@@ -138,7 +147,7 @@ pub fn load_asset(vfs: &Vfs, path: &str) -> FxAsset {
             eprintln!("FXC {path} clip {} {:.2}s: {:?}", c.name, c.duration(), c.tracks.iter().map(|t| format!("{:?}", t.target)).collect::<Vec<_>>());
         }
     }
-    FxAsset { meshes, systems, needs_target, attach_node, clips, scene, notes }
+    FxAsset { meshes, systems, needs_target, attach_node, clips, scene, world_space, notes }
 }
 
 /// An effect-shaded mesh as an FX mesh, its own world applied.
@@ -226,8 +235,8 @@ pub struct FxPlayer {
     pub notes: Vec<String>,
     /// ADDN records: `AddOnNode<N>` index → model (set from the load order).
     pub addons: Option<Arc<HashMap<u32, String>>>,
-    /// Addon nodes of the last `draw`: (index, world).
-    last_addons: Vec<(u32, Transform)>,
+    /// Addon nodes of the last `draw`: (ADDN index, scene node).
+    last_addons: Vec<(u32, usize)>,
 }
 
 pub struct Camera {
@@ -253,21 +262,23 @@ impl FxPlayer {
         a
     }
 
-    /// `draw`, then the ADDN model of every `AddOnNode<N>` in the art at
+    /// `draw_at`, then the ADDN model of every `AddOnNode<N>` in the art on
     /// that node (lightning, sparks, dust), two levels deep at most.
+    /// `world_at(local time)` places the art over its life, so world-space
+    /// particles land where the art was when they were born.
     #[allow(clippy::too_many_arguments)]
-    pub fn draw_full(&mut self, vfs: &Vfs, key: &str, asset: &FxAsset, world: &Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>) {
-        self.draw_nested(vfs, key, asset, world, local_t, cam, target, out, 0);
+    pub fn draw_full(&mut self, vfs: &Vfs, key: &str, asset: &FxAsset, world_at: &dyn Fn(f32) -> Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>) {
+        self.draw_nested(vfs, key, asset, world_at, local_t, cam, target, out, 0);
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn draw_nested(&mut self, vfs: &Vfs, key: &str, asset: &FxAsset, world: &Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>, depth: u32) {
-        self.draw(key, asset, world, local_t, cam, target, out);
+    fn draw_nested(&mut self, vfs: &Vfs, key: &str, asset: &FxAsset, world_at: &dyn Fn(f32) -> Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>, depth: u32) {
+        self.draw_at(key, asset, world_at, local_t, cam, target, out);
         let Some(addons) = self.addons.clone() else { return };
         if depth >= 2 {
             return;
         }
-        for (k, (index, node_world)) in std::mem::take(&mut self.last_addons).into_iter().enumerate() {
+        for (k, (index, node)) in std::mem::take(&mut self.last_addons).into_iter().enumerate() {
             let Some(model) = addons.get(&index) else {
                 let note = format!("AddOnNode{index}: ADDN not found");
                 if !self.notes.contains(&note) {
@@ -276,8 +287,34 @@ impl FxPlayer {
                 continue;
             };
             let a = self.asset(vfs, model);
-            self.draw_nested(vfs, &format!("{key}/addon{k}"), &a, &node_world, local_t, cam, None, out, depth + 1);
+            let child = |lt: f32| world_at(lt).compose(&Self::node_world_at(asset, node, lt));
+            self.draw_nested(vfs, &format!("{key}/addon{k}"), &a, &child, local_t, cam, None, out, depth + 1);
         }
+    }
+
+    /// A node of the art in art space at `t`: its free-running controllers
+    /// and the playing sequence's transform tracks.
+    fn node_world_at(asset: &FxAsset, node: usize, t: f32) -> Transform {
+        let scene = &asset.scene;
+        let mut overrides = HashMap::new();
+        if let Some((clip, ct)) = Self::clip_at(&asset.clips, t) {
+            for track in &clip.tracks {
+                if let TrackTarget::NodeTransform { node: name } = &track.target {
+                    let sample = match &track.keys {
+                        TrackKeys::Transform(k) => Some(aether_core::sequence::sample_transform(k, ct)),
+                        TrackKeys::Path(k) => Some(aether_core::path::sample_path(k, ct)),
+                        _ => None,
+                    };
+                    if let (Some(s), Some(i)) = (sample, scene.node_index(name)) {
+                        overrides.insert(i, scene.nodes[i].local.with_sample(&s));
+                    }
+                }
+            }
+        }
+        for anim in &scene.node_anims {
+            overrides.entry(anim.node).or_insert_with(|| scene.nodes[anim.node].local.with_sample(&anim.sample(t)));
+        }
+        scene.node_world(node, &overrides)
     }
 
     pub fn begin_frame(&mut self) {
@@ -385,6 +422,13 @@ impl FxPlayer {
     /// `target` binds the emitters that name the target's 3D.
     #[allow(clippy::too_many_arguments)]
     pub fn draw(&mut self, key: &str, asset: &FxAsset, world: &Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>) {
+        self.draw_at(key, asset, &|_| *world, local_t, cam, target, out);
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn draw_at(&mut self, key: &str, asset: &FxAsset, world_at: &dyn Fn(f32) -> Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>) {
+        let world_now = world_at(local_t);
+        let world = &world_now;
         // Effect meshes, minus what the playing sequence hides, posed and
         // shaded by it (and by free-running controllers), billboards
         // turned to the camera.
@@ -486,7 +530,7 @@ impl FxPlayer {
             .filter_map(|(i, n)| {
                 let lower = n.name.to_ascii_lowercase();
                 let index = lower.strip_prefix("addonnode")?.trim().parse::<u32>().ok()?;
-                Some((index, world.compose(&scene.node_world(i, &overrides))))
+                Some((index, i))
             })
             .collect();
         if asset.systems.is_empty() {
@@ -527,13 +571,25 @@ impl FxPlayer {
             if let Some((clip, ct)) = Self::clip_at(&asset.clips, r.time) {
                 Self::apply_sim_tracks(&mut r.sims, clip, ct);
             }
-            for s in &mut r.sims {
+            for (i, s) in r.sims.iter_mut().enumerate() {
                 s.step(DT);
+                if asset.world_space.get(i).copied().unwrap_or(false) && s.desc.strips.is_none() && s.particles.iter().any(|p| p.age == 0.0) {
+                    // Born this step: from psys space into the scene, where
+                    // the art is right now; they stay there afterwards.
+                    let d = &s.desc;
+                    let place = world_at(s.time).compose(&Transform::from_av(d.world_offset, d.world_rotation, d.world_scale));
+                    for p in s.particles.iter_mut().filter(|p| p.age == 0.0) {
+                        p.position = place.transform_point(p.position);
+                        let v = place.rotate(p.velocity);
+                        p.velocity = [v[0] * place.s, v[1] * place.s, v[2] * place.s];
+                        p.radius *= place.s;
+                    }
+                }
             }
             r.time += DT;
             steps += 1;
         }
-        for sim in &r.sims {
+        for (index, sim) in r.sims.iter().enumerate() {
             if !sim.visible || is_hidden(&[&sim.desc.name]) {
                 continue;
             }
@@ -549,7 +605,8 @@ impl FxPlayer {
             }
             let d = &sim.desc;
             let psys = Transform::from_av(d.world_offset, d.world_rotation, d.world_scale);
-            let place = world.compose(&psys);
+            // World-space particles already sit in the scene.
+            let place = if asset.world_space.get(index).copied().unwrap_or(false) { Transform::IDENTITY } else { world.compose(&psys) };
             let grey = !d.greyscale_texture.is_empty() && (d.greyscale_color || d.greyscale_alpha);
             let mode = if grey { (d.greyscale_color as u32 | ((d.greyscale_alpha as u32) << 1)) as f32 } else { 0.0 };
             let fold_rgb = !(grey && d.greyscale_color);
