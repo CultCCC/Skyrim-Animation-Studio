@@ -110,6 +110,8 @@ pub struct SceneOptions {
     pub show_fx: bool,
     /// Spell projectile, explosion and hazard hit volumes.
     pub show_proj_hitboxes: bool,
+    /// Simulate HDT-SMP physics (capes, hair, skirts).
+    pub smp: bool,
 }
 
 /// Orbit camera around `target` (Z up). Yaw is measured from +Y, the way
@@ -159,6 +161,8 @@ pub struct StudioApp {
     pub edit_anno: Option<(usize, String)>,
     /// The Root Motion Editor window.
     pub rm: crate::root_motion::RootMotionEditor,
+    /// HDT-SMP physics of the character, stepped with the clip.
+    pub smp: crate::smp::System,
     pub profiles: Vec<String>,
     pub shot: Option<Shot>,
     /// `--export-batch`: clips waiting for PNG/GIF export.
@@ -276,6 +280,7 @@ impl StudioApp {
                 show_trails: true,
                 show_fx: true,
                 show_proj_hitboxes: true,
+                smp: true,
             },
             camera: Camera { yaw: 25f32.to_radians(), pitch: 12f32.to_radians(), dist: 320.0, target: [0.0, 0.0, 80.0] },
             gpu: None,
@@ -308,6 +313,7 @@ impl StudioApp {
             next_use: (true, true),
             edit_anno: None,
             rm: Default::default(),
+            smp: Default::default(),
             profiles: Vec::new(),
             shot: None,
             batch: None,

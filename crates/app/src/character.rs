@@ -54,6 +54,8 @@ pub struct SkinMesh {
     pub raw: Vec<([f32; 3], [f32; 3], [u16; 4], [f32; 4])>,
     /// Per bone slot: where it is, and skin→bone.
     pub bones: Vec<(BoneRef, Transform)>,
+    /// Per bone slot: the NIF node name (HDT-SMP bones are found by it).
+    pub bone_names: Vec<String>,
     /// Rigid shapes: vertices in the attach bone's space.
     pub rigid: Option<(BoneRef, Vec<MeshVertex>)>,
 }
@@ -88,6 +90,13 @@ pub struct Character {
     pub scale: f32,
     /// Collision capsules of skeleton.nif bones, in bone space (lowercase name).
     pub capsules: HashMap<String, Capsule>,
+    /// HDT-SMP physics XMLs the pieces name («HDT Skinned Mesh Physics Object»).
+    pub smp_files: Vec<String>,
+    /// Nodes of the pieces' NIFs (HDT anchors, bones no shape is skinned
+    /// to), under their nearest resolvable ancestor; lowercase name.
+    pub piece_nodes: HashMap<String, BoneRef>,
+    /// Simulated bones this frame: world transform by lowercase node name.
+    pub phys: HashMap<String, Transform>,
 }
 
 /// A capsule in some node's space: segment `a`–`b`, radius `r` (game units).
@@ -226,6 +235,9 @@ impl Character {
             extra: HashMap::new(),
             scale,
             capsules: HashMap::new(),
+            smp_files: Vec::new(),
+            piece_nodes: HashMap::new(),
+            phys: HashMap::new(),
         };
         if let Some(nif) = nif.filter(|n| vfs.exists(n)) {
             match load_nif(vfs, nif) {
@@ -240,7 +252,15 @@ impl Character {
         }
         for piece in pieces {
             let index = c.pieces.len();
-            match load_scene(vfs, &piece.path).map(|s| blend_weight(vfs, &piece.path, s, weight)) {
+            let file = load_nif(vfs, &piece.path);
+            if let Ok(f) = &file {
+                if let Some(xml) = hdt_physics_xml(f) {
+                    if !c.smp_files.iter().any(|x| x.eq_ignore_ascii_case(&xml)) {
+                        c.smp_files.push(xml);
+                    }
+                }
+            }
+            match file.map(|f| meshes_from_nif(&f)).map(|s| blend_weight(vfs, &piece.path, s, weight)) {
                 Ok(scene) => {
                     let n = c.meshes.len();
                     c.add_piece(index, &scene, &piece);
@@ -302,7 +322,7 @@ impl Character {
         self.skeleton.bone(name).map(|i| BoneRef { havok: Some(i), rel: Transform::IDENTITY })
     }
 
-    fn resolve(&self, name: &str) -> Option<BoneRef> {
+    pub fn resolve(&self, name: &str) -> Option<BoneRef> {
         self.havok(name).or_else(|| self.extra.get(&name.to_ascii_lowercase()).copied())
     }
 
@@ -343,6 +363,14 @@ impl Character {
 
     fn add_piece(&mut self, index: usize, scene: &MeshScene, piece: &Piece) {
         let worlds = scene.node_worlds(&HashMap::new());
+        for i in 0..scene.nodes.len() {
+            let key = scene.nodes[i].name.to_ascii_lowercase();
+            if self.resolve(&key).is_none() && !self.piece_nodes.contains_key(&key) {
+                if let Some(b) = self.resolve_in(scene, &worlds, i) {
+                    self.piece_nodes.insert(key, b);
+                }
+            }
+        }
         let hidden = |name: &str| {
             let n = name.to_ascii_lowercase();
             piece.hide_shapes.iter().any(|h| n.contains(h.as_str()))
@@ -393,6 +421,7 @@ impl Character {
                 uvs: m.vertices.iter().map(|v| v.uv).collect(),
                 raw: sk.raw.clone(),
                 bones,
+                bone_names: sk.bones.iter().map(|b| b.node.map(|n| scene.nodes[n].name.clone()).unwrap_or_default()).collect(),
                 rigid: None,
             });
         }
@@ -433,6 +462,7 @@ impl Character {
                 uvs: Vec::new(),
                 raw: Vec::new(),
                 bones: Vec::new(),
+                bone_names: Vec::new(),
                 rigid: Some((at, verts)),
             });
         }
@@ -515,12 +545,36 @@ pub fn to_transform(x: &Xform) -> Transform {
 }
 
 /// Skin one mesh under `model` (Havok model-space bones), placed by `root`.
-pub fn skin(mesh: &SkinMesh, model: &[Transform], root: &Transform) -> Vec<MeshVertex> {
+/// The NIF's «HDT Skinned Mesh Physics Object» string extra data: its XML.
+fn hdt_physics_xml(nif: &aether_nif::NifFile) -> Option<String> {
+    use aether_nif::typed::TypedBlock;
+    let ctx = aether_nif::typed::Ctx::of(&nif.header).ok()?;
+    nif.blocks.iter().find_map(|b| {
+        let e = aether_nif::typed::controllers::NiStringExtraData::decode(b, ctx).ok()?;
+        e.name.resolve(&nif.header).filter(|n| n.eq_ignore_ascii_case("HDT Skinned Mesh Physics Object"))?;
+        e.value.resolve(&nif.header).map(|v| v.to_string()).filter(|v| !v.trim().is_empty())
+    })
+}
+
+/// `phys`: simulated bones (HDT-SMP) by lowercase node name, used instead
+/// of where the animation puts them.
+pub fn skin(mesh: &SkinMesh, model: &[Transform], root: &Transform, phys: &HashMap<String, Transform>) -> Vec<MeshVertex> {
     if let Some((at, verts)) = &mesh.rigid {
         let w = Character::world(model, root, at);
         return verts.iter().map(|v| MeshVertex { pos: w.transform_point(v.pos), normal: norm(w.rotate(v.normal)), uv: v.uv }).collect();
     }
-    let mats: Vec<Transform> = mesh.bones.iter().map(|(b, skin_to_bone)| Character::world(model, root, b).compose(skin_to_bone)).collect();
+    let mats: Vec<Transform> = mesh
+        .bones
+        .iter()
+        .enumerate()
+        .map(|(i, (b, skin_to_bone))| {
+            let simulated = (!phys.is_empty()).then(|| mesh.bone_names.get(i).and_then(|n| phys.get(&n.to_ascii_lowercase()))).flatten();
+            match simulated {
+                Some(w) => w.compose(skin_to_bone),
+                None => Character::world(model, root, b).compose(skin_to_bone),
+            }
+        })
+        .collect();
     mesh.raw
         .iter()
         .zip(&mesh.uvs)

@@ -46,7 +46,7 @@ impl Default for ExportOpts {
 fn skinned_at(app: &StudioApp, t: f32) -> Option<Vec<Skinned>> {
     app.character.as_ref()?;
     let root = crate::sds_path::root(crate::sds_path::npc_scale(app), false, None, t);
-    Some(crate::paired::skin_all(app, t, &root))
+    Some(crate::paired::skin_all_with(app, t, &root, false))
 }
 
 struct View {

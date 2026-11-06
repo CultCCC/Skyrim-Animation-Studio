@@ -24,6 +24,7 @@ mod root_motion;
 mod scar_panel;
 mod sds_path;
 mod settings;
+mod smp;
 mod sound;
 mod theme;
 mod timeline;

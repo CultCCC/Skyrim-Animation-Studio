@@ -41,6 +41,9 @@ pub struct SceneState {
     pub ai_turn_speed: f32,
     pub compare_raw: bool,
     pub show_scar: bool,
+    /// Newer toggles: None (older projects) = on.
+    pub smp: Option<bool>,
+    pub show_proj_hitboxes: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -107,6 +110,8 @@ pub fn capture(app: &StudioApp) -> Project {
             show_precision: s.show_precision,
             show_trails: s.show_trails,
             show_fx: s.show_fx,
+            smp: Some(s.smp),
+            show_proj_hitboxes: Some(s.show_proj_hitboxes),
             precision_player: s.precision_player,
             target_dist: s.target_dist,
             target_angle: s.target_angle,
@@ -209,6 +214,8 @@ pub fn apply(app: &mut StudioApp, p: &Project) {
     sc.show_precision = s.show_precision;
     sc.show_trails = s.show_trails;
     sc.show_fx = s.show_fx;
+    sc.smp = s.smp.unwrap_or(true);
+    sc.show_proj_hitboxes = s.show_proj_hitboxes.unwrap_or(true);
     sc.precision_player = s.precision_player;
     sc.target_dist = s.target_dist;
     sc.target_angle = s.target_angle;

@@ -152,6 +152,8 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
     let (npc_k, rm) = (crate::sds_path::npc_scale(app), app.scene.root_motion);
     let root_at = |time: f32| crate::sds_path::root(npc_k, rm, path.as_ref(), time);
     let root = root_at(t);
+    // HDT-SMP: simulated bones up to `t`, read by the skinning below.
+    crate::smp::update(app, t, &root_at);
     if app.scene.follow {
         app.camera.target = [root.t[0], root.t[1], root.t[2] + 80.0 * root.s];
     }
@@ -235,6 +237,9 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
                 let a = root.transform_point(m[p as usize].t);
                 let b = root.transform_point(m[i].t);
                 line(&mut overlay, a, b, [1.0, 0.85, 0.25, 1.0]);
+            }
+            for (a, b, dynamic) in app.smp.links() {
+                line(&mut overlay, a, b, if dynamic { [0.3, 0.9, 1.0, 1.0] } else { [0.5, 0.5, 0.6, 0.6] });
             }
         }
     }

@@ -870,6 +870,8 @@ pub fn scene(app: &mut StudioApp, ui: &mut egui::Ui) {
     });
     precision_summary(app, ui);
     ui.checkbox(&mut app.scene.show_fx, sds_i18n::t!("FX от PIE (арт заклинаний, частицы)", "PIE FX (spell art, particles)"));
+    ui.checkbox(&mut app.scene.smp, sds_i18n::t!("Физика HDT-SMP (плащи, волосы, юбки)", "HDT-SMP physics (capes, hair, skirts)"))
+        .on_hover_text(sds_i18n::t!("Кости из XML физики, на который ссылается NIF, считаются от начала клипа с шагом 1/60 с. Связи 6DOF, пружины и cone-twist; столкновения пока не моделируются. При показе скелета видны связи (голубые — динамические).", "Bones from the physics XML the NIF names, stepped from the clip start at 1/60 s. 6DOF constraints, springs and cone-twist; collisions are not simulated yet. With the skeleton shown, the links are drawn (cyan = dynamic)."));
     ui.checkbox(&mut app.scene.show_proj_hitboxes, sds_i18n::t!("Хитбоксы снарядов, взрывов и хазардов", "Projectile, explosion and hazard hitboxes"))
         .on_hover_text(sds_i18n::t!("Сфера столкновения снаряда (у конуса растёт с разлётом), сфера взрыва 0.5 с после него, сфера хазарда, пока он жив. Красные — задевают цель.", "The projectile's collision sphere (a cone's grows with its spread), the blast sphere for 0.5 s after it, the hazard's sphere while it lasts. Red ones touch the target."));
     ui.checkbox(&mut app.scene.show_trails, sds_i18n::t!("Трейлы Precision", "Precision trails"));

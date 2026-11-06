@@ -42,12 +42,13 @@ impl Skinned {
     }
 }
 
-fn skin_character(c: &Character, model: &[Transform], root: &Transform, id_base: u64, out: &mut Vec<Skinned>) {
+fn skin_character(c: &Character, model: &[Transform], root: &Transform, id_base: u64, phys: bool, out: &mut Vec<Skinned>) {
     for (i, mesh) in c.meshes.iter().enumerate() {
         if !c.pieces.get(mesh.piece).is_some_and(|p| p.visible) {
             continue;
         }
-        let verts = skin(mesh, model, root);
+        let none = std::collections::HashMap::new();
+        let verts = skin(mesh, model, root, if phys { &c.phys } else { &none });
         if verts.is_empty() {
             continue;
         }
@@ -58,6 +59,12 @@ fn skin_character(c: &Character, model: &[Transform], root: &Transform, id_base:
 /// Every actor of the clip at `t`, skinned under `root`: the character, and
 /// for a paired clip the partner, each placed by its group track.
 pub fn skin_all(app: &StudioApp, t: f32, root: &Transform) -> Vec<Skinned> {
+    skin_all_with(app, t, root, true)
+}
+
+/// `phys`: use the simulated HDT-SMP bones (the viewport's current state);
+/// off for exports, which pose other times than the viewport.
+pub fn skin_all_with(app: &StudioApp, t: f32, root: &Transform, phys: bool) -> Vec<Skinned> {
     let mut out = Vec::new();
     let Some(c) = &app.character else { return out };
     let gen = app.character_gen * 10_000;
@@ -70,7 +77,7 @@ pub fn skin_all(app: &StudioApp, t: f32, root: &Transform) -> Vec<Skinned> {
                 let local = sds_hkx::anim::local_pose_actor(&ch.skeleton, a, t, actor);
                 let model: Vec<Transform> = sds_hkx::anim::model_pose(&ch.skeleton, &local).iter().map(to_transform).collect();
                 let place = root.compose(&to_transform(&sds_hkx::anim::actor_root(a, t, actor)));
-                skin_character(ch, &model, &place, gen + k as u64 * 5_000, &mut out);
+                skin_character(ch, &model, &place, gen + k as u64 * 5_000, phys, &mut out);
             }
         }
         _ => {
@@ -79,7 +86,7 @@ pub fn skin_all(app: &StudioApp, t: f32, root: &Transform) -> Vec<Skinned> {
                 None => c.skeleton.reference.clone(),
             };
             let model: Vec<Transform> = sds_hkx::anim::model_pose(&c.skeleton, &local).iter().map(to_transform).collect();
-            skin_character(c, &model, root, gen, &mut out);
+            skin_character(c, &model, root, gen, phys, &mut out);
         }
     }
     out

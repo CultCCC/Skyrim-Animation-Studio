@@ -66,6 +66,12 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
   - Every change is baked back into `animmotion` on every frame (or every Nth, «Bake every»), so the 3D view, the SDSCombat path and saving see it at once. One drag is one Ctrl+Z step. Z and `animrotation` are left as they are.
   - Nothing changes until you edit. «Restore original» puts `animmotion` back as it was when the clip was opened. Deleting every key removes `animmotion` from the clip.
   - A clip with no `animmotion` starts from flat zero curves: the keys you add are AMR root motion, which needs Animation Motion Revolution in game.
+- **HDT-SMP physics** (Scene → «HDT-SMP physics», on by default):
+  - The physics XML comes from the «HDT Skinned Mesh Physics Object» extra data of each NIF on the character (capes, hair, skirts). Read as FSMP does (ported in BodySlide's `src/physics/hdt`): cumulative `bone-default` / `generic-constraint-default`, `bone`, `generic-constraint`, `stiffspring-constraint`, `conetwist-constraint`, groups; bones with mass 0 follow the animation and root motion.
+  - Our own solver (not Bullet): rigid-body XPBD, 60 Hz × 4 substeps × 8 passes. 6DOF constraints in B's frame: per-axis limits (lower > upper = free), XYZ Euler angles as in Bullet, springs toward the equilibrium; a correction at the anchor moves and turns both bodies (inertia of a rod as long as the link). Bullet-style damping, 9.81 m/s² gravity.
+  - Stepped from the clip start; going back replays, so a frame always looks the same.
+  - With the skeleton shown, the links are drawn (cyan = with dynamic bones). The log names the bone and constraint counts and bones not found.
+  - Not modelled yet: collisions (per-vertex / per-triangle shapes, the virtual ground), wind, non-Hookean springs. PNG/GIF exports pose without physics.
 - **NPC weapons in combat.** The blade is in the hand and the scabbard stays on the body: the `Scb*` shapes and nodes of the weapon NIF hang from the skeleton's sheath node (WeaponSword, WeaponDagger, WeaponAxe, WeaponMace, WeaponBack, WeaponBow). Without that node on the skeleton the scabbard is not drawn.
   - Two weapons: when the NPC's combat style (CSTY, AllowDualWielding flag, inherited with the AI Data template flag) allows it, a second one-handed weapon from the inventory (or a second copy when the count is ≥ 2) goes to the left hand (SHIELD node), its scabbard to the `…Left` node (XPMSE). The Character tab picks the left-hand weapon and shows the combat style.
 - **NPCs from ESP** (the «Character» tab):
