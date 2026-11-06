@@ -87,9 +87,28 @@ pub struct NpcLook {
     pub facegen: Vec<String>,
     /// Generic race head for NPCs without FaceGen.
     pub head_fallback: String,
+    /// QNAM «texture lighting»: the skin tone the game puts into skin-tint
+    /// shaders (body, hands, feet), 0..1.
+    pub skin_tone: Option<[f32; 3]>,
     pub parts: Vec<Part>,
     pub weapons: Vec<Weapon>,
     pub notes: Vec<String>,
+}
+
+/// NPC_ QNAM: three floats 0..1 (Skyrim SE), or RGB bytes in some writers.
+fn skin_tone(d: &[u8]) -> Option<[f32; 3]> {
+    if d.len() >= 12 {
+        let f = |i: usize| f32::from_le_bytes(d[i * 4..i * 4 + 4].try_into().unwrap());
+        let c = [f(0), f(1), f(2)];
+        if c.iter().all(|v| v.is_finite() && (0.0..=1.5).contains(v)) {
+            return Some(c.map(|v| v.min(1.0)));
+        }
+        if c.iter().all(|v| v.is_finite() && (0.0..=255.0).contains(v)) {
+            return Some(c.map(|v| v / 255.0));
+        }
+        return None;
+    }
+    (d.len() >= 3).then(|| [d[0] as f32 / 255.0, d[1] as f32 / 255.0, d[2] as f32 / 255.0])
 }
 
 fn meshes_path(p: &str) -> String {
@@ -122,6 +141,31 @@ impl Db {
         }
         let entry = r.subs().find(|(s, _)| *s == b"LVLO").and_then(|(_, d)| u32_at(d, 4))?;
         self.level_first(self.link(r, entry)?, depth + 1)
+    }
+
+    /// Items a leveled entry gives: a list with «Use All» (LVLF 0x04, how
+    /// armor sets are built) gives every entry, any other list its first.
+    fn level_items(&self, k: FormKey, depth: usize, out: &mut Vec<FormKey>) {
+        let Some(r) = self.get(k) else { return };
+        if &r.sig != b"LVLI" && &r.sig != b"LVLN" {
+            out.push(k);
+            return;
+        }
+        if depth > 8 {
+            return;
+        }
+        let use_all = r.first(b"LVLF").and_then(|d| d.first()).is_some_and(|f| f & 0x04 != 0);
+        for (s, d) in r.subs() {
+            if s != b"LVLO" {
+                continue;
+            }
+            if let Some(e) = u32_at(d, 4).and_then(|raw| self.link(r, raw)) {
+                self.level_items(e, depth + 1, out);
+            }
+            if !use_all {
+                break;
+            }
+        }
     }
 
     /// The NPC that supplies `flag` data (template chain), and the chain for notes.
@@ -254,8 +298,13 @@ impl Db {
         let outfit = inv.first(b"DOFT").and_then(|d| u32_at(d, 0)).and_then(|raw| self.link(inv, raw));
         if let Some(o) = outfit.and_then(|o| self.rec_sig(o, b"OTFT")) {
             if let Some(list) = o.first(b"INAM") {
+                let mut items = Vec::new();
                 for c in list.chunks_exact(4) {
-                    let Some(item) = self.link(o, u32::from_le_bytes(c.try_into().unwrap())).and_then(|k| self.level_first(k, 0)) else { continue };
+                    if let Some(k) = self.link(o, u32::from_le_bytes(c.try_into().unwrap())) {
+                        self.level_items(k, 0, &mut items);
+                    }
+                }
+                for item in items {
                     let Some(armo) = self.rec_sig(item, b"ARMO") else { continue };
                     let s = slots(armo);
                     if s & used != 0 {
@@ -294,19 +343,24 @@ impl Db {
             if s != b"CNTO" {
                 continue;
             }
-            let Some(item) = u32_at(d, 0).and_then(|raw| self.link(inv, raw)).and_then(|k| self.level_first(k, 0)) else { continue };
-            let Some(w) = self.rec_sig(item, b"WEAP") else { continue };
-            let model = w.first(b"MODL").map(zstr).unwrap_or_default();
-            if model.is_empty() || weapons.iter().any(|x: &Weapon| x.key == item) {
-                continue;
+            let mut items = Vec::new();
+            if let Some(k) = u32_at(d, 0).and_then(|raw| self.link(inv, raw)) {
+                self.level_items(k, 0, &mut items);
             }
-            weapons.push(Weapon {
-                key: item,
-                edid: w.edid(),
-                name: self.name(w),
-                model: meshes_path(&model),
-                anim_type: w.first(b"DNAM").and_then(|d| d.first().copied()).unwrap_or(0),
-            });
+            for item in items {
+                let Some(w) = self.rec_sig(item, b"WEAP") else { continue };
+                let model = w.first(b"MODL").map(zstr).unwrap_or_default();
+                if model.is_empty() || weapons.iter().any(|x: &Weapon| x.key == item) {
+                    continue;
+                }
+                weapons.push(Weapon {
+                    key: item,
+                    edid: w.edid(),
+                    name: self.name(w),
+                    model: meshes_path(&model),
+                    anim_type: w.first(b"DNAM").and_then(|d| d.first().copied()).unwrap_or(0),
+                });
+            }
         }
 
         // FaceGen: meshes/actors/character/facegendata/facegeom/<plugin>/<id>.nif
@@ -327,6 +381,7 @@ impl Db {
             skeleton_hkx,
             facegen,
             head_fallback: format!("meshes/actors/character/character assets/{}head.nif", if female { "female" } else { "male" }),
+            skin_tone: traits.first(b"QNAM").and_then(skin_tone),
             parts,
             weapons,
             notes,

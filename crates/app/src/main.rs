@@ -6,11 +6,13 @@ mod character;
 mod combo;
 mod combo_panel;
 mod doc;
+mod export;
 mod fx;
 mod library;
 mod npc_panel;
 mod oar;
 mod oar_panel;
+mod paired;
 mod panels;
 mod pie;
 mod precision_view;
@@ -29,6 +31,10 @@ fn main() -> eframe::Result {
     let args: Vec<String> = std::env::args().collect();
     if args.get(1).map(String::as_str) == Some("--sound-test") {
         sound_test(&args[2..]);
+        return Ok(());
+    }
+    if args.get(1).map(String::as_str) == Some("--clip-info") {
+        clip_info(&args[2..]);
         return Ok(());
     }
     let arg = |k: &str| args.iter().position(|a| a == k).and_then(|i| args.get(i + 1)).cloned();
@@ -112,6 +118,21 @@ fn main() -> eframe::Result {
                 app.open_project(p);
             }
             app.shot = shot;
+            if let (Some(list), Some(dir)) = (arg("--export-batch"), arg("--export-dir")) {
+                match export::Batch::from_file(std::path::Path::new(&list), dir.into()) {
+                    Ok(mut b) => {
+                        b.npc = arg("--npc").or_else(|| Some(app.settings.export.npc.clone()));
+                        app.batch = Some(b);
+                    }
+                    Err(e) => eprintln!("BATCH {list}: {e}"),
+                }
+                if let Some(v) = arg("--gif-size").and_then(|v| v.parse().ok()) {
+                    app.settings.export.gif_size = v;
+                }
+                if let Some(v) = arg("--png-size").and_then(|v| v.parse().ok()) {
+                    app.settings.export.png_size = v;
+                }
+            }
             if std::env::args().any(|a| a == "--custom-open") {
                 app.custom_open = true;
             }
@@ -140,6 +161,39 @@ fn main() -> eframe::Result {
             Ok(Box::new(app))
         }),
     )
+}
+
+/// `--clip-info <vfs path>...`: tracks, skeleton and binding of each clip.
+fn clip_info(paths: &[String]) {
+    let s = settings::Settings::load();
+    let vfs = match sds_vfs::Vfs::build(&sds_vfs::Source::Mo2 { instance: s.mo2_dir.clone().into(), profile: s.profile.clone() }, &Default::default()) {
+        Ok(v) => v,
+        Err(e) => return println!("vfs: {e}"),
+    };
+    for p in paths {
+        let Ok(b) = vfs.read(p) else {
+            println!("{p}: not found");
+            continue;
+        };
+        match sds_hkx::read_clip(&b) {
+            Ok(c) => println!("{p}: dur {} tracks {} skel {:?} motion {} names {:?}", c.duration, c.transform_tracks, c.skeleton_name, c.has_extracted_motion, c.track_names),
+            Err(e) => println!("{p}: {e}"),
+        }
+        if let Ok(a) = sds_hkx::anim::read_animation(&b) {
+            println!("  binding {:?}", &a.track_to_bone);
+            let pose = a.sample(0.0);
+            for (i, x) in pose.iter().enumerate().take(3) {
+                println!("  track {i} t {:?} r {:?}", x.t, x.r);
+            }
+            if pose.len() > 100 {
+                for i in [99usize, 100, 101] {
+                    if let Some(x) = pose.get(i) {
+                        println!("  track {i} t {:?} r {:?}", x.t, x.r);
+                    }
+                }
+            }
+        }
+    }
 }
 
 /// `--sound-test <vfs path>...`: parse each sound of the configured build and

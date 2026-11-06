@@ -109,10 +109,51 @@ pub struct Animation {
     pub tracks: usize,
     /// Track → skeleton bone. Empty in the file means identity.
     pub track_to_bone: Vec<i16>,
+    /// Annotation-track names (one per transform track). Ordinary clips
+    /// leave them empty; paired clips name every bone of both actors.
+    pub track_names: Vec<String>,
     data: Data,
 }
 
+/// One actor of a paired clip: tracks `PairedRoot`, then per actor a group
+/// node (`NPC`, `2_`) followed by that actor's skeleton, bone names
+/// prefixed by the group (`2_NPC Root [Root]`).
+#[derive(Debug, Clone)]
+pub struct PairedActor {
+    /// The group node's track: the actor's placement under `PairedRoot`.
+    pub group: Option<usize>,
+    /// (track, bone name without the prefix).
+    pub tracks: Vec<(usize, String)>,
+    pub prefix: String,
+}
+
 impl Animation {
+    /// Actors of a paired clip, the unprefixed one (the actor that plays
+    /// the idle, «NPC») first. Empty for an ordinary clip.
+    pub fn paired(&self) -> Vec<PairedActor> {
+        const ROOT: &str = "npc root [root]";
+        if !self.track_names.first().is_some_and(|n| n.eq_ignore_ascii_case("PairedRoot")) {
+            return Vec::new();
+        }
+        let roots: Vec<usize> = self.track_names.iter().enumerate().filter(|(_, n)| n.to_ascii_lowercase().ends_with(ROOT)).map(|(i, _)| i).collect();
+        let mut out = Vec::new();
+        for (k, &r) in roots.iter().enumerate() {
+            let name = &self.track_names[r];
+            let prefix = name[..name.len() - ROOT.len()].to_string();
+            let end = roots.get(k + 1).map_or(self.track_names.len(), |&n| n.saturating_sub(1));
+            let tracks = (r..end.min(self.tracks))
+                .filter_map(|t| {
+                    let n = &self.track_names[t];
+                    n.get(..prefix.len()).filter(|p| p.eq_ignore_ascii_case(&prefix)).map(|_| (t, n[prefix.len()..].to_string()))
+                })
+                .collect();
+            let group = (r > 1).then_some(r - 1);
+            out.push(PairedActor { group, tracks, prefix });
+        }
+        out.sort_by_key(|a| !a.prefix.is_empty());
+        out
+    }
+
     pub fn bone_of_track(&self, track: usize) -> usize {
         self.track_to_bone.get(track).map(|&b| b as usize).unwrap_or(track)
     }
@@ -500,6 +541,7 @@ pub fn animation_from_map(map: &ClassMap<'_>) -> Result<Animation, HkxError> {
                 return Ok(Animation {
                     duration: a.parent.m_duration,
                     tracks,
+                    track_names: a.parent.m_annotationTracks.iter().map(|t| crate::s(&t.m_trackName)).collect(),
                     track_to_bone,
                     data: Data::Spline { blocks, block_duration: a.m_blockDuration, frame_duration: a.m_frameDuration },
                 });
@@ -510,6 +552,7 @@ pub fn animation_from_map(map: &ClassMap<'_>) -> Result<Animation, HkxError> {
                 return Ok(Animation {
                     duration: a.parent.m_duration,
                     tracks,
+                    track_names: a.parent.m_annotationTracks.iter().map(|t| crate::s(&t.m_trackName)).collect(),
                     track_to_bone,
                     data: Data::Interleaved { frames: transforms.len() / tracks.max(1), transforms },
                 });
@@ -556,8 +599,11 @@ pub fn compose(parent: &Xform, child: &Xform) -> Xform {
 }
 
 /// Local pose of every skeleton bone at `time`: the clip's tracks over the
-/// reference pose.
+/// reference pose. A paired clip poses its first actor (see `local_pose_actor`).
 pub fn local_pose(skel: &Skeleton, anim: &Animation, time: f32) -> Vec<Xform> {
+    if let Some(a) = anim.paired().first() {
+        return local_pose_actor(skel, anim, time, a);
+    }
     let mut pose = skel.reference.clone();
     for (track, x) in anim.sample(time).into_iter().enumerate() {
         let b = anim.bone_of_track(track);
@@ -566,6 +612,28 @@ pub fn local_pose(skel: &Skeleton, anim: &Animation, time: f32) -> Vec<Xform> {
         }
     }
     pose
+}
+
+/// Local pose of one actor of a paired clip, tracks matched to bones by name.
+pub fn local_pose_actor(skel: &Skeleton, anim: &Animation, time: f32, actor: &PairedActor) -> Vec<Xform> {
+    let mut pose = skel.reference.clone();
+    let sample = anim.sample(time);
+    for (t, name) in &actor.tracks {
+        if let (Some(b), Some(x)) = (skel.bone(name), sample.get(*t)) {
+            pose[b] = *x;
+        }
+    }
+    pose
+}
+
+/// Where a paired actor stands: `PairedRoot` ∘ its group node.
+pub fn actor_root(anim: &Animation, time: f32, actor: &PairedActor) -> Xform {
+    let sample = anim.sample(time);
+    let root = sample.first().copied().unwrap_or_default();
+    match actor.group.and_then(|g| sample.get(g)) {
+        Some(g) => compose(&root, g),
+        None => root,
+    }
 }
 
 /// Model-space transforms from a local pose (parents precede children in

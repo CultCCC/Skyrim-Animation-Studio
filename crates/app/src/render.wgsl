@@ -52,7 +52,7 @@ fn fs_mesh(f: MeshOut, @builtin(front_facing) front: bool) -> @location(0) vec4<
     let diff = max(dot(n, l), 0.0);
     // Soft fill from below-behind so the dark side keeps its shape.
     let fill = max(dot(n, -l), 0.0) * 0.15;
-    let shade = 0.55 + 0.75 * diff + fill;
+    let shade = 0.55 + camera.light.w + 0.75 * diff + fill;
     let base = tex.rgb * material.tint.rgb;
     return vec4<f32>(base * shade, 1.0);
 }

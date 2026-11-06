@@ -2,8 +2,8 @@
 //! path, orbit camera.
 
 use crate::app::StudioApp;
-use crate::character::{skin, to_transform};
-use crate::render::{look_at, mat_mul, perspective, project, DrawMesh, Frame, LineVertex, MeshVertex};
+use crate::character::to_transform;
+use crate::render::{look_at, mat_mul, perspective, project, DrawMesh, Frame, LineVertex};
 use crate::theme::category_color;
 use aether_core::mesh::Transform;
 use egui::{pos2, vec2, Align2, Color32, FontId, Sense};
@@ -44,6 +44,7 @@ fn ring(out: &mut Vec<LineVertex>, at: [f32; 2], r: f32, z: f32, c: [f32; 4]) {
 }
 
 pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
+    crate::paired::sync(app);
     ui.horizontal(|ui| {
         ui.selectable_value(&mut app.scene.view3d, true, "3D");
         ui.selectable_value(&mut app.scene.view3d, false, sds_i18n::t!("Сверху 2D", "Top 2D"));
@@ -60,6 +61,8 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
             app.camera.pitch = 12f32.to_radians();
             app.camera.dist = 320.0;
         }
+        ui.separator();
+        crate::export::toolbar(app, ui);
     });
     if !app.scene.view3d || app.gpu.is_none() {
         crate::panels::viewport_2d(app, ui);
@@ -125,16 +128,7 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
         _ => None,
     };
 
-    let mut skinned: Vec<Vec<MeshVertex>> = Vec::new();
-    if let (Some(c), Some(m)) = (&app.character, &model) {
-        if app.scene.show_body {
-            skinned = c
-                .meshes
-                .iter()
-                .map(|mesh| if c.pieces.get(mesh.piece).is_some_and(|p| p.visible) { skin(mesh, m, &root) } else { Vec::new() })
-                .collect();
-        }
-    }
+    let skinned = if app.scene.show_body { crate::paired::skin_all(app, t, &root) } else { Vec::new() };
     let mut lines = Vec::new();
     let mut overlay = Vec::new();
     if app.scene.show_grid {
@@ -262,25 +256,7 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
 
     crate::precision_view::draw(app, t, &root_at, &mut overlay);
 
-    let gen = app.character_gen;
-    let meshes: Vec<DrawMesh> = match &app.character {
-        Some(c) if app.scene.show_body => c
-            .meshes
-            .iter()
-            .zip(&skinned)
-            .enumerate()
-            .filter(|(_, (_, v))| !v.is_empty())
-            .map(|(i, (m, v))| DrawMesh {
-                id: gen * 10_000 + i as u64,
-                vertices: v,
-                indices: &m.indices,
-                texture: &m.texture,
-                alpha_test: m.alpha_test,
-                tint: [1.0; 4],
-            })
-            .collect(),
-        _ => Vec::new(),
-    };
+    let meshes: Vec<DrawMesh> = skinned.iter().map(|s| s.draw()).collect();
     // Key light over the camera's shoulder, so the side we look at is lit.
     let to_eye = [eye[0] - cam.target[0], eye[1] - cam.target[1], eye[2] - cam.target[2]];
     let l = (to_eye[0].hypot(to_eye[1])).max(1e-3);
@@ -345,15 +321,10 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
         fx_notes = player.notes.drain(..).collect();
         app.fx = player;
     }
-    let frame = Frame { view_proj, light, meshes, lines, overlay, fx: fx_batches, clear: [0.085, 0.09, 0.105] };
+    let frame = Frame { view_proj, light, meshes, lines, overlay, fx: fx_batches, clear: [0.085, 0.09, 0.105], clear_alpha: 1.0, ambient: 0.0 };
     let vfs = app.loaded.as_ref().map(|l| l.vfs.clone());
-    let mut load = |path: &str| -> Option<(u32, u32, Vec<u8>)> {
-        let v = vfs.as_ref()?;
-        // Effect textures are often written without the textures\ prefix.
-        let bytes = v.read(path).ok().or_else(|| v.read(&format!("textures/{path}")).ok())?;
-        let img = aether_core::dds::decode_capped(&bytes, 1024).ok()?;
-        Some((img.width, img.height, img.rgba))
-    };
+    // Effect textures are often written without the textures\ prefix (handled there).
+    let mut load = |path: &str| crate::character::load_texture(vfs.as_ref()?, path);
     let tex = app.gpu.as_mut().unwrap().render(size_px, &frame, &mut load);
     let painter = ui.painter_at(rect);
     painter.image(tex, rect, egui::Rect::from_min_max(pos2(0.0, 0.0), pos2(1.0, 1.0)), Color32::WHITE);
@@ -397,7 +368,7 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
         painter.text(rect.left_top() + vec2(8.0, 8.0), Align2::LEFT_TOP, info, FontId::proportional(12.0), Color32::from_gray(220));
     }
     let mismatch = match (&app.character, &app.anim) {
-        (Some(c), Some(a)) => (0..a.tracks).any(|t| a.bone_of_track(t) >= c.skeleton.bones.len()),
+        (Some(c), Some(a)) => a.paired().is_empty() && (0..a.tracks).any(|t| a.bone_of_track(t) >= c.skeleton.bones.len()),
         _ => false,
     };
     if mismatch {

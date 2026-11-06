@@ -37,6 +37,8 @@ pub struct Settings {
     pub favorites: Vec<String>,
     /// Numbers of animmotion / animrotation under the root-motion row.
     pub motion_values: bool,
+    /// PNG/GIF preview export.
+    pub export: crate::export::ExportOpts,
 }
 
 impl Settings {
@@ -72,6 +74,7 @@ impl Default for Settings {
             ground: "MaterialStone".into(),
             favorites: Vec::new(),
             motion_values: true,
+            export: Default::default(),
         }
     }
 }

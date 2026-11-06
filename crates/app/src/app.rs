@@ -159,6 +159,8 @@ pub struct StudioApp {
     pub rm: crate::root_motion::RootMotionEditor,
     pub profiles: Vec<String>,
     pub shot: Option<Shot>,
+    /// `--export-batch`: clips waiting for PNG/GIF export.
+    pub batch: Option<crate::export::Batch>,
     pub camera: Camera,
     pub gpu: Option<crate::render::Gpu>,
     /// Decoded pose data of the open clip.
@@ -166,6 +168,8 @@ pub struct StudioApp {
     pub character: Option<crate::character::Character>,
     /// Bumped on every character load: GPU mesh ids include it.
     pub character_gen: u64,
+    /// The second actor of a paired clip: (character_gen it was copied at, copy).
+    pub partner: Option<(u64, crate::character::Character)>,
     /// The NPC being shown, when one is picked.
     pub npc: Option<NpcChoice>,
     /// OAR folders loaded from disk (outside the load order).
@@ -301,6 +305,8 @@ impl StudioApp {
             rm: Default::default(),
             profiles: Vec::new(),
             shot: None,
+            batch: None,
+            partner: None,
             last_frame: None,
             settings,
         };
@@ -641,6 +647,29 @@ impl StudioApp {
         self.ensure_character(&folder);
     }
 
+    /// Dress the actor as the NPC with this EditorID; `armed` keeps its weapon.
+    pub fn set_npc_by_edid(&mut self, edid: &str, armed: bool) -> bool {
+        let Some(l) = &self.loaded else { return false };
+        let db = l.db.clone();
+        let key = db.by_sig.get(b"NPC_").and_then(|v| v.iter().copied().find(|k| db.get(*k).is_some_and(|r| r.edid().eq_ignore_ascii_case(edid))));
+        match key {
+            Some(k) => {
+                self.set_npc(k);
+                if !armed {
+                    if let Some(n) = &mut self.npc {
+                        n.weapon = None;
+                    }
+                    self.rebuild_npc();
+                }
+                true
+            }
+            None => {
+                self.log(sds_i18n::tf!("NPC {edid} не найден", "NPC {edid} not found"));
+                false
+            }
+        }
+    }
+
     pub fn rebuild_npc(&mut self) {
         let (Some(loaded), Some(choice)) = (&self.loaded, &self.npc) else { return };
         let vfs = loaded.vfs.clone();
@@ -675,8 +704,9 @@ impl StudioApp {
         }
         let id = format!("npc:{}|{:?}", db.label(look.key), weapon_choice);
         let label = format!("{} «{}»", look.edid, look.name);
-        match crate::character::Character::build(&vfs, &id, &look.skeleton_hkx, Some(&look.skeleton_nif), pieces, look.scale) {
+        match crate::character::Character::build(&vfs, &id, &look.skeleton_hkx, Some(&look.skeleton_nif), pieces, look.scale, look.weight / 100.0) {
             Ok(mut c) => {
+                c.apply_tints(look.skin_tone);
                 c.notes.extend(notes);
                 for n in c.notes.clone() {
                     self.log(n);
@@ -1179,6 +1209,7 @@ impl eframe::App for StudioApp {
         self.run_deferred(&ctx);
         self.shortcuts(&ctx);
         self.take_screenshot(&ctx);
+        crate::export::run_batch(self, &ctx);
 
         let dropped: Vec<PathBuf> = ctx.input(|i| i.raw.dropped_files.iter().filter_map(|f| f.path.clone()).collect());
         if let Some(p) = dropped.into_iter().find(|p| p.extension().is_some_and(|e| e.eq_ignore_ascii_case("hkx"))) {
@@ -1225,7 +1256,7 @@ impl eframe::App for StudioApp {
     }
 
     fn on_exit(&mut self) {
-        if self.shot.is_some() || std::env::args().any(|a| a == "--screenshot") {
+        if self.shot.is_some() || std::env::args().any(|a| a == "--screenshot" || a == "--export-batch") {
             return;
         }
         // The session itself, for "Восстановить последнюю сессию".

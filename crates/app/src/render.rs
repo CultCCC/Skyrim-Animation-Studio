@@ -62,6 +62,8 @@ pub struct DrawMesh<'a> {
     pub texture: &'a str,
     pub alpha_test: f32,
     pub tint: [f32; 4],
+    /// Draw back faces too (skin: hides head/body seams).
+    pub double_sided: bool,
 }
 
 pub struct Frame<'a> {
@@ -75,6 +77,11 @@ pub struct Frame<'a> {
     /// Transparent effects, after the opaque meshes.
     pub fx: Vec<FxBatch>,
     pub clear: [f64; 3],
+    /// Alpha of the cleared background: 1 in the viewport, 0 for exports
+    /// (the actor on a transparent background).
+    pub clear_alpha: f64,
+    /// Extra ambient light (0 in the viewport; brighter for previews).
+    pub ambient: f32,
 }
 
 fn bytes<T>(v: &[T]) -> &[u8] {
@@ -87,6 +94,7 @@ struct Target {
     msaa: wgpu::TextureView,
     depth: wgpu::TextureView,
     resolve: wgpu::TextureView,
+    resolve_tex: wgpu::Texture,
     size: (u32, u32),
     egui_id: egui::TextureId,
 }
@@ -125,6 +133,8 @@ pub struct Gpu {
     fx_ibuf: Option<(wgpu::Buffer, usize)>,
     overlay_buf: Option<(wgpu::Buffer, usize)>,
     target: Option<Target>,
+    /// Offscreen target of `capture` (exports), kept apart from the viewport's.
+    capture_target: Option<Target>,
 }
 
 impl Gpu {
@@ -375,6 +385,7 @@ impl Gpu {
             fx_ibuf: None,
             overlay_buf: None,
             target: None,
+            capture_target: None,
         }
     }
 
@@ -435,13 +446,12 @@ impl Gpu {
         let depth = device
             .create_texture(&wgpu::TextureDescriptor { format: DEPTH_FORMAT, ..base })
             .create_view(&wgpu::TextureViewDescriptor::default());
-        let resolve = device
-            .create_texture(&wgpu::TextureDescriptor {
-                sample_count: 1,
-                usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING,
-                ..base
-            })
-            .create_view(&wgpu::TextureViewDescriptor::default());
+        let resolve_tex = device.create_texture(&wgpu::TextureDescriptor {
+            sample_count: 1,
+            usage: wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_SRC,
+            ..base
+        });
+        let resolve = resolve_tex.create_view(&wgpu::TextureViewDescriptor::default());
         let mut renderer = self.rs.renderer.write();
         let egui_id = match self.target.take() {
             Some(old) => {
@@ -450,7 +460,7 @@ impl Gpu {
             }
             None => renderer.register_native_texture(device, &resolve, wgpu::FilterMode::Linear),
         };
-        self.target = Some(Target { msaa, depth, resolve, size, egui_id });
+        self.target = Some(Target { msaa, depth, resolve, resolve_tex, size, egui_id });
     }
 
     fn line_buffer(device: &wgpu::Device, slot: &mut Option<(wgpu::Buffer, usize)>, n: usize) {
@@ -482,6 +492,7 @@ impl Gpu {
         let mut cam = [0f32; 20];
         cam[..16].copy_from_slice(&frame.view_proj);
         cam[16..19].copy_from_slice(&frame.light);
+        cam[19] = frame.ambient;
         self.rs.queue.write_buffer(&self.camera_buf, 0, bytes(&cam));
 
         // Meshes: (re)upload vertices, cache indices and materials.
@@ -603,7 +614,7 @@ impl Gpu {
                     view: &target.msaa,
                     resolve_target: Some(&target.resolve),
                     ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color { r: frame.clear[0], g: frame.clear[1], b: frame.clear[2], a: 1.0 }),
+                        load: wgpu::LoadOp::Clear(wgpu::Color { r: frame.clear[0] * frame.clear_alpha, g: frame.clear[1] * frame.clear_alpha, b: frame.clear[2] * frame.clear_alpha, a: frame.clear_alpha }),
                         store: wgpu::StoreOp::Discard,
                     },
                     depth_slice: None,
@@ -624,7 +635,7 @@ impl Gpu {
                     continue;
                 }
                 // Skyrim bodies are single-sided; alpha-tested cards (hair) are not.
-                pass.set_pipeline(if m.alpha_test > 0.0 { &self.mesh_pipeline_2s } else { &self.mesh_pipeline });
+                pass.set_pipeline(if m.alpha_test > 0.0 || m.double_sided { &self.mesh_pipeline_2s } else { &self.mesh_pipeline });
                 pass.set_bind_group(1, &c.bind, &[]);
                 pass.set_vertex_buffer(0, c.vbuf.slice(..));
                 pass.set_index_buffer(c.ibuf.slice(..), wgpu::IndexFormat::Uint16);
@@ -652,6 +663,60 @@ impl Gpu {
         }
         self.rs.queue.submit(Some(encoder.finish()));
         target.egui_id
+    }
+}
+
+impl Gpu {
+    /// Render a frame offscreen and read it back as straight-alpha RGBA8
+    /// (rows top to bottom). The viewport's own target is left untouched.
+    pub fn capture(
+        &mut self,
+        size: (u32, u32),
+        frame: &Frame,
+        load_texture: &mut dyn FnMut(&str) -> Option<(u32, u32, Vec<u8>)>,
+    ) -> Vec<u8> {
+        let size = (size.0.max(1), size.1.max(1));
+        std::mem::swap(&mut self.target, &mut self.capture_target);
+        self.render(size, frame, load_texture);
+        std::mem::swap(&mut self.target, &mut self.capture_target);
+        let target = self.capture_target.as_ref().unwrap();
+        let device = &self.rs.device;
+        let row = 4 * size.0;
+        let padded = row.div_ceil(wgpu::COPY_BYTES_PER_ROW_ALIGNMENT) * wgpu::COPY_BYTES_PER_ROW_ALIGNMENT;
+        let buf = device.create_buffer(&wgpu::BufferDescriptor {
+            label: Some("sds-capture"),
+            size: (padded * size.1) as u64,
+            usage: wgpu::BufferUsages::COPY_DST | wgpu::BufferUsages::MAP_READ,
+            mapped_at_creation: false,
+        });
+        let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor { label: Some("sds-capture") });
+        encoder.copy_texture_to_buffer(
+            wgpu::TexelCopyTextureInfo { texture: &target.resolve_tex, mip_level: 0, origin: wgpu::Origin3d::ZERO, aspect: wgpu::TextureAspect::All },
+            wgpu::TexelCopyBufferInfo { buffer: &buf, layout: wgpu::TexelCopyBufferLayout { offset: 0, bytes_per_row: Some(padded), rows_per_image: None } },
+            wgpu::Extent3d { width: size.0, height: size.1, depth_or_array_layers: 1 },
+        );
+        self.rs.queue.submit(Some(encoder.finish()));
+        let slice = buf.slice(..);
+        slice.map_async(wgpu::MapMode::Read, |_| {});
+        let _ = device.poll(wgpu::PollType::wait_indefinitely());
+        let data = slice.get_mapped_range();
+        let mut out = Vec::with_capacity((row * size.1) as usize);
+        for y in 0..size.1 {
+            let r = &data[(y * padded) as usize..(y * padded + row) as usize];
+            for px in r.chunks_exact(4) {
+                // Premultiplied (blend state) to straight alpha.
+                let a = px[3] as u32;
+                if a == 0 {
+                    out.extend_from_slice(&[0, 0, 0, 0]);
+                } else {
+                    let un = |c: u8| ((c as u32 * 255 + a / 2) / a).min(255) as u8;
+                    out.extend_from_slice(&[un(px[0]), un(px[1]), un(px[2]), a as u8]);
+                }
+            }
+        }
+        drop(data);
+        buf.unmap();
+        out
     }
 }
 

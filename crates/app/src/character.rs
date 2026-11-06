@@ -23,8 +23,25 @@ pub struct BoneRef {
     pub rel: Transform,
 }
 
+/// How the game colours a shape at runtime (Lighting.hlsl, through Aether's
+/// shader-type flags): baked into the texture by `load_texture`.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Tint {
+    None,
+    /// Type 5 skin: `b² + 2·t·b·(1−b)`, t = the actor's skin tone (NIF colour by default).
+    Skin([f32; 3]),
+    /// Type 6 hair: `b × t` (the vertex-green mask taken as full).
+    Hair([f32; 3]),
+    /// Type 4 FaceGen head: the skin curve with t = the NPC's facetint map.
+    Face,
+}
+
+#[derive(Clone)]
 pub struct SkinMesh {
     pub piece: usize,
+    /// Diffuse path as the NIF names it; `texture` is the tinted key.
+    pub base_texture: String,
+    pub tint: Tint,
     #[allow(dead_code)] // kept for diagnostics
     pub shape: String,
     pub texture: String,
@@ -51,6 +68,7 @@ pub struct Piece {
     pub visible: bool,
 }
 
+#[derive(Clone)]
 pub struct Character {
     /// What this was built for (actor folder or NPC label).
     pub id: String,
@@ -177,14 +195,18 @@ impl Character {
             }
         }
         let nif = hkx.trim_end_matches(".hkx").to_string() + ".nif";
-        let mut c = Character::build(vfs, &format!("folder:{folder}"), &hkx, Some(&nif), pieces, 1.0)?;
+        let mut c = Character::build(vfs, &format!("folder:{folder}"), &hkx, Some(&nif), pieces, 1.0, 1.0)?;
         if folder != "character" {
             c.notes.push(sds_i18n::t!("Тело по умолчанию есть только у character; выберите NPC во вкладке «Персонаж»", "Only character has a default body; pick an NPC in the «Character» tab").into());
         }
         Ok(c)
     }
 
-    pub fn build(vfs: &Vfs, id: &str, hkx: &str, nif: Option<&str>, pieces: Vec<Piece>, scale: f32) -> Result<Character, String> {
+    /// `weight` is the NPC weight 0..1: `_0`/`_1` NIF pairs (body, hands,
+    /// feet, armor) are blended by it, as the game does. FaceGen heads are
+    /// baked for the NPC's weight, so the neck only meets the body when the
+    /// body is blended the same way.
+    pub fn build(vfs: &Vfs, id: &str, hkx: &str, nif: Option<&str>, pieces: Vec<Piece>, scale: f32, weight: f32) -> Result<Character, String> {
         let bytes = vfs.read(hkx).map_err(|e| format!("{hkx}: {e}"))?;
         let skeleton = sds_hkx::anim::read_skeletons(&bytes).map_err(|e| e.to_string())?.remove(0);
         let mut notes = vec![sds_i18n::tf!("Скелет: {hkx} ({} костей)", "Skeleton: {hkx} ({} bones)", skeleton.bones.len())];
@@ -212,7 +234,7 @@ impl Character {
         }
         for piece in pieces {
             let index = c.pieces.len();
-            match load_scene(vfs, &piece.path) {
+            match load_scene(vfs, &piece.path).map(|s| blend_weight(vfs, &piece.path, s, weight)) {
                 Ok(scene) => {
                     let n = c.meshes.len();
                     c.add_piece(index, &scene, &piece);
@@ -225,7 +247,49 @@ impl Character {
             c.pieces.push(piece);
         }
         c.notes.append(&mut notes);
+        c.apply_tints(None);
+        if std::env::var_os("SDS_SHAPES").is_some() {
+            for m in &c.meshes {
+                eprintln!("SHAPE {} | {} | {} | {:?} | a{}", c.pieces[m.piece].path, m.shape, m.base_texture, m.tint, m.alpha_test);
+            }
+        }
         Ok(c)
+    }
+
+    /// Texture keys with the game's runtime tints baked in. `skin_tone`
+    /// (the NPC's QNAM) replaces the NIF skin colour, as the engine does.
+    pub fn apply_tints(&mut self, skin_tone: Option<[f32; 3]>) {
+        let col = |c: [f32; 3]| format!("{:.4},{:.4},{:.4}", c[0], c[1], c[2]);
+        for m in &mut self.meshes {
+            if m.base_texture.is_empty() {
+                continue;
+            }
+            let flat = |v: &str| std::env::var_os(v).is_some();
+            if (flat("SDS_FLAT_FACE") && m.tint == Tint::Face) || (flat("SDS_FLAT_SKIN") && matches!(m.tint, Tint::Skin(_))) {
+                m.texture = String::new();
+                continue;
+            }
+            m.texture = match m.tint {
+                Tint::None => m.base_texture.clone(),
+                Tint::Skin(c) => format!("{}#skin={}", m.base_texture, col(skin_tone.unwrap_or(c))),
+                Tint::Hair(c) => format!("{}#mul={}", m.base_texture, col(c)),
+                Tint::Face => {
+                    let p = self.pieces.get(m.piece).map(|p| p.path.to_ascii_lowercase().replace('\\', "/")).unwrap_or_default();
+                    match p.find("facegendata/facegeom/") {
+                        Some(i) if p.ends_with(".nif") => {
+                            let rest = &p[i + "facegendata/facegeom/".len()..p.len() - 4];
+                            let tone = skin_tone.map(|c| format!("#skin={}", col(c))).unwrap_or_default();
+                            format!("{}#face=textures/actors/character/facegendata/facetint/{rest}.dds{tone}", m.base_texture)
+                        }
+                        // Generic race head: the body's tone.
+                        _ => match skin_tone {
+                            Some(c) => format!("{}#skin={}", m.base_texture, col(c)),
+                            None => m.base_texture.clone(),
+                        },
+                    }
+                }
+            };
+        }
     }
 
     fn havok(&self, name: &str) -> Option<BoneRef> {
@@ -276,6 +340,7 @@ impl Character {
         let hidden = |name: &str| {
             let n = name.to_ascii_lowercase();
             piece.hide_shapes.iter().any(|h| n.contains(h.as_str()))
+                || std::env::var("SDS_HIDE").is_ok_and(|v| v.split(',').any(|h| !h.is_empty() && n.contains(&h.to_ascii_lowercase())))
         };
         let skip = |m: &aether_core::mesh::RenderMesh| m.hidden || m.marker || m.no_material || m.effect || hidden(&m.name);
         let skinned: std::collections::HashSet<usize> = scene.skinned.iter().map(|s| s.mesh).collect();
@@ -296,7 +361,12 @@ impl Character {
                 piece: index,
                 shape: m.name.clone(),
                 texture: m.texture.clone(),
-                alpha_test: m.alpha_test.unwrap_or(0.0),
+                base_texture: m.texture.clone(),
+                tint: tint_of(m),
+                // Blended hair cards (brows, hair lines) have no depth sort here:
+                // cut them at half alpha instead of drawing an opaque quad. Eyes
+                // blend too, but their alpha is a specular mask: keep them opaque.
+                alpha_test: m.alpha_test.unwrap_or(if m.blend == aether_core::mesh::BlendMode::Alpha && m.lighting.hair_tint { 0.5 } else { 0.0 }),
                 indices: m.indices.clone(),
                 uvs: m.vertices.iter().map(|v| v.uv).collect(),
                 raw: sk.raw.clone(),
@@ -330,7 +400,12 @@ impl Character {
                 piece: index,
                 shape: m.name.clone(),
                 texture: m.texture.clone(),
-                alpha_test: m.alpha_test.unwrap_or(0.0),
+                base_texture: m.texture.clone(),
+                tint: tint_of(m),
+                // Blended hair cards (brows, hair lines) have no depth sort here:
+                // cut them at half alpha instead of drawing an opaque quad. Eyes
+                // blend too, but their alpha is a specular mask: keep them opaque.
+                alpha_test: m.alpha_test.unwrap_or(if m.blend == aether_core::mesh::BlendMode::Alpha && m.lighting.hair_tint { 0.5 } else { 0.0 }),
                 indices: m.indices.clone(),
                 uvs: Vec::new(),
                 raw: Vec::new(),
@@ -455,4 +530,131 @@ pub fn skin(mesh: &SkinMesh, model: &[Transform], root: &Transform) -> Vec<MeshV
             MeshVertex { pos: p, normal: norm(n), uv: *uv }
         })
         .collect()
+}
+
+fn tint_of(m: &aether_core::mesh::RenderMesh) -> Tint {
+    let l = &m.lighting;
+    if l.facegen {
+        Tint::Face
+    } else if l.skin_tint {
+        Tint::Skin(l.tint_color)
+    } else if l.hair_tint {
+        Tint::Hair(l.tint_color)
+    } else {
+        Tint::None
+    }
+}
+
+/// Decode a texture key of `Character::apply_tints`: `path[#op=..]...`.
+/// `#skin=r,g,b` and `#face=<tint dds>` apply the game's skin curve
+/// `b² + 2·t·b·(1−b)` (the face takes t per texel from its facetint map,
+/// falling back to a `#skin` tone when the map is missing); `#mul=r,g,b`
+/// multiplies (hair).
+pub fn load_texture(vfs: &Vfs, key: &str) -> Option<(u32, u32, Vec<u8>)> {
+    let mut parts = key.split('#');
+    let path = parts.next()?;
+    let read = |p: &str| {
+        let bytes = vfs.read(p).ok().or_else(|| vfs.read(&format!("textures/{p}")).ok())?;
+        let img = aether_core::dds::decode_capped(&bytes, 1024).ok()?;
+        Some((img.width, img.height, img.rgba))
+    };
+    let (w, h, mut rgba) = read(path)?;
+    let parse = |v: &str| {
+        let c: Vec<f32> = v.split(',').filter_map(|x| x.parse().ok()).collect();
+        (c.len() == 3).then(|| [c[0], c[1], c[2]])
+    };
+    let curve = |b: f32, t: f32| (b * b + 2.0 * t * b * (1.0 - b)).clamp(0.0, 1.0);
+    let ops: Vec<(&str, &str)> = parts.filter_map(|p| p.split_once('=')).collect();
+    let face = ops.iter().find(|(k, _)| *k == "face").and_then(|(_, v)| read(v));
+    for (k, v) in &ops {
+        match *k {
+            "face" => {
+                let Some((tw, th, tint)) = &face else { continue };
+                for y in 0..h {
+                    let ty = (y as u64 * *th as u64 / h as u64) as u32;
+                    for x in 0..w {
+                        let tx = (x as u64 * *tw as u64 / w as u64) as u32;
+                        let ti = ((ty * tw + tx) * 4) as usize;
+                        let i = ((y * w + x) * 4) as usize;
+                        for c in 0..3 {
+                            let b = rgba[i + c] as f32 / 255.0;
+                            rgba[i + c] = (curve(b, tint[ti + c] as f32 / 255.0) * 255.0 + 0.5) as u8;
+                        }
+                    }
+                }
+            }
+            "skin" if !(face.is_some() && ops.iter().any(|(k, _)| *k == "face")) => {
+                let Some(t) = parse(v) else { continue };
+                for px in rgba.chunks_exact_mut(4) {
+                    for c in 0..3 {
+                        px[c] = (curve(px[c] as f32 / 255.0, t[c]) * 255.0 + 0.5) as u8;
+                    }
+                }
+            }
+            "mul" => {
+                let Some(t) = parse(v) else { continue };
+                for px in rgba.chunks_exact_mut(4) {
+                    for c in 0..3 {
+                        px[c] = (px[c] as f32 * t[c]).clamp(0.0, 255.0) as u8;
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    if let Some(dir) = std::env::var_os("SDS_TEX_DUMP") {
+        let name: String = key.chars().map(|c| if c.is_alphanumeric() { c } else { '_' }).collect();
+        let name = &name[name.len().saturating_sub(120)..];
+        if let Some(png) = aether_core::png::encode_rgba(w, h, &rgba) {
+            let _ = std::fs::write(std::path::Path::new(&dir).join(format!("{name}.png")), png);
+        }
+    }
+    Some((w, h, rgba))
+}
+
+/// The game's weight morph: a `_0.nif`/`_1.nif` pair lerped by NPC weight
+/// (0 = thin `_0`, 1 = heavy `_1`). Shapes are matched by index, name and
+/// vertex count; anything that does not match keeps the loaded variant.
+fn blend_weight(vfs: &Vfs, path: &str, scene: MeshScene, weight: f32) -> MeshScene {
+    let lower = path.to_ascii_lowercase();
+    let (thin, heavy) = if lower.ends_with("_1.nif") {
+        (format!("{}_0.nif", &path[..path.len() - 6]), path.to_string())
+    } else if lower.ends_with("_0.nif") {
+        (path.to_string(), format!("{}_1.nif", &path[..path.len() - 6]))
+    } else {
+        return scene;
+    };
+    let w = weight.clamp(0.0, 1.0);
+    let other_path = if lower.ends_with("_1.nif") { &thin } else { &heavy };
+    let Ok(other) = load_scene(vfs, other_path) else { return scene };
+    // `scene` is the loaded file; f = how far to move it towards `other`.
+    let f = if lower.ends_with("_1.nif") { 1.0 - w } else { w };
+    if f <= 0.0 {
+        return scene;
+    }
+    let mut scene = scene;
+    let lerp = |a: [f32; 3], b: [f32; 3]| [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
+    let unit = |v: [f32; 3]| {
+        let l = (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]).sqrt().max(1e-6);
+        [v[0] / l, v[1] / l, v[2] / l]
+    };
+    for (i, m) in scene.meshes.iter_mut().enumerate() {
+        let Some(o) = other.meshes.get(i).filter(|o| o.name == m.name && o.vertices.len() == m.vertices.len()) else { continue };
+        let verts = std::sync::Arc::make_mut(&mut m.vertices);
+        for (v, ov) in verts.iter_mut().zip(o.vertices.iter()) {
+            v.position = lerp(v.position, ov.position);
+            v.normal = unit(lerp(v.normal, ov.normal));
+        }
+    }
+    for sk in scene.skinned.iter_mut() {
+        let Some(o) = other.skinned.iter().find(|o| o.mesh == sk.mesh && o.raw.len() == sk.raw.len()) else { continue };
+        if other.meshes.get(o.mesh).map(|m| &m.name) != scene.meshes.get(sk.mesh).map(|m| &m.name) {
+            continue;
+        }
+        for (r, or) in sk.raw.iter_mut().zip(o.raw.iter()) {
+            r.0 = lerp(r.0, or.0);
+            r.1 = unit(lerp(r.1, or.1));
+        }
+    }
+    scene
 }
