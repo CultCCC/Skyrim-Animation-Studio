@@ -12,8 +12,15 @@
 //! false): each linear axis is clamped to its limits (lower > upper = free),
 //! the relative rotation is clamped per XYZ Euler angle (Bullet's order),
 //! springs pull softly toward the equilibrium. Stiff springs keep a distance
-//! band, cone-twist constraints become angular limits. Collision shapes
-//! (`per-vertex-shape`, `per-triangle-shape`) are read but not simulated yet.
+//! band, cone-twist constraints become angular limits.
+//!
+//! Collisions: every `per-triangle-shape` / `per-vertex-shape` names a NIF
+//! shape (often an undrawn one: coll_body_*, VirtualGround). Shapes whose
+//! bones are simulated push their vertices (spheres of margin × the bone's
+//! margin-multiplier) out of the triangles of keyframed shapes, front side
+//! only, up to `penetration` deep, when neither lists the other's tag in
+//! `no-collide-with-tag`. The push goes to the vertex's dynamic bones by
+//! weight (translation and turn). Dynamic-vs-dynamic contacts are skipped.
 
 use crate::app::StudioApp;
 use crate::character::{BoneRef, Character};
@@ -222,8 +229,25 @@ impl Frame {
 // ---- the configuration --------------------------------------------------
 
 #[derive(Debug, Clone)]
+struct ShapeDef {
+    name: String,
+    margin: f32,
+    penetration: f32,
+    tags: Vec<String>,
+    no_collide: Vec<String>,
+}
+
+impl ShapeDef {
+    fn collides_with(&self, o: &ShapeDef) -> bool {
+        let blocked = |a: &ShapeDef, b: &ShapeDef| a.no_collide.iter().any(|n| b.tags.iter().any(|t| t.eq_ignore_ascii_case(n)));
+        !blocked(self, o) && !blocked(o, self)
+    }
+}
+
+#[derive(Debug, Clone)]
 struct BodyDef {
     name: String,
+    margin_mult: f32,
     mass: f32,
     lin_damp: f32,
     ang_damp: f32,
@@ -272,6 +296,7 @@ struct ConstraintDef {
 pub struct Config {
     bodies: Vec<BodyDef>,
     constraints: Vec<ConstraintDef>,
+    shapes: Vec<ShapeDef>,
     pub notes: Vec<String>,
 }
 
@@ -295,6 +320,7 @@ fn read_body(e: &Element, d: &mut BodyDef) {
             "linearDamping" => d.lin_damp = num(&c.text),
             "angularDamping" => d.ang_damp = num(&c.text),
             "gravity-factor" => d.gravity = num(&c.text),
+            "margin-multiplier" => d.margin_mult = num(&c.text),
             _ => {}
         }
     }
@@ -341,7 +367,7 @@ fn read_six(e: &Element, d: &mut SixDof) {
 
 pub fn read_config(root: &Element) -> Config {
     let mut cfg = Config::default();
-    let mut body_def = BodyDef { name: String::new(), mass: 0.0, lin_damp: 0.0, ang_damp: 0.0, gravity: 1.0 };
+    let mut body_def = BodyDef { name: String::new(), margin_mult: 1.0, mass: 0.0, lin_damp: 0.0, ang_damp: 0.0, gravity: 1.0 };
     let mut six_def = SixDof::default();
     let mut cone_def = SixDof::default();
     let mut spring_def = (1.0f32, 1.0f32, 0.0f32);
@@ -385,7 +411,22 @@ pub fn read_config(root: &Element) -> Config {
                         cfg.constraints.push(ConstraintDef { a: a.trim().into(), b: b.trim().into(), kind: Kind::Spring { min: d.0, max: d.1, stiffness: d.2 } });
                     }
                 }
-                "per-vertex-shape" | "per-triangle-shape" => *shapes += 1,
+                "per-vertex-shape" | "per-triangle-shape" => {
+                    *shapes += 1;
+                    let mut d = ShapeDef { name: c.attr("name").unwrap_or_default().to_string(), margin: 1.0, penetration: 1.0, tags: Vec::new(), no_collide: Vec::new() };
+                    for x in &c.children {
+                        match x.name.as_str() {
+                            "margin" => d.margin = num(&x.text),
+                            "penetration" => d.penetration = num(&x.text),
+                            "tag" => d.tags.push(x.text.trim().to_string()),
+                            "no-collide-with-tag" => d.no_collide.push(x.text.trim().to_string()),
+                            _ => {}
+                        }
+                    }
+                    if !d.name.is_empty() {
+                        cfg.shapes.push(d);
+                    }
+                }
                 _ => {}
             }
         }
@@ -401,9 +442,7 @@ pub fn read_config(root: &Element) -> Config {
         }
     }
     walk(root, &mut cfg, &mut body_def, &mut six_def, &mut cone_def, &mut spring_def, &mut shapes);
-    if shapes > 0 {
-        cfg.notes.push(sds_i18n::tf!("{shapes} форм столкновений пропущено (столкновения пока не моделируются)", "{shapes} collision shapes skipped (collisions are not simulated yet)"));
-    }
+    let _ = shapes;
     cfg
 }
 
@@ -429,7 +468,55 @@ struct Body {
     depth: u32,
     /// Scalar inverse inertia: a rod as long as the body's longest link.
     inv_inertia: f32,
+    margin_mult: f32,
 }
+
+/// A collision shape on the character: a skinned NIF shape.
+#[derive(Clone)]
+struct Shape {
+    def: ShapeDef,
+    mesh: crate::character::SkinMesh,
+    /// Per bone slot: the body it is, if any.
+    slot_body: Vec<Option<usize>>,
+    /// Any slot is a simulated body: its vertices are pushed.
+    dynamic: bool,
+    /// Vertices the dynamic side tests (a subsample of big meshes).
+    sample: Vec<usize>,
+}
+
+/// Fixed triangles, in a grid (big ones, like the ground, apart).
+struct Tris {
+    v: Vec<[f32; 3]>,
+    tris: Vec<[u32; 3]>,
+    /// (cell key, triangle), sorted by key.
+    grid: Vec<(u64, u32)>,
+    large: Vec<u32>,
+    /// Bounds, padded by the largest contact radius.
+    lo: [f32; 3],
+    hi: [f32; 3],
+}
+
+fn cell(p: [f32; 3]) -> (i32, i32, i32) {
+    ((p[0] / CELL).floor() as i32, (p[1] / CELL).floor() as i32, (p[2] / CELL).floor() as i32)
+}
+
+fn cell_key(c: (i32, i32, i32)) -> u64 {
+    let k = |v: i32| (v as i64 + (1 << 20)) as u64 & 0x1F_FFFF;
+    (k(c.0) << 42) | (k(c.1) << 21) | k(c.2)
+}
+
+impl Tris {
+    fn near(&self, p: [f32; 3]) -> &[(u64, u32)] {
+        let key = cell_key(cell(p));
+        let lo = self.grid.partition_point(|e| e.0 < key);
+        let hi = self.grid.partition_point(|e| e.0 <= key);
+        &self.grid[lo..hi]
+    }
+}
+
+/// Dynamic vertices tested per shape per substep at most.
+const MAX_SAMPLES: usize = 250;
+const CELL: f32 = 12.0;
 
 #[derive(Debug, Clone)]
 struct Constraint {
@@ -442,10 +529,14 @@ struct Constraint {
     rest: f32,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Clone, Default)]
 pub struct System {
     bodies: Vec<Body>,
     constraints: Vec<Constraint>,
+    shapes: Vec<Shape>,
+    /// Contacts in the last substep, for the log.
+    pub contacts: usize,
+    substep_index: u32,
     pub notes: Vec<String>,
     /// The clip time the state is at.
     pub time: f32,
@@ -500,6 +591,7 @@ impl System {
                     scale: w.s,
                     depth: 0,
                     inv_inertia: 0.0,
+                    margin_mult: d.margin_mult,
                 });
             }
             for d in &cfg.constraints {
@@ -545,7 +637,207 @@ impl System {
         s.set_inertia();
         let key = |c: &Constraint| depth[c.a].min(depth[c.b]);
         s.constraints.sort_by_key(key);
+        // Collision shapes: the character's skinned shapes by name.
+        for (file, cfg) in cfgs {
+            for d in &cfg.shapes {
+                let mesh = c.meshes.iter().chain(&c.coll_meshes).find(|m| m.shape.eq_ignore_ascii_case(&d.name) && !m.raw.is_empty());
+                let Some(mesh) = mesh else {
+                    s.notes.push(sds_i18n::tf!("{file}: форма столкновений «{}» не найдена среди шейпов", "{file}: collision shape «{}» not found among the shapes", d.name));
+                    continue;
+                };
+                let slot_body: Vec<Option<usize>> = mesh.bone_names.iter().map(|n| index.get(&n.to_ascii_lowercase()).copied()).collect();
+                let dynamic = slot_body.iter().flatten().any(|&i| s.bodies[i].inv_mass > 0.0);
+                let n = mesh.raw.len();
+                let stride = n.div_ceil(MAX_SAMPLES).max(1);
+                let sample = if dynamic { (0..n).step_by(stride).collect() } else { Vec::new() };
+                s.shapes.push(Shape { def: d.clone(), mesh: mesh.clone(), slot_body, dynamic, sample });
+            }
+        }
+        let (dynamic, kinematic) = (s.shapes.iter().filter(|x| x.dynamic).count(), s.shapes.iter().filter(|x| !x.dynamic).count());
+        if !s.shapes.is_empty() {
+            s.notes.push(sds_i18n::tf!("форм столкновений: {dynamic} подвижных, {kinematic} неподвижных", "collision shapes: {dynamic} moving, {kinematic} fixed"));
+        }
         s
+    }
+
+    /// World positions of a shape's vertices (`only`: these indices, else all).
+    fn skin_shape(&self, sh: &Shape, pose: &Pose, only: Option<&[usize]>) -> Vec<(usize, [f32; 3])> {
+        let mats: Vec<Transform> = sh
+            .mesh
+            .bones
+            .iter()
+            .enumerate()
+            .map(|(k, (b, s2b))| match sh.slot_body.get(k).copied().flatten() {
+                Some(i) => Transform::from_av(self.bodies[i].f.p, self.bodies[i].f.r, self.bodies[i].scale).compose(s2b),
+                None => Character::world(pose.model, &pose.root, b).compose(s2b),
+            })
+            .collect();
+        let one = |i: usize| {
+            let (pos, _, bi, wts) = &sh.mesh.raw[i];
+            let mut p = [0.0f32; 3];
+            let mut total = 0.0;
+            for k in 0..4 {
+                if wts[k] <= 0.0 {
+                    continue;
+                }
+                let Some(m) = mats.get(bi[k] as usize) else { continue };
+                p = add(p, mul(m.transform_point(*pos), wts[k]));
+                total += wts[k];
+            }
+            (i, if total > 0.0 { mul(p, 1.0 / total) } else { pose.root.transform_point(*pos) })
+        };
+        match only {
+            Some(list) => list.iter().map(|&i| one(i)).collect(),
+            None => (0..sh.mesh.raw.len()).map(one).collect(),
+        }
+    }
+
+    /// The fixed shapes' triangles at `pose`, in a grid; once per step.
+    fn fixed_tris(&self, pose: &Pose) -> Vec<Option<Tris>> {
+        let mut fixed: Vec<Option<Tris>> = Vec::new();
+        if self.shapes.iter().all(|s| !s.dynamic) {
+            return fixed;
+        }
+        for sh in &self.shapes {
+            if sh.dynamic {
+                fixed.push(None);
+                continue;
+            }
+            let v: Vec<[f32; 3]> = self.skin_shape(sh, pose, None).into_iter().map(|x| x.1).collect();
+            let tris: Vec<[u32; 3]> = sh.mesh.indices.chunks_exact(3).map(|t| [t[0] as u32, t[1] as u32, t[2] as u32]).collect();
+            let mut grid: Vec<(u64, u32)> = Vec::with_capacity(tris.len() * 4);
+            let mut large = Vec::new();
+            let pad = 4.0 + sh.def.margin;
+            for (ti, t) in tris.iter().enumerate() {
+                let (a, b, c) = (v[t[0] as usize], v[t[1] as usize], v[t[2] as usize]);
+                let lo = cell([a[0].min(b[0]).min(c[0]) - pad, a[1].min(b[1]).min(c[1]) - pad, a[2].min(b[2]).min(c[2]) - pad]);
+                let hi = cell([a[0].max(b[0]).max(c[0]) + pad, a[1].max(b[1]).max(c[1]) + pad, a[2].max(b[2]).max(c[2]) + pad]);
+                if (hi.0 - lo.0 + 1) * (hi.1 - lo.1 + 1) * (hi.2 - lo.2 + 1) > 64 {
+                    large.push(ti as u32);
+                    continue;
+                }
+                for x in lo.0..=hi.0 {
+                    for y in lo.1..=hi.1 {
+                        for z in lo.2..=hi.2 {
+                            grid.push((cell_key((x, y, z)), ti as u32));
+                        }
+                    }
+                }
+            }
+            grid.sort_unstable();
+            let pad = 8.0;
+            let mut lo = [f32::MAX; 3];
+            let mut hi = [f32::MIN; 3];
+            for p in &v {
+                for k in 0..3 {
+                    lo[k] = lo[k].min(p[k] - pad);
+                    hi[k] = hi[k].max(p[k] + pad);
+                }
+            }
+            if std::env::var_os("SDS_SMP_DEBUG").is_some() && self.time < DT * 1.5 {
+                eprintln!("SMPSHAPE {} verts={} tris={} large={} cells={}", sh.def.name, v.len(), tris.len(), large.len(), grid.len());
+            }
+            fixed.push(Some(Tris { v, tris, grid, large, lo, hi }));
+        }
+        fixed
+    }
+
+    /// Push the dynamic shapes' vertices out of the fixed shapes' triangles.
+    fn collide(&mut self, pose: &Pose, fixed: &[Option<Tris>]) {
+        self.contacts = 0;
+        if fixed.is_empty() {
+            return;
+        }
+        let mut pushes: Vec<(usize, [f32; 3], [f32; 3])> = Vec::new();
+        for (di, d) in self.shapes.iter().enumerate().filter(|(_, s)| s.dynamic) {
+            // The fixed shapes this one may touch (tags), decided once.
+            let partners: Vec<usize> = (0..self.shapes.len()).filter(|&ki| ki != di && fixed[ki].is_some() && d.def.collides_with(&self.shapes[ki].def)).collect();
+            if partners.is_empty() {
+                continue;
+            }
+            let verts = self.skin_shape(d, pose, Some(&d.sample));
+            for (vi, p) in verts {
+                let (_, _, bi, wts) = &d.mesh.raw[vi];
+                // The vertex's own radius: its heaviest bone's multiplier.
+                let heavy = (0..4).max_by(|&x, &y| wts[x].total_cmp(&wts[y])).unwrap_or(0);
+                let mult = d.slot_body.get(bi[heavy] as usize).copied().flatten().map_or(1.0, |i| self.bodies[i].margin_mult);
+                let mut best: Option<[f32; 3]> = None;
+                for &ki in &partners {
+                    let (k, Some(tr)) = (&self.shapes[ki], &fixed[ki]) else { continue };
+                    if (0..3).any(|a| p[a] < tr.lo[a] || p[a] > tr.hi[a]) && tr.large.is_empty() {
+                        continue;
+                    }
+                    let r = d.def.margin * mult + k.def.margin;
+                    let pen = if k.def.penetration > 0.0 { k.def.penetration } else { 1.0 };
+                    for ti in tr.near(p).iter().map(|e| e.1).chain(tr.large.iter().copied()) {
+                        let t = tr.tris[ti as usize];
+                        let (a, b, c) = (tr.v[t[0] as usize], tr.v[t[1] as usize], tr.v[t[2] as usize]);
+                        let (e1, e2) = (sub(b, a), sub(c, a));
+                        let nrm = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]];
+                        let nl = len(nrm);
+                        if nl < 1e-8 {
+                            continue;
+                        }
+                        let n = mul(nrm, 1.0 / nl);
+                        let dist = (p[0] - a[0]) * n[0] + (p[1] - a[1]) * n[1] + (p[2] - a[2]) * n[2];
+                        if dist >= r || dist <= -pen {
+                            continue;
+                        }
+                        // Inside the triangle (barycentric of the projection)?
+                        let q = sub(sub(p, mul(n, dist)), a);
+                        let dot = |x: [f32; 3], y: [f32; 3]| x[0] * y[0] + x[1] * y[1] + x[2] * y[2];
+                        let (d00, d01, d11, d20, d21) = (dot(e1, e1), dot(e1, e2), dot(e2, e2), dot(q, e1), dot(q, e2));
+                        let den = d00 * d11 - d01 * d01;
+                        if den.abs() < 1e-12 {
+                            continue;
+                        }
+                        let v = (d11 * d20 - d01 * d21) / den;
+                        let w = (d00 * d21 - d01 * d20) / den;
+                        if v < 0.0 || w < 0.0 || v + w > 1.0 {
+                            continue;
+                        }
+                        let push = mul(n, r - dist);
+                        if best.is_none_or(|b| len(b) < len(push)) {
+                            best = Some(push);
+                        }
+                    }
+                }
+                if let Some(push) = best {
+                    for k in 0..4 {
+                        if wts[k] <= 0.0 {
+                            continue;
+                        }
+                        if let Some(i) = d.slot_body.get(bi[k] as usize).copied().flatten().filter(|&i| self.bodies[i].inv_mass > 0.0) {
+                            pushes.push((i, p, mul(push, wts[k])));
+                        }
+                    }
+                }
+            }
+        }
+        self.contacts = pushes.len();
+        for (i, point, delta) in pushes {
+            self.push(i, point, delta);
+        }
+    }
+
+    /// Move body `i`'s material point `point` by `delta` (one body, XPBD).
+    fn push(&mut self, i: usize, point: [f32; 3], delta: [f32; 3]) {
+        let c = len(delta);
+        if c < 1e-6 {
+            return;
+        }
+        let n = mul(delta, 1.0 / c);
+        let (wm, wi) = (self.wm(i), self.wi(i));
+        let b = &mut self.bodies[i];
+        let r = sub(point, b.f.p);
+        let rn = [r[1] * n[2] - r[2] * n[1], r[2] * n[0] - r[0] * n[2], r[0] * n[1] - r[1] * n[0]];
+        let w = wm + wi * (rn[0] * rn[0] + rn[1] * rn[1] + rn[2] * rn[2]);
+        if w <= 0.0 {
+            return;
+        }
+        let l = c / w;
+        b.f.p = add(b.f.p, mul(n, l * wm));
+        b.f.r = orthonormalize(&mm(&from_rot_vec(mul(rn, l * wi)), &b.f.r));
     }
 
     fn set_inertia(&mut self) {
@@ -601,6 +893,7 @@ impl System {
     /// One 1/60 s step with the keyframed bones moving from `from` to `pose`.
     pub fn step(&mut self, from: &Pose, pose: &Pose) {
         let n = SUBSTEPS as f32;
+        let fixed = self.fixed_tris(pose);
         for k in 1..=SUBSTEPS {
             let f = k as f32 / n;
             for b in self.bodies.iter_mut().filter(|b| b.inv_mass == 0.0) {
@@ -608,12 +901,12 @@ impl System {
                 let rel = rot_vec(&mm(&z.r, &mt(&a.r)));
                 b.f = Frame { r: orthonormalize(&mm(&from_rot_vec(mul(rel, f)), &a.r)), p: add(a.p, mul(sub(z.p, a.p), f)) };
             }
-            self.substep(DT / n);
+            self.substep(DT / n, pose, &fixed);
         }
         self.time += DT;
     }
 
-    fn substep(&mut self, dt: f32) {
+    fn substep(&mut self, dt: f32, pose: &Pose, fixed: &[Option<Tris>]) {
         for b in &mut self.bodies {
             if b.inv_mass == 0.0 {
                 continue;
@@ -631,6 +924,12 @@ impl System {
                 self.solve(k);
             }
         }
+        // Contacts last, so constraints do not pull cloth back inside.
+        // Every other substep: enough for contact, half the cost.
+        if self.substep_index % 2 == 1 {
+            self.collide(pose, fixed);
+        }
+        self.substep_index += 1;
         for b in self.bodies.iter_mut().filter(|b| b.inv_mass > 0.0) {
             b.v = mul(sub(b.f.p, b.prev.p), 1.0 / dt);
             b.w = mul(rot_vec(&mm(&b.f.r, &mt(&b.prev.r))), 1.0 / dt);
@@ -765,11 +1064,17 @@ pub fn update(app: &mut StudioApp, t: f32, root_at: &dyn Fn(f32) -> Transform) {
         app.log(sds_i18n::tf!("HDT-SMP: {} динамических костей, {} связей", "HDT-SMP: {} dynamic bones, {} constraints", sys.dynamic_count(), sys.constraints.len()));
     }
     let mut steps = 0;
+    let (mut t_pose, mut t_step) = (0.0f64, 0.0f64);
+    let mut prev = pose_at(app, sys.time);
     while sys.time + DT <= t + 1e-4 && steps < MAX_STEPS_PER_FRAME {
         let time = sys.time + DT;
+        let clock = std::time::Instant::now();
         let model = pose_at(app, time);
-        let prev = pose_at(app, sys.time);
+        t_pose += clock.elapsed().as_secs_f64();
+        let clock = std::time::Instant::now();
         sys.step(&Pose { model: &prev, root: root_at(sys.time) }, &Pose { model: &model, root: root_at(time) });
+        t_step += clock.elapsed().as_secs_f64();
+        prev = model;
         steps += 1;
     }
     if std::env::var_os("SDS_SMP_DEBUG").is_some() {
@@ -788,7 +1093,7 @@ pub fn update(app: &mut StudioApp, t: f32, root_at: &dyn Fn(f32) -> Transform) {
                 worst = (d, body.name.clone());
             }
         }
-        eprintln!("SMPDBG t={:.3} steps={steps} nan={nan} worst={:.1} ({})", sys.time, worst.0, worst.1);
+        eprintln!("SMPDBG t={:.3} steps={steps} nan={nan} worst={:.1} ({}) contacts={} pose={:.0}ms step={:.0}ms", sys.time, worst.0, worst.1, sys.contacts, t_pose * 1e3, t_step * 1e3);
     }
     if let Some(c) = &mut app.character {
         c.phys = sys.output();
@@ -820,7 +1125,8 @@ mod tests {
         assert_eq!(cfg.constraints.len(), 1);
         let Kind::SixDof(s) = &cfg.constraints[0].kind else { panic!() };
         assert_eq!(s.ang[1][0], 0.1);
-        assert_eq!(cfg.notes.len(), 1);
+        assert_eq!(cfg.shapes.len(), 1);
+        assert_eq!(cfg.shapes[0].tags, vec!["a".to_string()]);
     }
 
     /// A two-link chain let go horizontally: `a` is pinned at its own origin
@@ -842,6 +1148,7 @@ mod tests {
             scale: 1.0,
             depth: 0,
             inv_inertia: 0.0,
+            margin_mult: 1.0,
         };
         let mut s = System { bodies: vec![body("root", [0.0; 3], 0.0), body("a", [10.0, 0.0, 0.0], 1.0), body("b", [20.0, 0.0, 0.0], 1.0)], ..Default::default() };
         let free = SixDof { ang: [[1.0; 3], [-1.0; 3]], ..Default::default() };

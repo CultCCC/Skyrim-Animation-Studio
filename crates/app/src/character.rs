@@ -44,7 +44,6 @@ pub struct SkinMesh {
     pub tint: Tint,
     /// Alpha-blended skin decal (scars, marks): drawn blended over the face.
     pub decal: bool,
-    #[allow(dead_code)] // kept for diagnostics
     pub shape: String,
     pub texture: String,
     pub alpha_test: f32,
@@ -92,6 +91,9 @@ pub struct Character {
     pub capsules: HashMap<String, Capsule>,
     /// HDT-SMP physics XMLs the pieces name («HDT Skinned Mesh Physics Object»).
     pub smp_files: Vec<String>,
+    /// Skinned shapes that are not drawn (no material or hidden): HDT-SMP
+    /// collision meshes.
+    pub coll_meshes: Vec<SkinMesh>,
     /// Nodes of the pieces' NIFs (HDT anchors, bones no shape is skinned
     /// to), under their nearest resolvable ancestor; lowercase name.
     pub piece_nodes: HashMap<String, BoneRef>,
@@ -237,6 +239,7 @@ impl Character {
             capsules: HashMap::new(),
             smp_files: Vec::new(),
             piece_nodes: HashMap::new(),
+            coll_meshes: Vec::new(),
             phys: HashMap::new(),
         };
         if let Some(nif) = nif.filter(|n| vfs.exists(n)) {
@@ -395,7 +398,10 @@ impl Character {
         let skinned: std::collections::HashSet<usize> = scene.skinned.iter().map(|s| s.mesh).collect();
         for sk in &scene.skinned {
             let m = &scene.meshes[sk.mesh];
-            if skip(m) {
+            // Shapes with no material or hidden are often HDT-SMP collision
+            // meshes (coll_body_*, VirtualGround): kept aside, not drawn.
+            let collision_only = skip(m) && (m.hidden || m.no_material) && !hidden(&m.name) && piece.scabbard.is_none();
+            if skip(m) && !collision_only {
                 continue;
             }
             let bones = sk
@@ -406,7 +412,8 @@ impl Character {
                     (r, b.skin_to_bone)
                 })
                 .collect();
-            self.meshes.push(SkinMesh {
+            let target = if collision_only { &mut self.coll_meshes } else { &mut self.meshes };
+            target.push(SkinMesh {
                 piece: index,
                 shape: m.name.clone(),
                 texture: m.texture.clone(),
