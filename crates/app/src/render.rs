@@ -64,6 +64,25 @@ pub struct DrawMesh<'a> {
     pub tint: [f32; 4],
     /// Draw back faces too (skin: hides head/body seams).
     pub double_sided: bool,
+    /// Alpha-blended over what is already drawn (texture alpha), after the
+    /// opaque meshes, without depth writes: face scars and marks.
+    pub blend: bool,
+}
+
+/// An effect shader (EFSH membrane) over a mesh of this frame.
+pub struct Shell<'a> {
+    pub mesh: u64,
+    /// Empty: no fill layer.
+    pub fill_texture: &'a str,
+    /// Empty: no palette lookup.
+    pub palette: &'a str,
+    /// rgb and alpha of the fill layer.
+    pub fill: [f32; 4],
+    pub edge: [f32; 4],
+    pub uv_scale: [f32; 2],
+    pub uv_offset: [f32; 2],
+    pub eye: [f32; 3],
+    pub falloff: f32,
 }
 
 pub struct Frame<'a> {
@@ -76,6 +95,8 @@ pub struct Frame<'a> {
     pub overlay: Vec<LineVertex>,
     /// Transparent effects, after the opaque meshes.
     pub fx: Vec<FxBatch>,
+    /// Effect shaders on the meshes, between the meshes and the effects.
+    pub shells: Vec<Shell<'a>>,
     pub clear: [f64; 3],
     /// Alpha of the cleared background: 1 in the viewport, 0 for exports
     /// (the actor on a transparent background).
@@ -116,6 +137,7 @@ pub struct Gpu {
     rs: RenderState,
     mesh_pipeline: wgpu::RenderPipeline,
     mesh_pipeline_2s: wgpu::RenderPipeline,
+    mesh_pipeline_blend: wgpu::RenderPipeline,
     line_pipeline: wgpu::RenderPipeline,
     overlay_pipeline: wgpu::RenderPipeline,
     camera_buf: wgpu::Buffer,
@@ -127,6 +149,8 @@ pub struct Gpu {
     lines_buf: Option<(wgpu::Buffer, usize)>,
     fx_pipeline: wgpu::RenderPipeline,
     fx_layout: wgpu::BindGroupLayout,
+    shell_pipeline: wgpu::RenderPipeline,
+    shell_layout: wgpu::BindGroupLayout,
     fx_binds: HashMap<String, wgpu::BindGroup>,
     clamp_sampler: wgpu::Sampler,
     fx_vbuf: Option<(wgpu::Buffer, usize)>,
@@ -224,7 +248,7 @@ impl Gpu {
                 bias: wgpu::DepthBiasState::default(),
             })
         };
-        let mesh_pipe = |cull: Option<wgpu::Face>| {
+        let mesh_pipe = |cull: Option<wgpu::Face>, blended: bool| {
             device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
                 label: Some("sds-mesh"),
                 layout: Some(&mesh_layout),
@@ -250,14 +274,15 @@ impl Gpu {
                     cull_mode: cull,
                     ..Default::default()
                 },
-                depth_stencil: depth(true, wgpu::CompareFunction::Less),
+                depth_stencil: if blended { depth(false, wgpu::CompareFunction::LessEqual) } else { depth(true, wgpu::CompareFunction::Less) },
                 multisample: wgpu::MultisampleState { count: MSAA, ..Default::default() },
                 multiview_mask: None,
                 cache: None,
             })
         };
-        let mesh_pipeline = mesh_pipe(Some(wgpu::Face::Back));
-        let mesh_pipeline_2s = mesh_pipe(None);
+        let mesh_pipeline = mesh_pipe(Some(wgpu::Face::Back), false);
+        let mesh_pipeline_2s = mesh_pipe(None, false);
+        let mesh_pipeline_blend = mesh_pipe(Some(wgpu::Face::Back), true);
         let line_pipe = |tested: bool| {
             device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
                 label: Some("sds-line"),
@@ -356,6 +381,59 @@ impl Gpu {
             multiview_mask: None,
             cache: None,
         });
+        let shell_shader = device.create_shader_module(wgpu::include_wgsl!("shell.wgsl"));
+        let tex_entry = |binding: u32| wgpu::BindGroupLayoutEntry {
+            binding,
+            visibility: wgpu::ShaderStages::FRAGMENT,
+            ty: wgpu::BindingType::Texture { sample_type: wgpu::TextureSampleType::Float { filterable: true }, view_dimension: wgpu::TextureViewDimension::D2, multisampled: false },
+            count: None,
+        };
+        let sampler_entry = |binding: u32| wgpu::BindGroupLayoutEntry { binding, visibility: wgpu::ShaderStages::FRAGMENT, ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering), count: None };
+        let shell_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("sds-shell-layout"),
+            entries: &[
+                tex_entry(0),
+                sampler_entry(1),
+                tex_entry(2),
+                sampler_entry(3),
+                wgpu::BindGroupLayoutEntry {
+                    binding: 4,
+                    visibility: wgpu::ShaderStages::FRAGMENT,
+                    ty: wgpu::BindingType::Buffer { ty: wgpu::BufferBindingType::Uniform, has_dynamic_offset: false, min_binding_size: None },
+                    count: None,
+                },
+            ],
+        });
+        let shell_pl = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+            label: Some("sds-shell-pl"),
+            bind_group_layouts: &[Some(&camera_layout), Some(&shell_layout)],
+            immediate_size: 0,
+        });
+        let shell_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some("sds-shell"),
+            layout: Some(&shell_pl),
+            vertex: wgpu::VertexState {
+                module: &shell_shader,
+                entry_point: Some("vs_shell"),
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
+                buffers: &[wgpu::VertexBufferLayout {
+                    array_stride: std::mem::size_of::<MeshVertex>() as u64,
+                    step_mode: wgpu::VertexStepMode::Vertex,
+                    attributes: &wgpu::vertex_attr_array![0 => Float32x3, 1 => Float32x3, 2 => Float32x2],
+                }],
+            },
+            fragment: Some(wgpu::FragmentState {
+                module: &shell_shader,
+                entry_point: Some("fs_shell"),
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
+                targets: &blend_target,
+            }),
+            primitive: wgpu::PrimitiveState { topology: wgpu::PrimitiveTopology::TriangleList, front_face: wgpu::FrontFace::Ccw, cull_mode: Some(wgpu::Face::Back), ..Default::default() },
+            depth_stencil: depth(false, wgpu::CompareFunction::LessEqual),
+            multisample: wgpu::MultisampleState { count: MSAA, ..Default::default() },
+            multiview_mask: None,
+            cache: None,
+        });
         let clamp_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
             label: Some("sds-clamp"),
             mag_filter: wgpu::FilterMode::Linear,
@@ -368,6 +446,7 @@ impl Gpu {
             rs,
             mesh_pipeline,
             mesh_pipeline_2s,
+            mesh_pipeline_blend,
             line_pipeline,
             overlay_pipeline,
             camera_buf,
@@ -379,6 +458,8 @@ impl Gpu {
             lines_buf: None,
             fx_pipeline,
             fx_layout,
+            shell_pipeline,
+            shell_layout,
             fx_binds: HashMap::new(),
             clamp_sampler,
             fx_vbuf: None,
@@ -524,6 +605,7 @@ impl Gpu {
                 params[..4].copy_from_slice(&m.tint);
                 params[4] = m.alpha_test;
                 params[5] = if fallback { 1.0 } else { 0.0 };
+                params[6] = if m.blend { 1.0 } else { 0.0 };
                 let ubuf = device.create_buffer(&wgpu::BufferDescriptor {
                     label: Some("sds-material"),
                     size: 32,
@@ -544,6 +626,44 @@ impl Gpu {
             }
             let c = &self.meshes[&m.id];
             self.rs.queue.write_buffer(&c.vbuf, 0, bytes(m.vertices));
+        }
+
+        // Effect shaders: a uniform and a bind group per shell, per frame.
+        let mut shells: Vec<(u64, wgpu::BindGroup)> = Vec::new();
+        for s in &frame.shells {
+            if !self.meshes.contains_key(&s.mesh) {
+                continue;
+            }
+            let has_fill = !s.fill_texture.is_empty() && !self.texture(s.fill_texture, load_texture).fallback;
+            let has_palette = !s.palette.is_empty() && !self.texture(s.palette, load_texture).fallback;
+            let u: [f32; 20] = [
+                s.fill[0], s.fill[1], s.fill[2], s.fill[3],
+                s.edge[0], s.edge[1], s.edge[2], s.edge[3],
+                s.uv_scale[0], s.uv_scale[1], s.uv_offset[0], s.uv_offset[1],
+                s.eye[0], s.eye[1], s.eye[2], s.falloff,
+                if has_palette { 1.0 } else { 0.0 }, if has_fill { 1.0 } else { 0.0 }, 0.0, 0.0,
+            ];
+            if !has_fill {
+                // The white 1×1 stands in for a missing fill texture.
+                self.texture("", load_texture);
+            }
+            let device = self.rs.device.clone();
+            let ubuf = device.create_buffer(&wgpu::BufferDescriptor { label: Some("sds-shell"), size: 80, usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST, mapped_at_creation: false });
+            self.rs.queue.write_buffer(&ubuf, 0, bytes(&u));
+            let fill = &self.textures[if has_fill { s.fill_texture } else { "" }].view;
+            let palette = if has_palette { &self.textures[s.palette].view } else { fill };
+            let bind = device.create_bind_group(&wgpu::BindGroupDescriptor {
+                label: Some("sds-shell-bind"),
+                layout: &self.shell_layout,
+                entries: &[
+                    wgpu::BindGroupEntry { binding: 0, resource: wgpu::BindingResource::TextureView(fill) },
+                    wgpu::BindGroupEntry { binding: 1, resource: wgpu::BindingResource::Sampler(&self.sampler) },
+                    wgpu::BindGroupEntry { binding: 2, resource: wgpu::BindingResource::TextureView(palette) },
+                    wgpu::BindGroupEntry { binding: 3, resource: wgpu::BindingResource::Sampler(&self.clamp_sampler) },
+                    wgpu::BindGroupEntry { binding: 4, resource: ubuf.as_entire_binding() },
+                ],
+            });
+            shells.push((s.mesh, bind));
         }
 
         let device = self.rs.device.clone();
@@ -629,17 +749,37 @@ impl Gpu {
                 multiview_mask: None,
             });
             pass.set_bind_group(0, &self.camera_bind, &[]);
-            for m in &frame.meshes {
+            // Opaque first, then blended decals over them.
+            for m in frame.meshes.iter().filter(|m| !m.blend).chain(frame.meshes.iter().filter(|m| m.blend)) {
                 let c = &self.meshes[&m.id];
                 if c.icount == 0 {
                     continue;
                 }
                 // Skyrim bodies are single-sided; alpha-tested cards (hair) are not.
-                pass.set_pipeline(if m.alpha_test > 0.0 || m.double_sided { &self.mesh_pipeline_2s } else { &self.mesh_pipeline });
+                pass.set_pipeline(if m.blend {
+                    &self.mesh_pipeline_blend
+                } else if m.alpha_test > 0.0 || m.double_sided {
+                    &self.mesh_pipeline_2s
+                } else {
+                    &self.mesh_pipeline
+                });
                 pass.set_bind_group(1, &c.bind, &[]);
                 pass.set_vertex_buffer(0, c.vbuf.slice(..));
                 pass.set_index_buffer(c.ibuf.slice(..), wgpu::IndexFormat::Uint16);
                 pass.draw_indexed(0..c.icount, 0, 0..1);
+            }
+            if !shells.is_empty() {
+                pass.set_pipeline(&self.shell_pipeline);
+                for (id, bind) in &shells {
+                    let c = &self.meshes[id];
+                    if c.icount == 0 {
+                        continue;
+                    }
+                    pass.set_bind_group(1, bind, &[]);
+                    pass.set_vertex_buffer(0, c.vbuf.slice(..));
+                    pass.set_index_buffer(c.ibuf.slice(..), wgpu::IndexFormat::Uint16);
+                    pass.draw_indexed(0..c.icount, 0, 0..1);
+                }
             }
             if !fx_ranges.is_empty() {
                 pass.set_pipeline(&self.fx_pipeline);

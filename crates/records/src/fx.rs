@@ -9,6 +9,13 @@
 //! PROJ DATA: 2 type u16, 4 gravity, 8 speed, 12 range, 36 explosion,
 //! 40 flight sound, 72 collision radius, 76 lifetime; model in MODL.
 //! EXPL DATA: 4 sound, 8 sound (no-AV variant), 32 radius; model in MODL.
+//! EFSH DATA (checked against the parsed fields of FireFXShader): 16 fill
+//! colour key 1, 20..40 fill fade in / full time / fade out / persistent
+//! ratio / pulse amplitude / pulse frequency, 44/48 fill UV speed, 52 edge
+//! falloff, 56 edge colour, 60..80 the edge envelope, 84/88 fill/edge full
+//! alpha ratio, 312/316 fill colour keys 2/3, 320..328 their scales,
+//! 332..340 their times, 384 flags, 388/392 fill UV scale. ICON fill
+//! texture, NAM8 membrane palette.
 
 use crate::{f32_at, u32_at, zstr, Db, FormKey, Rec};
 
@@ -56,6 +63,108 @@ pub struct SpellVisuals {
     pub sounds: Vec<(String, u32, FormKey)>,
     /// What the spell launches: the first effect with a projectile.
     pub projectile: Option<SpellProjectile>,
+    /// MGEF hit shaders (EFSH @32): (effect, EFSH, EFIT duration).
+    pub shaders: Vec<(String, FormKey, f32)>,
+}
+
+/// Alpha over time of one EFSH layer (fill or edge).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct Envelope {
+    pub fade_in: f32,
+    pub full_time: f32,
+    pub fade_out: f32,
+    pub full: f32,
+    pub persistent: f32,
+    pub pulse_amp: f32,
+    pub pulse_freq: f32,
+}
+
+impl Envelope {
+    /// Alpha `age` seconds after the start; `ended`: seconds since the
+    /// effect was removed (it fades out from where it was).
+    pub fn alpha(&self, age: f32, ended: Option<f32>) -> f32 {
+        let base = |a: f32| {
+            if a < self.fade_in {
+                self.full * a / self.fade_in.max(1e-4)
+            } else if a < self.fade_in + self.full_time {
+                self.full
+            } else if a < self.fade_in + self.full_time + self.fade_out {
+                let f = (a - self.fade_in - self.full_time) / self.fade_out.max(1e-4);
+                self.full + (self.persistent - self.full) * f
+            } else {
+                self.persistent
+            }
+        };
+        let mut v = base(age);
+        if let Some(e) = ended {
+            v *= (1.0 - e / self.fade_out.max(0.1)).max(0.0);
+        }
+        if self.pulse_amp > 0.0 {
+            v *= 1.0 + self.pulse_amp * (age * self.pulse_freq * std::f32::consts::TAU).sin();
+        }
+        v.max(0.0)
+    }
+}
+
+/// An effect shader as drawn on an actor's body (the membrane part).
+#[derive(Debug, Clone)]
+pub struct EffectShader {
+    pub key: FormKey,
+    pub edid: String,
+    /// `textures/...` or empty.
+    pub fill_texture: String,
+    pub palette: String,
+    /// Fill texture luminance looked up in the palette.
+    pub grayscale: bool,
+    /// Flag bit 0: no membrane shader (particles only).
+    pub no_membrane: bool,
+    /// Flag bit 5: on skin only, not on armour.
+    pub skin_only: bool,
+    pub fill: Envelope,
+    pub edge: Envelope,
+    /// Fill colour keys: (rgb 0..1 × scale, time).
+    pub fill_keys: [([f32; 3], f32); 3],
+    pub edge_color: [f32; 3],
+    pub falloff: f32,
+    pub uv_scale: [f32; 2],
+    pub uv_speed: [f32; 2],
+}
+
+impl EffectShader {
+    /// Fill colour `age` seconds in, between the keys.
+    pub fn fill_color(&self, age: f32) -> [f32; 3] {
+        let k = &self.fill_keys;
+        let mix = |a: [f32; 3], b: [f32; 3], f: f32| [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f];
+        if age <= k[0].1 {
+            return k[0].0;
+        }
+        for w in k.windows(2) {
+            if age <= w[1].1 {
+                return mix(w[0].0, w[1].0, (age - w[0].1) / (w[1].1 - w[0].1).max(1e-4));
+            }
+        }
+        k[2].0
+    }
+
+    /// How long it stays visible after being applied when nothing removes
+    /// it: the envelopes down to a zero persistent level.
+    pub fn natural_life(&self) -> f32 {
+        let end = |e: &Envelope| if e.persistent > 0.0 { f32::INFINITY } else { e.fade_in + e.full_time + e.fade_out };
+        end(&self.fill).max(end(&self.edge))
+    }
+}
+
+fn u16_at(d: &[u8], o: usize) -> u16 {
+    d.get(o..o + 2).map_or(0, |b| u16::from_le_bytes([b[0], b[1]]))
+}
+
+fn textures_path(p: &str) -> String {
+    let p = p.trim().replace('\\', "/");
+    if p.is_empty() || p.to_ascii_lowercase().starts_with("textures/") {
+        p
+    } else {
+        format!("textures/{p}")
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -111,7 +220,11 @@ pub struct Projectile {
     pub lifetime: f32,
     /// Looping flight sound.
     pub sound: Option<FormKey>,
+    /// Its own explosion, only when the Explosion flag (0x2) is set.
     pub explosion: Option<Explosion>,
+    /// Cone half-angle, degrees (cones).
+    pub cone_spread: f32,
+    pub collision_radius: f32,
 }
 
 #[derive(Debug, Clone)]
@@ -188,6 +301,7 @@ impl Db {
             silent: Vec::new(),
             sounds: Vec::new(),
             projectile: None,
+            shaders: Vec::new(),
         };
         let mut current: Option<FormKey> = None;
         let push = |mk: FormKey, duration: f32, out: &mut SpellVisuals| {
@@ -204,6 +318,9 @@ impl Db {
             }
             for (kind, sk) in self.effect_sounds(mk) {
                 out.sounds.push((effect.clone(), kind, sk));
+            }
+            if let Some(sk) = u32_at(data, 32).and_then(|raw| self.link(m, raw)).filter(|k| self.get(*k).is_some_and(|r| &r.sig == b"EFSH")) {
+                out.shaders.push((effect.clone(), sk, duration));
             }
             let before = out.visuals.len();
             for (off, slot) in [(92, ArtSlot::Casting), (96, ArtSlot::Hit), (116, ArtSlot::Enchant)] {
@@ -238,11 +355,41 @@ impl Db {
         Some(out)
     }
 
+    /// An EFSH record's membrane (body) part.
+    pub fn effect_shader(&self, k: FormKey) -> Option<EffectShader> {
+        let e = self.get(k).filter(|r| &r.sig == b"EFSH")?;
+        let d = e.first(b"DATA")?;
+        let f = |o: usize| f32_at(d, o).unwrap_or(0.0);
+        let rgb = |o: usize| d.get(o..o + 3).map(|c| [c[0] as f32 / 255.0, c[1] as f32 / 255.0, c[2] as f32 / 255.0]).unwrap_or([0.0; 3]);
+        let env = |o: usize, full: usize| Envelope { fade_in: f(o), full_time: f(o + 4), fade_out: f(o + 8), persistent: f(o + 12), pulse_amp: f(o + 16), pulse_freq: f(o + 20), full: f(full) };
+        let scaled = |c: [f32; 3], s: f32| [c[0] * s, c[1] * s, c[2] * s];
+        let tex = |sig: &[u8; 4]| e.first(sig).map(zstr).map(|p| textures_path(&p)).unwrap_or_default();
+        let flags = u32_at(d, 384).unwrap_or(0);
+        let scale = [f(388), f(392)];
+        Some(EffectShader {
+            key: k,
+            edid: e.edid(),
+            fill_texture: tex(b"ICON"),
+            palette: tex(b"NAM8"),
+            // MembraneGrayscaleColor is bit 1 (FireFX: 0x30006 = grayscale colour + alpha, particle both).
+            grayscale: flags & 0x2 != 0,
+            no_membrane: flags & 0x1 != 0,
+            skin_only: flags & 0x20 != 0,
+            fill: env(20, 84),
+            edge: env(60, 88),
+            fill_keys: [(scaled(rgb(16), f(320)), f(332)), (scaled(rgb(312), f(324)), f(336)), (scaled(rgb(316), f(328)), f(340))],
+            edge_color: rgb(56),
+            falloff: f(52),
+            uv_scale: [if scale[0] > 0.0 { scale[0] } else { 1.0 }, if scale[1] > 0.0 { scale[1] } else { 1.0 }],
+            uv_speed: [f(44), f(48)],
+        })
+    }
+
     /// A PROJ record with its explosion.
     pub fn projectile(&self, k: FormKey) -> Option<Projectile> {
         let p = self.get(k).filter(|r| &r.sig == b"PROJ")?;
         let d = p.first(b"DATA")?;
-        let kind = d.get(2..4).map(|b| u16::from_le_bytes([b[0], b[1]])).unwrap_or(1);
+        let kind = u16_at(d, 2);
         let model = p.first(b"MODL").map(zstr).filter(|m| !m.is_empty()).map(|m| meshes_path(&m)).unwrap_or_default();
         Some(Projectile {
             key: k,
@@ -254,7 +401,9 @@ impl Db {
             range: f32_at(d, 12).unwrap_or(0.0),
             lifetime: f32_at(d, 76).unwrap_or(0.0),
             sound: u32_at(d, 40).and_then(|raw| self.link(p, raw)),
-            explosion: u32_at(d, 36).and_then(|raw| self.link(p, raw)).and_then(|e| self.explosion(e)),
+            explosion: u32_at(d, 36).filter(|_| u16_at(d, 0) & 0x2 != 0).and_then(|raw| self.link(p, raw)).and_then(|e| self.explosion(e)),
+            cone_spread: f32_at(d, 68).unwrap_or(0.0),
+            collision_radius: f32_at(d, 72).unwrap_or(0.0),
         })
     }
 

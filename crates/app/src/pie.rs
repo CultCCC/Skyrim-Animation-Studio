@@ -188,7 +188,52 @@ pub struct Cue {
     pub sounds: Vec<CueSound>,
     /// Projectiles the casts launch (flown in `projectile.rs`).
     pub shots: Vec<Shot>,
+    /// Effect shaders (EFSH) on the actor's body.
+    pub body_shaders: Vec<BodyShader>,
     pub notes: Vec<String>,
+}
+
+/// An MGEF hit shader on the actor's own body.
+#[derive(Debug, Clone)]
+pub struct BodyShader {
+    pub shader: sds_records::FormKey,
+    pub start: f32,
+    /// Seconds until it is removed (then it fades out); None: the shader's
+    /// own envelope decides (instant effects).
+    pub life: Option<f32>,
+}
+
+/// A body shader as it looks at one moment.
+pub struct ActiveShader {
+    pub shader: sds_records::fx::EffectShader,
+    pub age: f32,
+    pub fill: [f32; 4],
+    pub edge: [f32; 4],
+}
+
+/// Every body shader visible at `t`, with its colours and alphas.
+pub fn active_shaders(cues: &[Cue], db: &Db, t: f32) -> Vec<ActiveShader> {
+    let mut out = Vec::new();
+    for b in cues.iter().flat_map(|c| &c.body_shaders) {
+        let age = t - b.start;
+        if age < 0.0 {
+            continue;
+        }
+        let Some(s) = db.effect_shader(b.shader).filter(|s| !s.no_membrane) else { continue };
+        let ended = b.life.map(|l| age - l).filter(|e| *e > 0.0);
+        let fade = s.fill.fade_out.max(s.edge.fade_out).max(0.1);
+        if ended.is_some_and(|e| e > fade) || (b.life.is_none() && age > s.natural_life()) {
+            continue;
+        }
+        let rgb = s.fill_color(age);
+        let fill = [rgb[0], rgb[1], rgb[2], s.fill.alpha(age, ended)];
+        let edge = [s.edge_color[0], s.edge_color[1], s.edge_color[2], s.edge.alpha(age, ended)];
+        if fill[3] <= 0.0 && edge[3] <= 0.0 {
+            continue;
+        }
+        out.push(ActiveShader { shader: s, age, fill, edge });
+    }
+    out
 }
 
 /// A spell cast at the target that flies as a projectile.
@@ -250,7 +295,7 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
     let mut cues: Vec<Cue> = Vec::new();
     for (index, (time, text)) in items.iter().enumerate() {
         let Some(body) = text.trim().strip_prefix("PIE.").or_else(|| text.trim().strip_prefix("pie.")) else { continue };
-        let mut cue = Cue { index, time: *time, instructions: Vec::new(), alias_file: None, spells: Vec::new(), pieces: Vec::new(), sounds: Vec::new(), shots: Vec::new(), notes: Vec::new() };
+        let mut cue = Cue { index, time: *time, instructions: Vec::new(), alias_file: None, spells: Vec::new(), pieces: Vec::new(), sounds: Vec::new(), shots: Vec::new(), body_shaders: Vec::new(), notes: Vec::new() };
         // Expand aliases (one level of nesting is enough for real configs; deeper is guarded).
         let mut queue: Vec<(f32, String, usize)> = vec![(0.0, body.to_string(), 0)];
         while let Some((delay, raw, depth)) = queue.pop() {
@@ -350,6 +395,13 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
                             None => {}
                         }
                         cue.shots.extend(shot);
+                        if self_target {
+                            for (_, k, dur) in &s.shaders {
+                                cue.body_shaders.push(BodyShader { shader: *k, start: at, life: (*dur > 0.0).then_some(*dur) });
+                            }
+                        } else if !s.shaders.is_empty() {
+                            cue.notes.push(sds_i18n::t!("шейдер эффекта на цели не рисуется: у цели нет тела", "the effect shader on the target is not drawn: the target has no body").into());
+                        }
                         cue.spells.push(s);
                     }
                 }
@@ -361,6 +413,9 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
                             }
                             let anchor = if v.slot == ArtSlot::Enchant { Anchor::Node("WEAPON".into()) } else { Anchor::Node(ROOT.into()) };
                             cue.pieces.push(Piece { slot: v.slot, model: v.model.clone(), anchor, effect: v.effect.clone(), start: at, life: f32::INFINITY, scale: 1.0, offset: [0.0; 3] });
+                        }
+                        for (_, k, _) in &s.shaders {
+                            cue.body_shaders.push(BodyShader { shader: *k, start: at, life: Some(f32::INFINITY) });
                         }
                         cue.spells.push(s);
                     }
@@ -382,6 +437,9 @@ pub fn resolve(items: &[(f32, &str)], duration: f32, aliases: &Aliases, db: Opti
                         for p in c.pieces.iter_mut().filter(|p| p.life.is_infinite() && applies.contains(&p.start) && p.start <= at) {
                             p.life = (at - p.start).max(0.0);
                             ended += 1;
+                        }
+                        for s in c.body_shaders.iter_mut().filter(|s| s.life == Some(f32::INFINITY) && applies.contains(&s.start) && s.start <= at) {
+                            s.life = Some((at - s.start).max(0.0));
                         }
                     }
                     cue.notes.push(sds_i18n::tf!("@UNAPPLYSPELL снимает {ended} арт", "@UNAPPLYSPELL removes {ended} art"));

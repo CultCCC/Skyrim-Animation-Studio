@@ -8,6 +8,7 @@
 
 use crate::app::StudioApp;
 use crate::paired::Skinned;
+use sds_hkx::anim::Animation;
 use crate::render::{look_at, mat_mul, DrawMesh, Frame};
 use std::path::Path;
 
@@ -53,16 +54,44 @@ struct View {
     light: [f32; 3],
 }
 
+/// A moment of the exported timeline: which clip of the sequence, and when
+/// in it. Without a sequence `seg` is 0 and the open clip plays.
+#[derive(Clone, Copy)]
+struct At {
+    seg: usize,
+    t: f32,
+}
+
+/// Run `f` with clip `at.seg` of `segs` posed as the open clip (swapped in
+/// and back, no copies). An empty `segs` means the open clip itself.
+fn posed<R>(app: &mut StudioApp, segs: &mut [Animation], at: At, f: impl FnOnce(&mut StudioApp, f32) -> R) -> R {
+    let Some(seg) = segs.get_mut(at.seg) else { return f(app, at.t) };
+    match app.anim.as_mut() {
+        Some(a) => {
+            std::mem::swap(a, seg);
+            let r = f(app, at.t);
+            std::mem::swap(app.anim.as_mut().unwrap(), seg);
+            r
+        }
+        None => {
+            app.anim = Some(seg.clone());
+            let r = f(app, at.t);
+            app.anim = None;
+            r
+        }
+    }
+}
+
 /// Orthographic camera that fits the character at all `times`.
-fn frame_view(app: &StudioApp, opts: &ExportOpts, times: &[f32]) -> Option<View> {
+fn frame_view(app: &mut StudioApp, segs: &mut [Animation], opts: &ExportOpts, times: &[At]) -> Option<View> {
     let (yaw, pitch) = (opts.yaw.to_radians(), opts.pitch.to_radians());
     let dir = [pitch.cos() * yaw.sin(), pitch.cos() * yaw.cos(), pitch.sin()];
     let center = [0.0, 0.0, 64.0];
     let eye = [center[0] + dir[0] * 1000.0, center[1] + dir[1] * 1000.0, center[2] + dir[2] * 1000.0];
     let view = look_at(eye, center, [0.0, 0.0, 1.0]);
     let (mut lo, mut hi) = ([f32::MAX; 3], [f32::MIN; 3]);
-    for &t in times {
-        for mesh in skinned_at(app, t)? {
+    for &at in times {
+        for mesh in posed(app, segs, at, |app, t| skinned_at(app, t))? {
             for v in mesh.verts.iter().step_by(3) {
                 let p = v.pos;
                 for (r, l) in [0usize, 1, 2].iter().zip(0..3) {
@@ -105,8 +134,9 @@ fn frame_view(app: &StudioApp, opts: &ExportOpts, times: &[f32]) -> Option<View>
     Some(View { view_proj: mat_mul(&o, &view), light })
 }
 
-fn render_at(app: &mut StudioApp, view: &View, t: f32, size: u32, opts: &ExportOpts) -> Option<Vec<u8>> {
-    let skinned = skinned_at(app, t)?;
+fn render_at(app: &mut StudioApp, segs: &mut [Animation], view: &View, at: At, size: u32, opts: &ExportOpts) -> Option<Vec<u8>> {
+    let t = at.t;
+    let skinned = posed(app, segs, at, |app, t| skinned_at(app, t))?;
     if std::env::var_os("SDS_SEAM").is_some() {
         let head = skinned.iter().find(|s| s.texture.contains("#face"));
         let body = skinned.iter().find(|s| s.texture.to_ascii_lowercase().contains("malebody"));
@@ -122,7 +152,7 @@ fn render_at(app: &mut StudioApp, view: &View, t: f32, size: u32, opts: &ExportO
         }
     }
     let meshes: Vec<DrawMesh> = skinned.iter().map(|s| s.draw()).collect();
-    let frame = Frame { view_proj: view.view_proj, light: view.light, meshes, lines: Vec::new(), overlay: Vec::new(), fx: Vec::new(), clear: [0.0; 3], clear_alpha: 0.0, ambient: opts.ambient };
+    let frame = Frame { view_proj: view.view_proj, light: view.light, meshes, lines: Vec::new(), overlay: Vec::new(), fx: Vec::new(), shells: Vec::new(), clear: [0.0; 3], clear_alpha: 0.0, ambient: opts.ambient };
     let vfs = app.loaded.as_ref().map(|l| l.vfs.clone());
     let mut load = |path: &str| -> Option<(u32, u32, Vec<u8>)> {
         let img = crate::character::load_texture(vfs.as_ref()?, path);
@@ -139,43 +169,65 @@ fn duration(app: &StudioApp) -> f32 {
     app.doc.as_ref().map_or(0.0, |d| d.duration())
 }
 
-fn gif_times(app: &StudioApp, opts: &ExportOpts) -> (Vec<f32>, f32) {
-    let dur = duration(app);
+/// Frames of the whole timeline: the sequence's clips one after another
+/// (each played once), or the open clip.
+fn gif_times(app: &StudioApp, segs: &[Animation], opts: &ExportOpts) -> (Vec<At>, f32) {
+    let durs: Vec<f32> = if segs.is_empty() { vec![duration(app)] } else { segs.iter().map(|a| a.duration).collect() };
+    let dur: f32 = durs.iter().sum();
     let mut fps = opts.fps.max(1.0);
     let mut n = (dur * fps).round().max(1.0) as u32;
     if n > opts.max_frames {
         n = opts.max_frames.max(1);
         fps = n as f32 / dur.max(1e-3);
     }
-    ((0..n).map(|i| i as f32 / fps).collect(), fps)
+    let at = |g: f32| {
+        let mut start = 0.0;
+        for (seg, d) in durs.iter().enumerate() {
+            if g < start + d || seg + 1 == durs.len() {
+                return At { seg, t: (g - start).clamp(0.0, *d) };
+            }
+            start += d;
+        }
+        At { seg: 0, t: 0.0 }
+    };
+    ((0..n).map(|i| at(i as f32 / fps)).collect(), fps)
 }
 
-/// PNG of the pose at `t` (None = the middle of the clip).
-pub fn export_png(app: &mut StudioApp, path: &Path, t: Option<f32>, opts: &ExportOpts) -> Result<(), String> {
+/// The clip a sequence's PNG shows: the loop of enter+loop+exit.
+fn pose_segment(segs: &[Animation]) -> usize {
+    if segs.len() >= 3 { 1 } else { 0 }
+}
+
+/// PNG of the pose at `t` (None = the middle of the clip, or of the loop
+/// of a sequence `segs`; empty `segs` = the open clip).
+pub fn export_png(app: &mut StudioApp, path: &Path, t: Option<f32>, segs: &mut [Animation], opts: &ExportOpts) -> Result<(), String> {
     if app.character.is_none() {
         return Err(sds_i18n::t!("персонаж не загружен", "no character loaded").into());
     }
     crate::paired::sync(app);
-    let t = t.unwrap_or(duration(app) * 0.5);
-    // Framed over the whole clip, so a PNG matches its GIF.
-    let (times, _) = gif_times(app, opts);
-    let view = frame_view(app, opts, &times).ok_or("empty mesh")?;
-    let rgba = render_at(app, &view, t, opts.png_size, opts).ok_or("render failed")?;
+    let seg = pose_segment(segs);
+    let mid = segs.get(seg).map_or(duration(app), |a| a.duration) * 0.5;
+    let at = At { seg, t: t.unwrap_or(mid) };
+    // Framed over the whole timeline, so a PNG matches its GIF.
+    let (times, _) = gif_times(app, segs, opts);
+    let view = frame_view(app, segs, opts, &times).ok_or("empty mesh")?;
+    let rgba = render_at(app, segs, &view, at, opts.png_size, opts).ok_or("render failed")?;
     let png = aether_core::png::encode_rgba(opts.png_size, opts.png_size, &rgba).ok_or("png encode")?;
     std::fs::write(path, png).map_err(|e| e.to_string())
 }
 
-/// Animated GIF of the whole clip, looping, transparent background.
-pub fn export_gif(app: &mut StudioApp, path: &Path, opts: &ExportOpts) -> Result<usize, String> {
+/// Animated GIF of the whole clip (or of a sequence: enter, the loop once,
+/// exit), looping, transparent background.
+pub fn export_gif(app: &mut StudioApp, path: &Path, segs: &mut [Animation], opts: &ExportOpts) -> Result<usize, String> {
     if app.character.is_none() {
         return Err(sds_i18n::t!("персонаж не загружен", "no character loaded").into());
     }
     crate::paired::sync(app);
-    let (times, fps) = gif_times(app, opts);
-    let view = frame_view(app, opts, &times).ok_or("empty mesh")?;
+    let (times, fps) = gif_times(app, segs, opts);
+    let view = frame_view(app, segs, opts, &times).ok_or("empty mesh")?;
     let mut frames = Vec::with_capacity(times.len());
-    for &t in &times {
-        frames.push(render_at(app, &view, t, opts.gif_size, opts).ok_or("render failed")?);
+    for &at in &times {
+        frames.push(render_at(app, segs, &view, at, opts.gif_size, opts).ok_or("render failed")?);
     }
     let delay = (100.0 / fps).round().max(2.0) as u16;
     let bytes = gif::encode(opts.gif_size as u16, opts.gif_size as u16, &frames, delay);
@@ -459,16 +511,35 @@ pub fn run_batch(app: &mut StudioApp, ctx: &egui::Context) {
         Some((l, q)) => (l.trim().to_string(), q.trim().to_string()),
         None => (query.clone(), query),
     };
-    let (path, n) = resolve(&app.loaded.as_ref().unwrap().library.anims, &query);
+    // `enter+loop+exit`: a sequence played once through; the loop is opened.
+    let parts: Vec<String> = query.split('+').map(|s| s.trim().to_string()).collect();
+    let anims = app.loaded.as_ref().unwrap().library.anims.clone();
+    let resolved: Vec<(Option<String>, usize)> = parts.iter().map(|p| resolve(&anims, p)).collect();
+    let main = if parts.len() >= 3 { 1 } else { 0 };
+    let (path, n) = if resolved.iter().all(|r| r.0.is_some()) { resolved[main].clone() } else { (None, 0) };
     let name = safe_name(&label);
     let query = label;
     let line = match path {
         None => format!("{query};not found;;0;0"),
         Some(p) => {
             app.open_vfs_file(&p);
+            let mut segs: Vec<Animation> = Vec::new();
+            if parts.len() > 1 {
+                let vfs = app.loaded.as_ref().unwrap().vfs.clone();
+                for (rp, _) in &resolved {
+                    match vfs.read(rp.as_ref().unwrap()).ok().and_then(|b| sds_hkx::anim::read_animation(&b).ok()) {
+                        Some(a) => segs.push(a),
+                        None => eprintln!("BATCH {query}: {} not decoded", rp.as_ref().unwrap()),
+                    }
+                }
+                if segs.len() != parts.len() {
+                    segs.clear();
+                }
+            }
+            let p = if segs.is_empty() { p } else { resolved.iter().map(|r| r.0.clone().unwrap()).collect::<Vec<_>>().join(" + ") };
             let opts = app.settings.export.clone();
-            let png = export_png(app, &out.join(format!("{name}.png")), None, &opts);
-            let gif = export_gif(app, &out.join(format!("{name}.gif")), &opts);
+            let png = export_png(app, &out.join(format!("{name}.png")), None, &mut segs, &opts);
+            let gif = export_gif(app, &out.join(format!("{name}.gif")), &mut segs, &opts);
             match (png, gif) {
                 (Ok(()), Ok(f)) => format!("{query};ok;{p};{n};{f}"),
                 (a, b) => format!("{query};error {:?} {:?};{p};{n};0", a.err(), b.err()),
@@ -487,7 +558,7 @@ pub fn toolbar(app: &mut StudioApp, ui: &mut egui::Ui) {
         if let Some(p) = rfd::FileDialog::new().add_filter("PNG", &["png"]).set_file_name(format!("{base}.png")).save_file() {
             let opts = app.settings.export.clone();
             let t = app.play.time;
-            match export_png(app, &p, Some(t), &opts) {
+            match export_png(app, &p, Some(t), &mut [], &opts) {
                 Ok(()) => app.log(sds_i18n::tf!("PNG сохранён: {}", "PNG saved: {}", p.display())),
                 Err(e) => app.log(sds_i18n::tf!("PNG не сохранён: {e}", "PNG not saved: {e}")),
             }
@@ -496,7 +567,7 @@ pub fn toolbar(app: &mut StudioApp, ui: &mut egui::Ui) {
     if ui.add_enabled(can, egui::Button::new(sds_i18n::t!("Запись GIF", "Record GIF"))).on_hover_text(sds_i18n::t!("Весь клип в анимированный GIF, актёр на прозрачном фоне", "The whole clip as an animated GIF, the actor on a transparent background")).clicked() {
         if let Some(p) = rfd::FileDialog::new().add_filter("GIF", &["gif"]).set_file_name(format!("{base}.gif")).save_file() {
             let opts = app.settings.export.clone();
-            match export_gif(app, &p, &opts) {
+            match export_gif(app, &p, &mut [], &opts) {
                 Ok(n) => app.log(sds_i18n::tf!("GIF сохранён: {} ({n} кадров)", "GIF saved: {} ({n} frames)", p.display())),
                 Err(e) => app.log(sds_i18n::tf!("GIF не сохранён: {e}", "GIF not saved: {e}")),
             }

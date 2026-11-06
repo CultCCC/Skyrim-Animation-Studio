@@ -54,6 +54,11 @@ fn fs_mesh(f: MeshOut, @builtin(front_facing) front: bool) -> @location(0) vec4<
     let fill = max(dot(n, -l), 0.0) * 0.15;
     let shade = 0.55 + camera.light.w + 0.75 * diff + fill;
     let base = tex.rgb * material.tint.rgb;
+    if (material.params.z > 0.5) {
+        // Blended decal: premultiplied by the texture alpha.
+        let a = tex.a * material.tint.a;
+        return vec4<f32>(base * shade * a, a);
+    }
     return vec4<f32>(base * shade, 1.0);
 }
 

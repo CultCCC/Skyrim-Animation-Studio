@@ -349,7 +349,33 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
         fx_notes = player.notes.drain(..).collect();
         app.fx = player;
     }
-    let frame = Frame { view_proj, light, meshes, lines, overlay, fx: fx_batches, clear: [0.085, 0.09, 0.105], clear_alpha: 1.0, ambient: 0.0 };
+    // Effect shaders (EFSH) over the NPC's own meshes, not the partner's.
+    let shaders = match (&app.doc, &app.loaded) {
+        (Some(doc), Some(l)) if app.scene.show_fx => {
+            let items: Vec<(f32, &str)> = doc.annos.iter().map(|a| (a.time, a.text.as_str())).collect();
+            crate::pie::active_shaders(&crate::pie::resolve(&items, doc.duration(), &l.pie, Some(&l.db)), &l.db, t)
+        }
+        _ => Vec::new(),
+    };
+    let gen = app.character_gen * 10_000;
+    let mut shells = Vec::new();
+    for a in &shaders {
+        let s = &a.shader;
+        for m in skinned.iter().filter(|m| (gen..gen + 5_000).contains(&m.id) && (!s.skin_only || m.skin) && !m.blend) {
+            shells.push(crate::render::Shell {
+                mesh: m.id,
+                fill_texture: &s.fill_texture,
+                palette: if s.grayscale { &s.palette } else { "" },
+                fill: a.fill,
+                edge: a.edge,
+                uv_scale: s.uv_scale,
+                uv_offset: [(s.uv_speed[0] * a.age).fract(), (s.uv_speed[1] * a.age).fract()],
+                eye,
+                falloff: s.falloff,
+            });
+        }
+    }
+    let frame = Frame { view_proj, light, meshes, lines, overlay, fx: fx_batches, shells, clear: [0.085, 0.09, 0.105], clear_alpha: 1.0, ambient: 0.0 };
     let vfs = app.loaded.as_ref().map(|l| l.vfs.clone());
     // Effect textures are often written without the textures\ prefix (handled there).
     let mut load = |path: &str| crate::character::load_texture(vfs.as_ref()?, path);

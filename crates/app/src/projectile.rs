@@ -1,9 +1,13 @@
-//! Spell projectiles. A cast at the target (`pie::Shot`) flies from the
-//! casting hand's magic node to the target dummy's chest at the PROJ speed:
-//! straight for missiles and arrows, on a gravity arc for lobbers, instantly
-//! for beams, flames and cones. On impact the explosion (EXPL) and the
-//! effect's hit art play there. Sounds: the PROJ flight loop until the
-//! impact, the EXPL sound and the MGEF hit sound on it.
+//! Spell projectiles. A cast at the target (`pie::Shot`) is launched from the
+//! casting hand's magic node at the target dummy's chest at the PROJ speed.
+//! Missiles and arrows fly straight and fall with their gravity (×9.81 m/s²):
+//! they burst on the target or wherever they reach the ground first, so a
+//! projectile with gravity 10000 drops at the caster's feet. Lobbers are aimed
+//! on an arc that lands on the target. Cones fly straight and widen with
+//! their cone spread. Beams, flames and barriers hit at once. On impact the
+//! explosion (EXPL) plays there and the effect's hit art plays on the target
+//! if it was hit or inside the explosion. Sounds: the PROJ flight loop until
+//! the end of the flight, the EXPL sound and the MGEF hit sound on impact.
 
 use crate::app::StudioApp;
 use crate::pie::{Cue, Shot};
@@ -16,9 +20,12 @@ use sds_records::FormKey;
 const GRAVITY: f32 = 9.81 * 69.99;
 /// Where spells are aimed on the target dummy.
 const AIM_Z: f32 = 90.0;
+/// The target dummy as a collision cylinder.
+const TARGET_RADIUS: f32 = 30.0;
+const TARGET_HEIGHT: f32 = 140.0;
 /// How long the explosion art stays (EXPL has no duration of its own).
 pub const EXPLOSION_LIFE: f32 = 3.0;
-/// How long an instant (beam, flame, cone) projectile model shows.
+/// How long an instant (beam, flame) projectile model shows.
 const INSTANT_LIFE: f32 = 0.35;
 
 #[derive(Debug, Clone)]
@@ -27,12 +34,17 @@ pub struct Flight {
     pub key: String,
     pub shot: Shot,
     pub from: [f32; 3],
+    /// The aim point.
     pub to: [f32; 3],
     /// Launch velocity and downward acceleration: p(dt) = from + vel·dt − ½·g·dt²·Z.
     pub vel: [f32; 3],
     pub g: f32,
     /// Impact time; None when range or lifetime ends the flight first.
     pub impact: Option<f32>,
+    /// Where it burst (target, ground, or the aim point for instant ones).
+    pub hit_point: [f32; 3],
+    /// The target was hit directly or is inside the explosion.
+    pub hits_target: bool,
     /// When the projectile model disappears.
     pub end: f32,
 }
@@ -53,13 +65,24 @@ impl Flight {
         norm(v)
     }
 
-    fn instant(&self) -> bool {
-        matches!(self.shot.projectile.kind, ProjKind::Beam | ProjKind::Flame | ProjKind::Cone | ProjKind::Barrier) || self.shot.projectile.speed <= 0.0
+    /// Model scale at `t`: a cone grows to CollisionRadius + d·tan(spread).
+    pub fn scale(&self, t: f32) -> f32 {
+        let p = &self.shot.projectile;
+        if p.kind != ProjKind::Cone {
+            return 1.0;
+        }
+        let d = p.speed * (t - self.shot.start).max(0.0);
+        let r0 = p.collision_radius.max(1.0);
+        (r0 + d * p.cone_spread.clamp(0.0, 89.0).to_radians().tan()) / r0
     }
 
-    /// Where the explosion and hit art go.
+    fn instant(&self) -> bool {
+        matches!(self.shot.projectile.kind, ProjKind::Beam | ProjKind::Flame | ProjKind::Barrier) || self.shot.projectile.speed <= 0.0
+    }
+
+    /// Where the explosion goes.
     pub fn impact_point(&self) -> [f32; 3] {
-        self.to
+        self.hit_point
     }
 }
 
@@ -85,45 +108,90 @@ pub fn facing(dir: [f32; 3]) -> [f32; 9] {
     [r[0], f[0], u[0], r[1], f[1], u[1], r[2], f[2], u[2]]
 }
 
-/// Launch → impact for one shot from `from` at `to`.
+/// Launch → impact for one shot from `from` at the aim point `to`.
 pub fn fly(key: String, shot: &Shot, from: [f32; 3], to: [f32; 3]) -> Flight {
     let p = &shot.projectile;
     let d = sub(to, from);
     let dist = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
-    let mut f = Flight { key, shot: shot.clone(), from, to, vel: [0.0; 3], g: 0.0, impact: Some(shot.start), end: shot.start + INSTANT_LIFE };
+    let h = d[0].hypot(d[1]);
+    let mut f = Flight { key, shot: shot.clone(), from, to, vel: [0.0; 3], g: 0.0, impact: Some(shot.start), hit_point: to, hits_target: true, end: shot.start + INSTANT_LIFE };
     if f.instant() {
         if p.range > 0.0 && dist > p.range {
             f.impact = None;
+            f.hits_target = false;
         }
         return f;
     }
-    let g = p.gravity.max(0.0) * GRAVITY;
-    let (flight, length) = if g > 0.0 {
-        // Horizontal speed = PROJ speed; the vertical launch speed lands it on the aim point.
-        let h = d[0].hypot(d[1]).max(1.0);
-        let time = h / p.speed;
-        let vz = (d[2] + 0.5 * g * time * time) / time;
-        f.vel = [d[0] / time, d[1] / time, vz];
-        f.g = g;
-        (time, h)
-    } else {
-        let n = norm(d);
-        f.vel = [n[0] * p.speed, n[1] * p.speed, n[2] * p.speed];
-        (dist / p.speed, dist)
-    };
-    let mut limit = f32::INFINITY;
-    if p.range > 0.0 && length > p.range {
-        limit = p.range / p.speed;
-    }
+    // Range is distance flown at the launch speed; lifetime caps it too.
+    let mut limit = if p.range > 0.0 { p.range / p.speed } else { f32::INFINITY };
     if p.lifetime > 0.0 {
         limit = limit.min(p.lifetime);
     }
-    if flight <= limit {
-        f.impact = Some(shot.start + flight);
-        f.end = shot.start + flight;
+    let n = norm(d);
+    if p.kind == ProjKind::Cone {
+        // A widening wave: no gravity, it passes the target and runs its range.
+        f.vel = [n[0] * p.speed, n[1] * p.speed, n[2] * p.speed];
+        let reach = (dist - TARGET_RADIUS).max(0.0) / p.speed;
+        f.end = shot.start + if limit.is_finite() { limit } else { reach + 1.0 };
+        f.impact = (reach <= limit).then_some(shot.start + reach);
+        f.hits_target = f.impact.is_some();
+        f.hit_point = if f.hits_target { to } else { f.pos(f.end) };
+        return f;
+    }
+    let g = p.gravity.max(0.0) * GRAVITY;
+    f.g = g;
+    if p.kind == ProjKind::Lobber && g > 0.0 {
+        // Lobbers are aimed: horizontal speed = PROJ speed, the vertical
+        // launch speed lands the arc on the aim point.
+        let time = h.max(1.0) / p.speed;
+        f.vel = [d[0] / time, d[1] / time, (d[2] + 0.5 * g * time * time) / time];
+        if time <= limit {
+            f.impact = Some(shot.start + time);
+            f.end = shot.start + time;
+        } else {
+            f.impact = None;
+            f.hits_target = false;
+            f.end = shot.start + limit;
+            f.hit_point = f.pos(f.end);
+        }
+        return f;
+    }
+    // Missiles and arrows: launched straight at the aim point, gravity pulls.
+    f.vel = [n[0] * p.speed, n[1] * p.speed, n[2] * p.speed];
+    let z = |t: f32| from[2] + f.vel[2] * t - 0.5 * g * t * t;
+    let vh = p.speed * n[0].hypot(n[1]);
+    let at_target = (vh > 1e-3).then(|| (h - TARGET_RADIUS).max(0.0) / vh).filter(|&t| (0.0..=TARGET_HEIGHT).contains(&z(t)));
+    let at_ground = if g > 0.0 {
+        Some((f.vel[2] + (f.vel[2] * f.vel[2] + 2.0 * g * from[2].max(0.0)).sqrt()) / g)
+    } else if f.vel[2] < -1e-3 {
+        Some(-from[2] / f.vel[2])
     } else {
-        f.impact = None;
-        f.end = shot.start + limit;
+        None
+    };
+    let first = match (at_target, at_ground) {
+        (Some(a), Some(b)) if b < a => Some((b, false)),
+        (Some(a), _) => Some((a, true)),
+        (None, Some(b)) => Some((b, false)),
+        (None, None) => None,
+    };
+    match first.filter(|&(t, _)| t <= limit) {
+        Some((t, direct)) => {
+            f.impact = Some(shot.start + t);
+            f.end = shot.start + t;
+            f.hit_point = f.pos(f.end);
+            if !direct {
+                f.hit_point[2] = 0.0;
+            }
+            // Missed the target: it still takes the hit inside the explosion.
+            let blast = shot.explosion.as_ref().map_or(0.0, |e| e.radius);
+            f.hits_target = direct || (f.hit_point[0] - to[0]).hypot(f.hit_point[1] - to[1]) <= blast + TARGET_RADIUS;
+        }
+        None => {
+            f.impact = None;
+            f.hits_target = false;
+            f.end = shot.start + if limit.is_finite() { limit } else { 3.0 };
+            f.hit_point = f.pos(f.end);
+        }
     }
     f
 }
@@ -186,7 +254,7 @@ pub fn sounds(flights: &[Flight], db: &sds_records::Db) -> Vec<FlightSound> {
                 out.push(FlightSound { time: ti, sound: s, label: sds_i18n::tf!("взрыв: {} ({})", "explosion: {} ({})", edid(s), e.edid), until: None });
             }
         }
-        for (s, label) in &f.shot.hit_sounds {
+        for (s, label) in f.shot.hit_sounds.iter().filter(|_| f.hits_target) {
             out.push(FlightSound { time: ti, sound: *s, label: label.clone(), until: None });
         }
     }
@@ -208,7 +276,7 @@ pub fn draw(
         let p = &f.shot.projectile;
         if t >= f.shot.start && t < f.end.max(f.shot.start + 1e-3) && !p.model.is_empty() {
             let asset = player.asset(vfs, &p.model);
-            let world = Transform::from_av(f.pos(t), facing(f.dir(t)), 1.0);
+            let world = Transform::from_av(f.pos(t), facing(f.dir(t)), f.scale(t));
             player.draw(&format!("proj:{}", f.key), &asset, &world, t - f.shot.start, cam, None, out);
         }
         let Some(ti) = f.impact else { continue };
@@ -222,7 +290,7 @@ pub fn draw(
                 player.draw(&format!("expl:{}", f.key), &asset, &world, t - ti, cam, None, out);
             }
         }
-        for (k, piece) in f.shot.hits.iter().enumerate() {
+        for (k, piece) in f.shot.hits.iter().enumerate().filter(|_| f.hits_target) {
             if t >= ti + piece.start + piece.life {
                 continue;
             }
@@ -243,7 +311,7 @@ mod tests {
             start: 1.0,
             hand: String::new(),
             spell: String::new(),
-            projectile: Projectile { key: FormKey { module: 0, id: 1 }, edid: "P".into(), model: String::new(), kind, gravity, speed, range, lifetime: 0.0, sound: None, explosion: None },
+            projectile: Projectile { key: FormKey { module: 0, id: 1 }, edid: "P".into(), model: String::new(), kind, gravity, speed, range, lifetime: 0.0, sound: None, explosion: None, cone_spread: 15.0, collision_radius: 16.0 },
             explosion: None,
             hits: Vec::new(),
             hit_sounds: Vec::new(),
@@ -253,7 +321,9 @@ mod tests {
     #[test]
     fn missile_flies_straight() {
         let f = fly("a".into(), &shot(ProjKind::Missile, 1000.0, 0.0, 0.0), [0.0, 0.0, 100.0], [0.0, 500.0, 100.0]);
-        assert!((f.impact.unwrap() - 1.5).abs() < 1e-4);
+        // Hits the dummy's surface, 30 units before its centre.
+        assert!((f.impact.unwrap() - 1.47).abs() < 1e-4);
+        assert!(f.hits_target);
         assert_eq!(f.pos(1.25), [0.0, 250.0, 100.0]);
     }
 
@@ -272,6 +342,26 @@ mod tests {
         let f = fly("a".into(), &shot(ProjKind::Missile, 1000.0, 0.0, 300.0), [0.0; 3], [0.0, 500.0, 0.0]);
         assert!(f.impact.is_none());
         assert!((f.end - 1.3).abs() < 1e-4);
+    }
+
+    #[test]
+    fn heavy_missile_drops_at_the_feet() {
+        let f = fly("a".into(), &shot(ProjKind::Missile, 10000.0, 10000.0, 10000.0), [0.0, 0.0, 120.0], [0.0, 700.0, 90.0]);
+        let ti = f.impact.unwrap() - 1.0;
+        assert!(ti < 0.01, "{ti}");
+        // ~58 units ahead: 10000 u/s for the 6 ms it takes to fall 120.
+        assert!(f.hit_point[1] < 100.0 && f.hit_point[2] == 0.0, "{:?}", f.hit_point);
+        assert!(!f.hits_target);
+    }
+
+    #[test]
+    fn cone_widens_and_passes_the_target() {
+        let f = fly("a".into(), &shot(ProjKind::Cone, 1000.0, 0.0, 2000.0), [0.0, 0.0, 100.0], [0.0, 530.0, 100.0]);
+        assert!((f.impact.unwrap() - 1.5).abs() < 1e-4);
+        assert!((f.end - 3.0).abs() < 1e-4);
+        assert!((f.pos(1.5)[1] - 500.0).abs() < 1e-3);
+        // 500 units out: (16 + 500·tan 15°) / 16 ≈ 9.37.
+        assert!((f.scale(1.5) - 9.37).abs() < 0.01, "{}", f.scale(1.5));
     }
 
     #[test]

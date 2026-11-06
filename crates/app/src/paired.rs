@@ -31,11 +31,14 @@ pub struct Skinned {
     pub texture: String,
     pub alpha_test: f32,
     pub double_sided: bool,
+    pub blend: bool,
+    /// Skin or face (effect shaders flagged «affect skin only»).
+    pub skin: bool,
 }
 
 impl Skinned {
     pub fn draw(&self) -> DrawMesh<'_> {
-        DrawMesh { id: self.id, vertices: &self.verts, indices: &self.indices, texture: &self.texture, alpha_test: self.alpha_test, tint: [1.0; 4], double_sided: self.double_sided }
+        DrawMesh { id: self.id, vertices: &self.verts, indices: &self.indices, texture: &self.texture, alpha_test: self.alpha_test, tint: [1.0; 4], double_sided: self.double_sided, blend: self.blend }
     }
 }
 
@@ -48,7 +51,7 @@ fn skin_character(c: &Character, model: &[Transform], root: &Transform, id_base:
         if verts.is_empty() {
             continue;
         }
-        out.push(Skinned { id: id_base + i as u64, verts, indices: mesh.indices.clone(), texture: mesh.texture.clone(), alpha_test: mesh.alpha_test, double_sided: matches!(mesh.tint, crate::character::Tint::Skin(_) | crate::character::Tint::Face) });
+        out.push(Skinned { id: id_base + i as u64, verts, indices: mesh.indices.clone(), texture: mesh.texture.clone(), alpha_test: mesh.alpha_test, double_sided: matches!(mesh.tint, crate::character::Tint::Skin(_) | crate::character::Tint::Face) && !mesh.decal, blend: mesh.decal, skin: matches!(mesh.tint, crate::character::Tint::Skin(_) | crate::character::Tint::Face) });
     }
 }
 

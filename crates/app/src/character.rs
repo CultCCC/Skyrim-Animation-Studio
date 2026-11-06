@@ -42,6 +42,8 @@ pub struct SkinMesh {
     /// Diffuse path as the NIF names it; `texture` is the tinted key.
     pub base_texture: String,
     pub tint: Tint,
+    /// Alpha-blended skin decal (scars, marks): drawn blended over the face.
+    pub decal: bool,
     #[allow(dead_code)] // kept for diagnostics
     pub shape: String,
     pub texture: String,
@@ -363,6 +365,7 @@ impl Character {
                 texture: m.texture.clone(),
                 base_texture: m.texture.clone(),
                 tint: tint_of(m),
+                decal: m.blend == aether_core::mesh::BlendMode::Alpha && m.lighting.skin_tint,
                 // Blended hair cards (brows, hair lines) have no depth sort here:
                 // cut them at half alpha instead of drawing an opaque quad. Eyes
                 // blend too, but their alpha is a specular mask: keep them opaque.
@@ -402,6 +405,7 @@ impl Character {
                 texture: m.texture.clone(),
                 base_texture: m.texture.clone(),
                 tint: tint_of(m),
+                decal: m.blend == aether_core::mesh::BlendMode::Alpha && m.lighting.skin_tint,
                 // Blended hair cards (brows, hair lines) have no depth sort here:
                 // cut them at half alpha instead of drawing an opaque quad. Eyes
                 // blend too, but their alpha is a specular mask: keep them opaque.

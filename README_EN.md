@@ -198,12 +198,20 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - greyscale-to-palette is applied; refraction meshes are skipped;
     - particles run through the Aether simulator (checked against SkyrimSE 1.5.97); strip systems are drawn as ribbons.
   - **Projectiles and explosions.** A non-self `@CAST` of a spell with a projectile (MGEF → PROJ) launches it from the hand's magic node (posed at the cast) at the target's chest:
-    - Missile/Arrow fly straight at the PROJ speed, Lobber on a gravity arc (×9.81 m/s²), Beam/Flame/Cone hit at once;
+    - Missile/Arrow are launched straight at the target and pulled down by the PROJ gravity (×9.81 m/s²): they burst wherever they first touch the target or the ground. A projectile with gravity 10000 drops at the caster's feet and explodes there;
+    - Lobber flies on an arc aimed at the target;
+    - Cone flies straight without gravity, passes the target and runs its range, widening: radius = CollisionRadius + distance flown × tan(Cone Spread);
+    - Beam/Flame/Barrier hit at once;
     - when Range or lifetime runs out first, it vanishes without exploding;
-    - on impact the explosion (the MGEF's EXPL, else the PROJ's own) and the effect art on the target play; with the path on, the trajectory is an orange line;
+    - on impact the explosion plays (the MGEF's EXPL, else the PROJ's own — only with its Explosion flag). The effect's hit art and hit sound play when the target was hit directly or is inside the explosion. With the path on, the trajectory is an orange line;
     - sounds: the PROJ flight loop until the impact, the EXPL sound and the MGEF hit sound on it;
     - the PIE inspector notes «projectile …, type, speed → explosion»; `SDS_FX_DEBUG=1` prints FXPROJ lines.
-  - Not modelled: EFSH body shaders, mEnd, bow arrows (BowRelease), projectile collisions with anything but the target.
+  - **Effect shaders on the body (EFSH).** The MGEF hit shader covers the NPC's body on a self `@CAST` (for the effect's duration, or by its own envelopes for instant effects) and on `@APPLYSPELL` (until `@UNAPPLYSPELL`, then it fades out):
+    - fill — the fill texture with UV scroll and scale, coloured by its three keys; with the grayscale flag the texture's brightness is looked up in the membrane palette;
+    - edge — a fresnel glow in the edge colour, its width from the falloff;
+    - fill and edge alpha follow the EFSH envelopes (fade in, full, fade to persistent, pulse);
+    - «affect skin only» keeps it on skin; shaders on the target are not drawn (it has no body); EFSH particles and weapon enchantment shaders are not drawn.
+  - Not modelled: mEnd, bow arrows (BowRelease), projectile collisions with anything but the target and the ground.
   - Debug: `SDS_FX_DEBUG=1` prints the meshes, systems and clips of each art NIF.
 - **Sound** (🔊 and the volume slider in the timeline bar; saved in settings):
   - **What plays:** every event the playhead passes during playback:
