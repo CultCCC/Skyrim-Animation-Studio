@@ -19,7 +19,7 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
 - **Library.**
   - «Folders» mode: the `meshes\**\animations\**.hkx` tree.
   - «OAR» mode: mods → submods from `config.json`, with name, author, priority (`user.json` included) and an «off» mark.
-  - Search by path.
+  - Search: in «Folders» mode by animation path; in «OAR» mode by OAR folders: a mod by its name, author or folder (with all its submods), else its submods by name or folder; matches open up.
   - An `.hkx` can be opened from disk or dropped onto the window.
 - **Timeline**, TAE-style:
   - one row per category: Precision, PIE/FX, SDSCombat, SCAR, MCO/BFCO, attack events, sound, footsteps, root motion, other;

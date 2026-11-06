@@ -27,7 +27,8 @@ pub fn library(app: &mut StudioApp, ui: &mut egui::Ui) {
     ui.horizontal(|ui| {
         ui.selectable_value(&mut app.lib_mode_oar, false, sds_i18n::t!("Папки", "Folders"));
         ui.selectable_value(&mut app.lib_mode_oar, true, "OAR");
-        ui.add(egui::TextEdit::singleline(&mut app.lib_filter).hint_text(sds_i18n::t!("поиск…", "search…")).desired_width(f32::INFINITY));
+        let hint = if app.lib_mode_oar { sds_i18n::t!("поиск по папкам OAR…", "search OAR folders…") } else { sds_i18n::t!("поиск…", "search…") };
+        ui.add(egui::TextEdit::singleline(&mut app.lib_filter).hint_text(hint).desired_width(f32::INFINITY));
     });
     ui.separator();
 
@@ -48,7 +49,7 @@ pub fn library(app: &mut StudioApp, ui: &mut egui::Ui) {
     let filter = app.lib_filter.trim().to_lowercase();
 
     egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| {
-        if !filter.is_empty() {
+        if !filter.is_empty() && !app.lib_mode_oar {
             let mut shown = 0;
             for p in &lib.anims {
                 if p.contains(&filter) {
@@ -76,10 +77,21 @@ pub fn library(app: &mut StudioApp, ui: &mut egui::Ui) {
                 }
             });
             let selected = app.oar_edit.as_ref().map(|e| e.folder.clone());
-            let show_mod = |ui: &mut egui::Ui, m: &crate::oar::OarMod, open: &mut Option<crate::oar::Place>, pick: &mut Option<String>| {
+            // The search matches OAR folders: a mod by its name, author or
+            // folder (all its submods then), else its matching submods.
+            let hit = |s: &str| filter.is_empty() || s.to_lowercase().contains(&filter);
+            let mut found = 0;
+            let mut show_mod = |ui: &mut egui::Ui, m: &crate::oar::OarMod, open: &mut Option<crate::oar::Place>, pick: &mut Option<String>| {
+                let mod_hit = hit(&m.name) || hit(&m.author) || hit(&m.folder);
+                let subs: Vec<&crate::oar::OarSub> = m.subs.iter().filter(|s| mod_hit || hit(&s.name) || hit(&s.folder)).collect();
+                if subs.is_empty() && !mod_hit {
+                    return;
+                }
+                found += 1;
                 let title = format!("{}{}{}", if m.external { "📁 " } else { "" }, m.name, if m.author.is_empty() { String::new() } else { format!(" — {}", m.author) });
-                egui::CollapsingHeader::new(title).id_salt(&m.folder).show(ui, |ui| {
-                    for s in &m.subs {
+                let searching = !filter.is_empty();
+                egui::CollapsingHeader::new(title).id_salt(&m.folder).open(searching.then_some(true)).show(ui, |ui| {
+                    for s in subs {
                         let head = format!("{}  [{}]{}{}  ({})", s.name, s.priority, if s.disabled { sds_i18n::t!(" выкл", " off") } else { "" }, if s.has_user { " user.json" } else { "" }, s.files.len());
                         let resp = egui::CollapsingHeader::new(head).id_salt(&s.folder).show(ui, |ui| {
                             let is_sel = selected.as_deref() == Some(s.folder.as_str());
@@ -113,6 +125,8 @@ pub fn library(app: &mut StudioApp, ui: &mut egui::Ui) {
             }
             if lib.oar.is_empty() && app.oar_external.is_empty() {
                 ui.label(sds_i18n::t!("OAR-модов не найдено", "No OAR mods found"));
+            } else if found == 0 {
+                ui.label(sds_i18n::t!("Ничего не найдено", "Nothing found"));
             }
         } else {
             tree(ui, &lib.tree, &lib.anims, "meshes", &current, &mut open);

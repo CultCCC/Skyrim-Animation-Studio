@@ -148,6 +148,10 @@ fn main() -> eframe::Result {
             if std::env::args().any(|a| a == "--rm-open") {
                 app.rm.open = true;
             }
+            if let Some(q) = arg("--lib-oar") {
+                app.lib_mode_oar = true;
+                app.lib_filter = q;
+            }
             if std::env::args().any(|a| a == "--combo-next") {
                 app.combo.only_next = true;
             }
