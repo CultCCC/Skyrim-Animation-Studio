@@ -14,6 +14,48 @@ fn line(out: &mut Vec<LineVertex>, a: [f32; 3], b: [f32; 3], c: [f32; 4]) {
     out.push(LineVertex { pos: b, color: c });
 }
 
+/// Three great circles.
+fn wire_sphere(out: &mut Vec<LineVertex>, c: [f32; 3], r: f32, col: [f32; 4]) {
+    let n = 40;
+    for axis in 0..3 {
+        let p = |i: usize| {
+            let a = i as f32 / n as f32 * std::f32::consts::TAU;
+            let (s, co) = (a.sin() * r, a.cos() * r);
+            match axis {
+                0 => [c[0] + co, c[1] + s, c[2]],
+                1 => [c[0] + co, c[1], c[2] + s],
+                _ => [c[0], c[1] + co, c[2] + s],
+            }
+        };
+        for i in 0..n {
+            line(out, p(i), p(i + 1), col);
+        }
+    }
+}
+
+/// A cone from `apex` to the circle of radius `r` around `base`.
+fn cone_outline(out: &mut Vec<LineVertex>, apex: [f32; 3], base: [f32; 3], r: f32, col: [f32; 4]) {
+    let d = [base[0] - apex[0], base[1] - apex[1], base[2] - apex[2]];
+    let l = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt().max(1e-3);
+    let f = [d[0] / l, d[1] / l, d[2] / l];
+    let mut s = [f[1], -f[0], 0.0];
+    let sl = (s[0] * s[0] + s[1] * s[1]).sqrt();
+    s = if sl < 1e-4 { [1.0, 0.0, 0.0] } else { [s[0] / sl, s[1] / sl, 0.0] };
+    let u = [s[1] * f[2] - s[2] * f[1], s[2] * f[0] - s[0] * f[2], s[0] * f[1] - s[1] * f[0]];
+    let n = 32;
+    let rim = |i: usize| {
+        let a = i as f32 / n as f32 * std::f32::consts::TAU;
+        let (sa, ca) = a.sin_cos();
+        [base[0] + (s[0] * ca + u[0] * sa) * r, base[1] + (s[1] * ca + u[1] * sa) * r, base[2] + (s[2] * ca + u[2] * sa) * r]
+    };
+    for i in 0..n {
+        line(out, rim(i), rim(i + 1), col);
+        if i % 8 == 0 {
+            line(out, apex, rim(i), col);
+        }
+    }
+}
+
 fn rgba(c: Color32, a: f32) -> [f32; 4] {
     [c.r() as f32 / 255.0, c.g() as f32 / 255.0, c.b() as f32 / 255.0, a]
 }
@@ -310,32 +352,22 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
                             for w in pts.windows(2) {
                                 line(&mut lines, w[0], w[1], col);
                             }
-                            // The hazard's radius while it lasts.
-                            if let (Some(ti), Some(h)) = (f.impact, f.shot.explosion.as_ref().and_then(|e| e.hazard.as_ref())) {
-                                let life = if h.lifetime > 0.0 { h.lifetime } else { crate::projectile::HAZARD_DEFAULT_LIFE };
-                                if t >= ti && t < ti + life && h.radius > 0.0 {
-                                    let c = f.hit_point;
-                                    let ring: Vec<[f32; 3]> = (0..=48).map(|i| {
-                                        let a = i as f32 / 48.0 * std::f32::consts::TAU;
-                                        [c[0] + h.radius * a.cos(), c[1] + h.radius * a.sin(), 1.5]
-                                    }).collect();
-                                    for w in ring.windows(2) {
-                                        line(&mut lines, w[0], w[1], [1.0, 0.8, 0.1, 0.8]);
-                                    }
-                                }
-                            }
-                            // The blast radius around where it went off.
-                            if let (Some(ti), true) = (f.impact, f.shot.blast_radius > 0.0) {
-                                if t >= ti && t < ti + crate::projectile::EXPLOSION_LIFE {
-                                    let (c, r) = (f.hit_point, f.shot.blast_radius);
-                                    let ring: Vec<[f32; 3]> = (0..=48).map(|i| {
-                                        let a = i as f32 / 48.0 * std::f32::consts::TAU;
-                                        [c[0] + r * a.cos(), c[1] + r * a.sin(), 1.0]
-                                    }).collect();
-                                    for w in ring.windows(2) {
-                                        line(&mut lines, w[0], w[1], [1.0, 0.35, 0.2, 0.8]);
-                                    }
-                                }
+                        }
+                    }
+                }
+                if app.scene.show_proj_hitboxes {
+                    let cyl = crate::projectile::target_cylinder(app);
+                    for f in &flights {
+                        for h in f.hitboxes(t, cyl) {
+                            use crate::projectile::HitboxKind;
+                            let col = match (h.touches_target, h.kind) {
+                                (true, _) => [1.0, 0.15, 0.15, 0.95],
+                                (false, HitboxKind::Hazard) => [1.0, 0.8, 0.1, 0.8],
+                                (false, _) => [1.0, 0.85, 0.3, 0.8],
+                            };
+                            wire_sphere(&mut lines, h.center, h.radius, col);
+                            if let Some(apex) = h.apex {
+                                cone_outline(&mut lines, apex, h.center, h.radius, col);
                             }
                         }
                     }

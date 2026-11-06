@@ -108,6 +108,8 @@ pub struct SceneOptions {
     pub show_trails: bool,
     /// Effects from PIE annotations.
     pub show_fx: bool,
+    /// Spell projectile, explosion and hazard hit volumes.
+    pub show_proj_hitboxes: bool,
 }
 
 /// Orbit camera around `target` (Z up). Yaw is measured from +Y, the way
@@ -273,6 +275,7 @@ impl StudioApp {
                 show_scar: true,
                 show_trails: true,
                 show_fx: true,
+                show_proj_hitboxes: true,
             },
             camera: Camera { yaw: 25f32.to_radians(), pitch: 12f32.to_radians(), dist: 320.0, target: [0.0, 0.0, 80.0] },
             gpu: None,

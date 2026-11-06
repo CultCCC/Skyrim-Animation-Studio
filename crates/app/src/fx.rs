@@ -434,10 +434,6 @@ impl FxPlayer {
     /// Batches for one placed art piece, `local_t` seconds after it began.
     /// `target` binds the emitters that name the target's 3D.
     #[allow(clippy::too_many_arguments)]
-    pub fn draw(&mut self, key: &str, asset: &FxAsset, world: &Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>) {
-        self.draw_at(key, asset, &|_| *world, local_t, cam, target, out);
-    }
-
     #[allow(clippy::too_many_arguments)]
     pub fn draw_at(&mut self, key: &str, asset: &FxAsset, world_at: &dyn Fn(f32) -> Transform, local_t: f32, cam: &Camera, target: Option<&TargetGeometry>, out: &mut Vec<FxBatch>) {
         let world_now = world_at(local_t);

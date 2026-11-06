@@ -274,6 +274,72 @@ pub fn flights(app: &StudioApp, cues: &[Cue], path: Option<&Path>) -> Vec<Flight
     out
 }
 
+/// How long an explosion's hit sphere stays drawn (the hit itself is instant).
+pub const EXPLOSION_HITBOX_SHOW: f32 = 0.5;
+
+/// What a flight can hit at one moment.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum HitboxKind {
+    Projectile,
+    Explosion,
+    Hazard,
+}
+
+#[derive(Debug, Clone)]
+pub struct Hitbox {
+    pub kind: HitboxKind,
+    pub center: [f32; 3],
+    pub radius: f32,
+    /// Cones: the apex where the wave started (the cone runs apex → center).
+    pub apex: Option<[f32; 3]>,
+    /// It overlaps the target dummy now.
+    pub touches_target: bool,
+}
+
+/// The target dummy as a cylinder: centre on the floor, radius, height.
+pub fn target_cylinder(app: &StudioApp) -> ([f32; 2], f32, f32) {
+    (crate::sds_path::target_pos(app), TARGET_RADIUS, TARGET_HEIGHT)
+}
+
+fn sphere_hits_cylinder(c: [f32; 3], r: f32, cyl: ([f32; 2], f32, f32)) -> bool {
+    let d = (c[0] - cyl.0[0]).hypot(c[1] - cyl.0[1]);
+    d <= r + cyl.1 && c[2] + r >= 0.0 && c[2] - r <= cyl.2
+}
+
+impl Flight {
+    /// The hit volumes alive at `t`: the projectile's collision sphere in
+    /// flight (a cone grows with its spread), the blast sphere just after
+    /// the impact, the hazard while it lasts.
+    pub fn hitboxes(&self, t: f32, cyl: ([f32; 2], f32, f32)) -> Vec<Hitbox> {
+        let mut out = Vec::new();
+        let p = &self.shot.projectile;
+        if t >= self.shot.start && t < self.end.max(self.shot.start + 1e-3) {
+            let center = self.pos(t);
+            let r0 = p.collision_radius.max(1.0);
+            let radius = if p.kind == ProjKind::Cone { r0 * self.scale(t) } else { r0 };
+            let apex = (p.kind == ProjKind::Cone).then_some(self.from);
+            out.push(Hitbox { kind: HitboxKind::Projectile, center, radius, apex, touches_target: sphere_hits_cylinder(center, radius, cyl) });
+        }
+        if let Some(ti) = self.impact {
+            if self.shot.blast_radius > 0.0 && self.shot.explosion.is_some() && t >= ti && t < ti + EXPLOSION_HITBOX_SHOW {
+                let (c, r) = (self.hit_point, self.shot.blast_radius);
+                out.push(Hitbox { kind: HitboxKind::Explosion, center: c, radius: r, apex: None, touches_target: sphere_hits_cylinder(c, r, cyl) });
+            }
+            if let Some(h) = self.shot.explosion.as_ref().and_then(|e| e.hazard.as_ref()) {
+                let life = if h.lifetime > 0.0 { h.lifetime } else { HAZARD_DEFAULT_LIFE };
+                if h.radius > 0.0 && t >= ti && t < ti + life {
+                    let mut c = self.hit_point;
+                    if h.drop_to_ground {
+                        c[2] = 0.0;
+                    }
+                    out.push(Hitbox { kind: HitboxKind::Hazard, center: c, radius: h.radius, apex: None, touches_target: sphere_hits_cylinder(c, h.radius, cyl) });
+                }
+            }
+        }
+        out
+    }
+}
+
 /// A sound a flight plays: (time, SNDR, label, stop time for loops).
 pub struct FlightSound {
     pub time: f32,
