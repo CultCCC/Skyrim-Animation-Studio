@@ -211,6 +211,63 @@ impl Db {
         cur
     }
 
+    /// The male skeleton a RACE names (ANAM after MNAM), `meshes/...`.
+    fn race_skeleton(&self, r: &Rec) -> Option<String> {
+        let mut which = 0;
+        for (s, d) in r.subs() {
+            match s {
+                b"MNAM" => which = 1,
+                b"FNAM" => which = 2,
+                b"ANAM" if which == 1 => return Some(meshes_path(&zstr(d))).filter(|p| p.len() > "meshes/".len()),
+                _ => {}
+            }
+        }
+        None
+    }
+
+    /// The default look of a creature whose animations live in
+    /// `meshes/actors/<folder>/`: the race with that skeleton most NPCs use
+    /// (Skyrim.esm first on a tie), worn as its bare skin (race WNAM) — no
+    /// armor, weapons or FaceGen. Taken through an NPC of that race with no
+    /// template, so the skin is picked the way the game dresses it.
+    pub fn creature_look(&self, folder: &str) -> Option<NpcLook> {
+        let prefix = format!("meshes/actors/{}/", folder.to_ascii_lowercase());
+        let races: Vec<FormKey> = self
+            .by_sig
+            .get(b"RACE")?
+            .iter()
+            .copied()
+            .filter(|k| self.get(*k).and_then(|r| self.race_skeleton(r)).is_some_and(|s| s.to_ascii_lowercase().starts_with(&prefix)))
+            .collect();
+        if races.is_empty() {
+            return None;
+        }
+        let mut count: std::collections::HashMap<FormKey, usize> = std::collections::HashMap::new();
+        let mut example: std::collections::HashMap<FormKey, FormKey> = std::collections::HashMap::new();
+        for &nk in self.by_sig.get(b"NPC_").into_iter().flatten() {
+            let Some(n) = self.get(nk) else { continue };
+            let Some(rk) = n.first(b"RNAM").and_then(|d| u32_at(d, 0)).and_then(|raw| self.link(n, raw)) else { continue };
+            if !races.contains(&rk) {
+                continue;
+            }
+            *count.entry(rk).or_default() += 1;
+            // An NPC that is its own template-free self, from the master first.
+            let plain = n.first(b"TPLT").and_then(|d| u32_at(d, 0)).unwrap_or(0) == 0;
+            if plain && example.get(&rk).is_none_or(|e| e.module > nk.module) {
+                example.insert(rk, nk);
+            }
+        }
+        let race = races.iter().copied().filter(|r| example.contains_key(r)).max_by_key(|r| (count.get(r).copied().unwrap_or(0), std::cmp::Reverse(r.module)))?;
+        let mut look = self.npc_look(example[&race])?;
+        look.parts.retain(|p| p.kind == PartKind::Skin);
+        look.weapons.clear();
+        look.facegen.clear();
+        look.head_fallback.clear();
+        look.name = format!("{} ({})", self.get(race).map(|r| r.edid()).unwrap_or_default(), folder);
+        look.notes.push(format!("default {folder} look: race skin of {}", look.race));
+        Some(look)
+    }
+
     pub fn npc_look(&self, k: FormKey) -> Option<NpcLook> {
         let npc = self.rec_sig(k, b"NPC_")?;
         let mut notes = Vec::new();

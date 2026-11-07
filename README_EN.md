@@ -93,6 +93,7 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - bones Havok does not have (WEAPON, SHIELD, scabbards, armor-only bones such as cloaks and hair) follow the nearest animated bone rigidly, without physics;
     - the render window warns when the clip is made for another skeleton.
   - Armor parts can be toggled; «Reset to the default body» returns the clip folder's body.
+  - A clip of another creature (say `meshes/actors/draugr/...` with a human chosen) swaps the skeleton and model at once: the NPC is dropped when its skeleton is not from that folder, and the creature's default look goes on — the bare skin (WNAM) of the race with that skeleton most NPCs use (Skyrim.esm first on a tie), no armor, weapons or FaceGen. For `character` it is the plain male body.
 - **Precision hitboxes** (switch and list in the «Scene» tab):
   - **Precision 2.0.4 rules:**
     - `Collision_AttackStart` opens the attack; `Add`/`Remove` before it are ignored;

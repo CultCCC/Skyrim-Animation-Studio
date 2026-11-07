@@ -605,10 +605,26 @@ impl StudioApp {
         }
     }
 
-    /// Load the skeleton and default body of an actor folder, once.
+    /// Load the skeleton and default body of an actor folder, once. A chosen
+    /// NPC stays while its skeleton is from that folder; a clip of another
+    /// creature (human → draugr) swaps in that creature's default look.
     pub fn ensure_character(&mut self, folder: &str) {
-        if self.npc.is_some() {
-            return;
+        if let Some(n) = &self.npc {
+            let skel = n.look.skeleton_nif.to_ascii_lowercase();
+            if crate::character::actor_folder(&skel).is_some_and(|f| f.eq_ignore_ascii_case(folder)) {
+                return;
+            }
+            self.log(sds_i18n::tf!("Клип другого существа ({folder}): NPC {} снят", "Clip of another creature ({folder}): NPC {} dropped", n.look.edid));
+            self.npc = None;
+        }
+        if !folder.eq_ignore_ascii_case("character") {
+            let look = self.loaded.as_ref().and_then(|l| l.db.creature_look(folder));
+            if let Some(look) = look {
+                self.log(sds_i18n::tf!("Существо «{folder}»: раса {}, модель по умолчанию", "Creature «{folder}»: race {}, default model", look.race));
+                self.npc = Some(NpcChoice { look, weapon: None, left: None });
+                self.rebuild_npc();
+                return;
+            }
         }
         let id = format!("folder:{folder}");
         if self.character.as_ref().is_some_and(|c| c.id == id) {
@@ -700,7 +716,9 @@ impl StudioApp {
             .map(|p| Piece { label: p.source.clone(), path: p.model.clone(), attach: None, hide_shapes: Vec::new(), scabbard: None, visible: true })
             .collect();
         let mut notes = look.notes.clone();
-        if used & SLOT_HEAD == 0 {
+        // Creatures' default looks carry no head of their own (it is in the skin).
+        let creature = look.facegen.is_empty() && look.head_fallback.is_empty();
+        if used & SLOT_HEAD == 0 && !creature {
             let face = look.facegen.iter().find(|f| vfs.exists(f)).cloned();
             if face.is_none() {
                 notes.push(sds_i18n::t!("FaceGen не найден — общая голова расы", "FaceGen not found — generic race head").into());
