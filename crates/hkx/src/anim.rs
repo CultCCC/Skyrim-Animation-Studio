@@ -160,6 +160,29 @@ impl Animation {
 
     /// Local transforms per track at `time` (clamped to the clip).
     pub fn sample(&self, time: f32) -> Vec<Xform> {
+        let mut pose = self.sample_raw(time);
+        for x in &mut pose {
+            x.s = sane_scale(x.s);
+        }
+        pose
+    }
+
+    /// Tracks whose scale `sample` replaces (garbage some exporters write,
+    /// e.g. a head scaled by -40 in an SDS draugr clip).
+    pub fn bad_scale_tracks(&self) -> Vec<usize> {
+        let mut out = Vec::new();
+        for k in 0..=8 {
+            let t = self.duration * k as f32 / 8.0;
+            for (i, x) in self.sample_raw(t).iter().enumerate() {
+                if sane_scale(x.s) != x.s && !out.contains(&i) {
+                    out.push(i);
+                }
+            }
+        }
+        out
+    }
+
+    fn sample_raw(&self, time: f32) -> Vec<Xform> {
         let time = time.clamp(0.0, self.duration);
         match &self.data {
             Data::Interleaved { frames, transforms } => {
@@ -184,6 +207,12 @@ impl Animation {
             }
         }
     }
+}
+
+/// A bone scale the game can use: components that are not finite, not
+/// positive or absurd (> 20) are taken as 1.
+fn sane_scale(s: [f32; 3]) -> [f32; 3] {
+    s.map(|v| if v.is_finite() && v > 1e-3 && v <= 20.0 { v } else { 1.0 })
 }
 
 fn blend(a: &Xform, b: &Xform, f: f32) -> Xform {

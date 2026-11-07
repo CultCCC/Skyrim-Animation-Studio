@@ -181,6 +181,19 @@ pub fn show(app: &mut StudioApp, ui: &mut egui::Ui) {
     };
 
     let skinned = if app.scene.show_body { crate::paired::skin_all(app, t, &root) } else { Vec::new() };
+    if std::env::var_os("SDS_POSE_DEBUG").is_some() {
+        if let (Some(c), Some(m)) = (&app.character, &model) {
+            for (i, x) in m.iter().enumerate() {
+                let far = x.t.iter().map(|v| v.abs()).fold(0.0f32, f32::max);
+                if (x.s - 1.0).abs() > 0.05 || far > 300.0 {
+                    eprintln!("POSEDBG bone {i} {:?} s={:.3} t={:?}", c.skeleton.bones.get(i), x.s, x.t);
+                }
+            }
+            if let Some(a) = &app.anim {
+                eprintln!("POSEDBG tracks {} skel {} t2b {:?}", a.tracks, c.skeleton.bones.len(), &a.track_to_bone[..a.track_to_bone.len().min(8)]);
+            }
+        }
+    }
     let mut lines = Vec::new();
     let mut overlay = Vec::new();
     if app.scene.show_grid {

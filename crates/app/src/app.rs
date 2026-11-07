@@ -500,7 +500,14 @@ impl StudioApp {
                 };
                 self.settings.push_recent(recent);
                 self.anim = match sds_hkx::anim::read_animation(bytes) {
-                    Ok(a) => Some(a),
+                    Ok(a) => {
+                        let bad = a.bad_scale_tracks();
+                        if !bad.is_empty() {
+                            let names: Vec<String> = bad.iter().map(|&i| info.track_names.get(i).cloned().unwrap_or_else(|| format!("#{i}"))).collect();
+                            self.log(sds_i18n::tf!("В клипе мусорный масштаб костей ({}): взят 1", "The clip has garbage bone scales ({}): 1 used", names.join(", ")));
+                        }
+                        Some(a)
+                    }
                     Err(e) => {
                         self.log(sds_i18n::tf!("Поза не декодирована: {e}", "Pose not decoded: {e}"));
                         None

@@ -192,6 +192,15 @@ fn clip_info(paths: &[String]) {
             for (i, x) in pose.iter().enumerate().take(3) {
                 println!("  track {i} t {:?} r {:?}", x.t, x.r);
             }
+            // SDS_TRACK=<i>: that track through the clip, 10 samples.
+            if let Some(i) = std::env::var("SDS_TRACK").ok().and_then(|v| v.parse::<usize>().ok()) {
+                for k in 0..=10 {
+                    let t = a.duration * k as f32 / 10.0;
+                    if let Some(x) = a.sample(t).get(i) {
+                        println!("  track {i} @{t:.3} t {:?} r {:?} s {:?}", x.t, x.r, x.s);
+                    }
+                }
+            }
             if pose.len() > 100 {
                 for i in [99usize, 100, 101] {
                     if let Some(x) = pose.get(i) {
