@@ -3062,6 +3062,32 @@ name = "sds-i18n"
 version = "0.1.0"
 
 [[package]]
+name = "sds-proj"
+version = "0.1.0"
+dependencies = [
+ "sds-i18n",
+ "sds-records",
+ "sds-vfs",
+ "serde_json",
+]
+
+[[package]]
+name = "sds-projectile-studio"
+version = "0.1.0"
+dependencies = [
+ "aether-core",
+ "eframe",
+ "egui",
+ "rfd",
+ "sds-i18n",
+ "sds-proj",
+ "sds-records",
+ "sds-vfs",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "sds-records"
 version = "0.1.0"
 dependencies = [

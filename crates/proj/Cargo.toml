@@ -1,0 +1,12 @@
+[package]
+name = "sds-proj"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "NewProjectilesTMP (fenix31415) config model: lenient parse, export in both condition formats, validation, projectile chains"
+
+[dependencies]
+sds-i18n = { path = "../i18n" }
+sds-vfs = { path = "../vfs" }
+sds-records = { path = "../records" }
+serde_json = { version = "1", features = ["preserve_order"] }
