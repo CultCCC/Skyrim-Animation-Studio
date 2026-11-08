@@ -3019,7 +3019,7 @@ dependencies = [
 
 [[package]]
 name = "sds-anim-studio"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "aether-core",
  "aether-nif",
@@ -3039,7 +3039,7 @@ dependencies = [
 
 [[package]]
 name = "sds-anno"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "sds-i18n",
  "serde_json",
@@ -3047,7 +3047,7 @@ dependencies = [
 
 [[package]]
 name = "sds-hkx"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "aether-core",
  "aether-nif",
@@ -3059,11 +3059,11 @@ dependencies = [
 
 [[package]]
 name = "sds-i18n"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "sds-proj"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "sds-i18n",
  "sds-records",
@@ -3073,7 +3073,7 @@ dependencies = [
 
 [[package]]
 name = "sds-projectile-studio"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "aether-core",
  "eframe",
@@ -3089,7 +3089,7 @@ dependencies = [
 
 [[package]]
 name = "sds-records"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "aether-codecs",
  "sds-i18n",
@@ -3098,7 +3098,7 @@ dependencies = [
 
 [[package]]
 name = "sds-vfs"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "aether-core",
 ]

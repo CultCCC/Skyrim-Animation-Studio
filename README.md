@@ -16,6 +16,7 @@ Edited clips are written to a separate output mod folder; the source mods are ne
 
 - **Full description:** [English](README_EN.md) · [Русский](README_RU.md)
 - **Design notes (RU):** [ARCHITECTURE_RU.md](ARCHITECTURE_RU.md)
+- **Changelog:** [English](CHANGELOG.md) · [Русский](CHANGELOG_RU.md)
 - **Interface languages:** Russian and English (RU | EN switch in the menu bar).
 
 ## Build
