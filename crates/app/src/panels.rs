@@ -545,6 +545,15 @@ fn annotation_editor(app: &mut StudioApp, ui: &mut egui::Ui) {
                     "Turns off Animation Motion Fix's movement magnetism (AMF_bForbidMoveMagnetism): the NPC passes its target instead of sticking on its collision. Until SDS_NPC_BumpOn or the clip end."
                 ));
             }
+            if event.eq_ignore_ascii_case("SDS_GoThroughTarget_On") {
+                ui.small(sds_i18n::t!(
+                    "NPC и его боевая цель не сталкиваются капсулами: он проходит сквозь цель (стены и мир — как обычно). До SDS_GoThroughTarget_Off или конца клипа. [GoThrough] в SDSCombat.ini.",
+                    "The NPC and its combat target stop colliding: it passes through the target (walls and the world still collide). Until SDS_GoThroughTarget_Off or the clip end. [GoThrough] in SDSCombat.ini."
+                ));
+            }
+            if event.eq_ignore_ascii_case("SDS_GoThroughTarget_Off") {
+                ui.small(sds_i18n::t!("Возвращает столкновение с целью (после SDS_GoThroughTarget_On).", "Brings collision with the target back (after SDS_GoThroughTarget_On)."));
+            }
             if event.eq_ignore_ascii_case("SDS_NPC_BumpOn") {
                 ui.small(sds_i18n::t!("Возвращает магнетизм движения (после SDS_NPC_BumpOff).", "Brings movement magnetism back (after SDS_NPC_BumpOff)."));
             }

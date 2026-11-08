@@ -122,6 +122,7 @@ Run `dist\sds-anim-studio.exe`. Nothing needs installing beyond system DLLs. Set
     - **`StopRotation`:** holds the heading;
     - **`TargetLockReset`:** resets the lock state;
     - **`BumpOff` / `BumpOn`** (also spelt `SDS_NPCBumpOff` / `SDS_NPCBumpOn`): Animation Motion Fix's movement magnetism off until BumpOn or the clip end — a «SDS_NPC_BumpOff» bar on the timeline, in the SDSCombat templates; it does not change the path in the studio;
+    - **`SDS_GoThroughTarget_On` / `_Off`:** the NPC and its combat target stop colliding (walls and the world still collide) until `_Off` or the clip end — a bar on the timeline, an On/Off pair in the SDSCombat templates; `[GoThrough]` in SDSCombat.ini;
     - **`ReachTarget.ref|min|max|arrive`:** forward steps × k = clamp(D − arrive, min, max) / ref, with ref/min/max scaled by the NPC scale.
   - **Inputs:** step direction follows `animmotion` relative to the current heading. Settings come from the build's `SKSE\Plugins\SDSCombat.ini`. Without the DLL, or with it turned off in «Scene», `SDS_NPC_*` annotations are ignored.
   - **3D:** the path with SDSCombat in colour and without it in grey, the target, the `arrive` rings, the heading arrow.

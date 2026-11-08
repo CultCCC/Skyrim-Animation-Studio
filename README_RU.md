@@ -124,6 +124,7 @@
     - **`TargetLockReset`**: состояние сбрасывается. Приоритет: Reset > Stop > Off > On.
     - **Направление шага** — из кривой `animmotion` относительно текущего курса (как `[AnimMotion]`), поэтому рывок идёт туда, куда NPC развернулся. Выпрямление под локом (`bStraightRootMotion`) действует только без animmotion — как в плагине.
     - **`BumpOff` / `BumpOn`** (и написание `SDS_NPCBumpOff` / `SDS_NPCBumpOn`): отключение «магнетизма» движения Animation Motion Fix до BumpOn или конца клипа — на таймлайне полосой «SDS_NPC_BumpOff», в шаблонах SDSCombat; на путь в студии не влияет.
+    - **`SDS_GoThroughTarget_On` / `_Off`**: NPC и его боевая цель перестают сталкиваться капсулами (стены и мир — как обычно) до `_Off` или конца клипа — на таймлайне полосой, парой On/Off в шаблонах SDSCombat; секция `[GoThrough]` в SDSCombat.ini.
     - **`ReachTarget.ref|min|max|arrive`**: дистанция D замеряется один раз в момент аннотации; шаги вперёд × k = clamp(D − arrive, min, max) / ref. ref, min и max умножаются на масштаб NPC, k ограничен `[ReachTarget] fMinScale/fMaxScale`. Действует до `ReachTargetEnd` или конца клипа.
   - Настройки берутся из `SKSE\Plugins\SDSCombat.ini` сборки. Если SDSCombat.dll в сборке нет или учёт выключен в «Сцене», аннотации `SDS_NPC_*` игнорируются.
   - **3D:**

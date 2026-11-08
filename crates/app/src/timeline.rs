@@ -97,6 +97,10 @@ pub const TEMPLATES: &[(sds_i18n::Tr, &[Tpl])] = &[
             one("SDS_NPC_ReachTargetEnd"),
             one("SDS_NPC_BumpOff"),
             one("SDS_NPC_BumpOn"),
+            Tpl {
+                label: "SDS_GoThroughTarget_On/Off",
+                annos: &[("SDS_GoThroughTarget_On", 0), ("SDS_GoThroughTarget_Off", 10)],
+            },
         ],
     ),
     (

@@ -158,6 +158,11 @@ pub fn parse(text: &str) -> Parsed {
         let event = format!("SDS_NPC_Bump{}", &t["SDS_NPCBump".len()..]);
         return parsed(Category::SdsCombat, &event, Kind::SdsNpc { event: event.clone(), values: Vec::new() });
     }
+    // SDSCombat GoThrough.cpp: no collision with the combat target between _On and _Off.
+    if lower == "sds_gothroughtarget_on" || lower == "sds_gothroughtarget_off" {
+        let event = if lower.ends_with("_on") { "SDS_GoThroughTarget_On" } else { "SDS_GoThroughTarget_Off" };
+        return parsed(Category::SdsCombat, event, Kind::SdsNpc { event: event.to_string(), values: Vec::new() });
+    }
     if lower.starts_with("sds_npc_") {
         let (event, rest) = match t.split_once('.') {
             Some((e, r)) => (e.to_string(), r),
@@ -352,6 +357,8 @@ pub fn spans(items: &[(f32, &str)], duration: f32) -> Vec<Span> {
         ("sds_npc_reachtarget", &["sds_npc_reachtargetend"], Category::SdsCombat),
         // Animation Motion Fix's movement magnetism off until BumpOn / clip end.
         ("sds_npc_bumpoff", &["sds_npc_bumpon"], Category::SdsCombat),
+        // SDSCombat GoThrough: passes through its combat target until _Off / clip end.
+        ("sds_gothroughtarget_on", &["sds_gothroughtarget_off"], Category::SdsCombat),
     ];
     for (i, p) in parsed.iter().enumerate() {
         let name = p.name.to_ascii_lowercase();
@@ -476,6 +483,10 @@ mod tests {
 
     #[test]
     fn bump_pair_and_alias() {
+        assert_eq!(parse("sds_gothroughtarget_on").name, "SDS_GoThroughTarget_On");
+        assert_eq!(parse("SDS_GoThroughTarget_Off").category, Category::SdsCombat);
+        let g = spans(&[(0.3, "SDS_GoThroughTarget_On"), (0.8, "SDS_GoThroughTarget_Off")], 2.0);
+        assert!(g.iter().any(|s| s.label == "SDS_GoThroughTarget_On" && s.start == 0.3 && s.end == 0.8));
         assert_eq!(parse("SDS_NPCBumpOff").category, Category::SdsCombat);
         assert_eq!(parse("SDS_NPCBumpOff").name, "SDS_NPC_BumpOff");
         let items = [(0.2, "SDS_NPCBumpOff"), (0.9, "SDS_NPC_BumpOn"), (1.2, "SDS_NPC_BumpOff")];
