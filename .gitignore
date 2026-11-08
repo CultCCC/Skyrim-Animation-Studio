@@ -15,4 +15,5 @@ sds_anim_studio_layout.json
 .idea/
 Thumbs.db
 desktop.ini
-dist_test
+/dist_test/
+/dist_proj/
