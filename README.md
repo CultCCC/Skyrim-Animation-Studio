@@ -2,6 +2,8 @@
 
 An animation and annotation studio for **Skyrim Special Edition**, in the spirit of DS Anim Studio, built for the SDS (Skyrim Dragon Souls) modlist.
 
+**Author:** [CultCCC](https://github.com/CultCCC)
+
 It reads a Mod Organizer 2 build (loose files and BSAs), plays HKX animations on NPCs dressed from their ESP records, and edits clip annotations with live previews:
 
 - Precision hitboxes and trails;
